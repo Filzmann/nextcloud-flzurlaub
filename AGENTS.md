@@ -29,13 +29,21 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Assistenzteams verwenden dieselbe Nextcloud-Gruppe wie AdPlaner. Separate Gruppen mit einem Suffix wie `-Urlaub` sind keine unterstützte Datenquelle.
 - Eigene Urlaubszeiträume werden kompakt über Von/Bis/Notiz eingetragen. Berechtigte Koordinator*innen wechseln den Tagesstatus direkt in der Jahresmatrix; Konflikte werden inline angezeigt.
 - AdPlaner bindet seine Urlaubssicht ausschließlich an diese Quelle an und besitzt keine parallele Urlaubspersistenz.
-- Der read-only Cross-App-Vertrag ist `OCA\LocalBase\Calendar\AbsenceQueryEvent` mit `AbsenceInterval`. AD Urlaub greift niemals direkt auf Tabellen anderer Apps zu.
+- Die read-only Cross-App-Verträge sind die bounded UID-Abfrage `OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent` sowie `AbsenceQueryEvent` mit `AbsenceInterval`. Die Discovery liefert nur Konten mit geplanten oder genehmigten Urlauben im angefragten halboffenen Zeitraum; Urlaubsnotizen bleiben ausgeschlossen. AD Urlaub greift niemals direkt auf Tabellen anderer Apps zu.
 - Der app-eigene Adminabschnitt bietet einen ausschließlich manuell bestätigten Demo-Pack. Er verwendet die gemeinsamen synthetischen Suite-Demokonten, niemals zufällig ausgewählte reale Gruppenmitglieder.
 - Fremde oder LDAP-verwaltete Konten werden nicht als Demokonto übernommen; read-only LDAP-Gruppen brechen die Demo-Installation im Preflight vor jeder Mutation ab.
 - WordPress-Bestandsdaten werden nicht importiert. Es existiert keine Legacy-Importstrecke.
 
 ## Architektur und Sicherheit
 
+- AD Urlaub registriert subjectgebundene PersonalData- und Retention-Provider
+  über die öffentlichen LocalBase-Registry-Events. Die Auskunft enthält nur
+  Urlaube der typisierten UID einschließlich eigener Notizen; fremde Notizen
+  werden niemals übernommen. Retention liefert ausschließlich
+  administrativ konfigurierte `REVIEW`-Kandidaten und verändert keine Daten.
+- Jeder eigene Urlaubszeitraum erscheint menschenlesbar mit Zeitraum, Zweck
+  und einer aus der aktuellen Retention-Regel abgeleiteten Aussage. Ein
+  REVIEW-Stichtag wird nicht als automatische Löschfrist dargestellt.
 - Controller bleiben dünn; Rechte liegen in `VacationAccessService`, Fachlogik in `VacationService`, Datenzugriff im Repository.
 - Jeder schreibende API-Pfad prüft serverseitig Zielperson und Besitz/Adminrecht. UI-Ausblendungen sind kein Schutz.
 - Auch lesende Team-, Jahres- und Wochenendpunkte liefern nur den durch `VacationVisibilityPolicy` erlaubten Personen- und Ansichtsausschnitt; direkte Requests auf andere Teams bleiben gesperrt.
@@ -64,3 +72,22 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 ## DDEV
 
 Mount: `/var/www/html/html/custom_apps/adurlaub`
+
+## Parent-Governance-Vertrag: 1
+
+- Die für dieses Subrepository anwendbaren Regeln des Parent-Workspaces sind
+  verbindlich. Dazu gehören insbesondere app-übergreifende ADRs und
+  öffentliche Verträge, Repositorygrenzen sowie Workspace-, Delivery- und
+  Release-Gates.
+- Diese lokale `AGENTS.md` und die lokalen Skills bleiben die vollständige,
+  ohne Parent-Checkout arbeitsfähige Repository-Steuerung. Die anwendbaren
+  Parent-Regeln werden dafür hier oder in den lokalen Skills mitgeführt.
+- Repository-lokale Regeln dürfen Parent-Verträge konkretisieren und verschärfen,
+  aber nicht abschwächen oder umgehen.
+- Bei einem Widerspruch gilt bis zur Klärung die strengere Regel. Die Arbeit
+  stoppt, bis die kanonische Quelle bestimmt, die Regelprojektionen
+  synchronisiert und eine erforderliche Entscheidung dokumentiert ist.
+- Ist der Parent-Workspace nicht verfügbar, bleibt die lokale Steuerung
+  wirksam. Vor Cross-App-, Release- oder Delivery-Arbeit muss ein vermuteter
+  neuerer Parent-Stand oder eine Regelungslücke zuerst gegen den Parent
+  geprüft werden.

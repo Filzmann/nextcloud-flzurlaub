@@ -17,6 +17,32 @@ use OCP\IDBConnection;
 final class VacationRepository {
     public function __construct(private IDBConnection $db) {}
 
+    /** @return list<string> */
+    public function findEmployeeUidsInRange(string $startDate, string $endDate): array {
+        $qb = $this->db->getQueryBuilder();
+        $qb
+            ->select('employee_uid')
+            ->from('adu_vacations')
+            ->where($qb->expr()->lte('start_date', $qb->createNamedParameter($endDate)))
+            ->andWhere($qb->expr()->gte('end_date', $qb->createNamedParameter($startDate)))
+            ->andWhere($qb->expr()->in(
+                'status',
+                $qb->createNamedParameter([Vacation::STATUS_PLANNED, Vacation::STATUS_APPROVED], IQueryBuilder::PARAM_STR_ARRAY),
+            ))
+            ->groupBy('employee_uid')
+            ->orderBy('employee_uid', 'ASC');
+
+        $employeeUids = array_values(array_unique(array_filter(
+            array_map(
+                static fn(mixed $employeeUid): string => trim((string)$employeeUid),
+                $qb->executeQuery()->fetchFirstColumn(),
+            ),
+            static fn(string $employeeUid): bool => $employeeUid !== '',
+        )));
+        sort($employeeUids, SORT_STRING);
+        return $employeeUids;
+    }
+
     /** @return list<Vacation> */
     public function findRange(string $startDate, string $endDate, array $employeeUids): array {
         if ($employeeUids === []) return [];
@@ -48,6 +74,25 @@ final class VacationRepository {
         $row = $qb->executeQuery()->fetchAssociative();
 
         return $row === false ? null : Vacation::get($this->mapRow($row));
+    }
+
+    /** @return list<Vacation> */
+    public function findByEmployeeUid(string $employeeUid,int $limit):array{
+        $qb=$this->db->getQueryBuilder();
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+            ->where($qb->expr()->eq('employee_uid',$qb->createNamedParameter($employeeUid,IQueryBuilder::PARAM_STR)))
+            ->orderBy('start_date','ASC')->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
+        return Vacation::get_all(array_map([$this,'mapRow'],$rows));
+    }
+
+    /** @return list<Vacation> */
+    public function findEndedByEmployeeUid(string $employeeUid,string $cutoff,int $limit):array{
+        $qb=$this->db->getQueryBuilder();
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+            ->where($qb->expr()->eq('employee_uid',$qb->createNamedParameter($employeeUid,IQueryBuilder::PARAM_STR)))
+            ->andWhere($qb->expr()->lte('end_date',$qb->createNamedParameter($cutoff,IQueryBuilder::PARAM_STR)))
+            ->orderBy('end_date','ASC')->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
+        return Vacation::get_all(array_map([$this,'mapRow'],$rows));
     }
 
     public function findCoveringDate(string $employeeUid, string $date): ?Vacation {

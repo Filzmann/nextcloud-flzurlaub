@@ -14,8 +14,12 @@ Termine, Standarddienste und Meetingverfügbarkeit im AD Kalender.
 
 AD Urlaub ist die kanonische schreibende Urlaubsquelle. AdPlaner besitzt keine
 parallele Urlaubspersistenz. Der read-only Cross-App-Vertrag ist
-`OCA\LocalBase\Calendar\AbsenceQueryEvent` mit `AbsenceInterval`; Fachapps
-greifen nicht direkt auf Tabellen anderer Apps zu.
+`OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent` für die bounded
+Ermittlung betroffener Konto-UIDs sowie `AbsenceQueryEvent` mit
+`AbsenceInterval`. Ganztägige inklusive Urlaubsdaten werden an den lokalen
+Datumsgrenzen der im Event angefragten fachlichen Zeitzone ausgewertet;
+Urlaubsnotizen verlassen AD Urlaub nicht. Fachapps greifen nicht direkt auf
+Tabellen anderer Apps zu.
 
 ## Sichtbarkeit und Genehmigung
 

@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
+if (!defined('OC_CONSOLE')) define('OC_CONSOLE', true);
 require dirname(__DIR__, 4) . '/lib/base.php';
-require_once __DIR__ . '/../../lib/Migration/Version000001Date202607130001.php';
-require_once __DIR__ . '/../../lib/Migration/Version000003Date202607130003.php';
 
 use Doctrine\DBAL\Schema\Schema;
 use OCA\AdUrlaub\Migration\Version000001Date202607130001;
@@ -57,7 +56,7 @@ $assert = static function (bool $condition, string $message): void {
 };
 
 /** @var Connection $connection */
-$connection = \OC::$server->getDatabaseConnection();
+$connection = \OCP\Server::get(Connection::class);
 $platform = $connection->getDatabasePlatform();
 $schemaManager = $connection->createSchemaManager();
 $output = new SilentMigrationOutput();

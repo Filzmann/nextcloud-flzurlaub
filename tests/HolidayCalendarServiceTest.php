@@ -23,7 +23,6 @@ namespace OCA\LocalBase\Calendar {
 }
 
 namespace {
-    require_once __DIR__ . '/../lib/Service/HolidayCalendarService.php';
 
     $shared = new \OCA\LocalBase\Calendar\HolidayCalendarService();
     $service = new \OCA\AdUrlaub\Service\HolidayCalendarService($shared);

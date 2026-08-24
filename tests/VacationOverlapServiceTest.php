@@ -27,10 +27,6 @@ namespace OCA\AdUrlaub\Repository {
 }
 
 namespace {
-    require_once __DIR__ . '/../../localbase/lib/Model/ModelApiTrait.php';
-    require_once __DIR__ . '/../lib/Model/Vacation.php';
-    require_once __DIR__ . '/../lib/Exception/VacationOverlapException.php';
-    require_once __DIR__ . '/../lib/Service/VacationService.php';
 
     use OCA\AdUrlaub\Exception\VacationOverlapException;
     use OCA\AdUrlaub\Repository\VacationRepository;

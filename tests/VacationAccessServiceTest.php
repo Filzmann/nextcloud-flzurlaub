@@ -22,13 +22,6 @@ namespace OCP {
 }
 
 namespace {
-    require __DIR__ . '/../../localbase/lib/Organization/AdOrganizationDefinition.php';
-    require __DIR__ . '/../../localbase/lib/Organization/AdOrganizationHierarchy.php';
-    require __DIR__ . '/../../localbase/lib/Organization/AdOrganizationPermissionPolicy.php';
-    require __DIR__ . '/../../localbase/lib/Organization/AdSuiteAdminSettingsService.php';
-    require __DIR__ . '/../lib/Service/VacationSettingsService.php';
-    require __DIR__ . '/../lib/Service/VacationVisibilityPolicy.php';
-    require __DIR__ . '/../lib/Service/VacationAccessService.php';
 
     use OCA\AdUrlaub\Service\VacationAccessService;
     use OCA\AdUrlaub\Service\VacationSettingsService;

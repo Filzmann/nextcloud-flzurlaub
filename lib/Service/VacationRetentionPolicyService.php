@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace OCA\AdUrlaub\Service;
+
+use InvalidArgumentException;
+use OCA\AdUrlaub\AppInfo\AppId;
+use OCP\IAppConfig;
+
+final class VacationRetentionPolicyService {
+    private const KEY='retention_policy';
+    private const DEFAULT=['enabled'=>false,'reviewAfterDays'=>0,'action'=>'REVIEW'];
+    public function __construct(private IAppConfig $config){}
+    public function policy():array{
+        $stored=$this->config->getValueString(AppId::VALUE,self::KEY,'');
+        if($stored==='')return self::DEFAULT;
+        try{return $this->validate(json_decode($stored,true,flags:JSON_THROW_ON_ERROR));}catch(\Throwable){return self::DEFAULT;}
+    }
+    public function save(array $policy):array{
+        $policy=$this->validate($policy);
+        $this->config->setValueString(AppId::VALUE,self::KEY,json_encode($policy,JSON_THROW_ON_ERROR));
+        return $policy;
+    }
+    public function retentionCriteria():string{
+        $policy=$this->policy();
+        return $policy['enabled']
+            ? sprintf('Administrativer REVIEW %d Tage nach Ende des Urlaubs; keine automatische Löschung oder Anonymisierung.',$policy['reviewAfterDays'])
+            : 'Keine aktive Frist; Retention-Vorschau ist administrativ deaktiviert.';
+    }
+    private function validate(mixed $policy):array{
+        if(!is_array($policy)||array_diff(array_keys($policy),array_keys(self::DEFAULT))!==[]||array_diff(array_keys(self::DEFAULT),array_keys($policy))!==[])throw new InvalidArgumentException('Retention-Regel enthält unbekannte oder fehlende Felder.');
+        if(!is_bool($policy['enabled'])||!is_int($policy['reviewAfterDays'])||$policy['reviewAfterDays']<0||$policy['reviewAfterDays']>3650)throw new InvalidArgumentException('Retention-Frist ist ungültig.');
+        if($policy['action']!=='REVIEW')throw new InvalidArgumentException('Nur REVIEW ist freigegeben.');
+        return ['enabled'=>$policy['enabled'],'reviewAfterDays'=>$policy['reviewAfterDays'],'action'=>'REVIEW'];
+    }
+}

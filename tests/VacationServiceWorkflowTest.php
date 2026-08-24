@@ -48,14 +48,6 @@ namespace OCA\AdUrlaub\Service {
 }
 
 namespace {
-    require_once __DIR__ . '/../../localbase/lib/Model/ModelApiTrait.php';
-    require_once __DIR__ . '/../../localbase/lib/Calendar/ScheduleConflict.php';
-    require_once __DIR__ . '/../../localbase/lib/Calendar/ScheduleConflictQueryEvent.php';
-    require_once __DIR__ . '/../lib/Model/Vacation.php';
-    require_once __DIR__ . '/../lib/Model/VacationTeam.php';
-    require_once __DIR__ . '/../lib/Exception/VacationConflictException.php';
-    require_once __DIR__ . '/../lib/Exception/VacationOverlapException.php';
-    require_once __DIR__ . '/../lib/Service/VacationService.php';
 
     use OCA\AdUrlaub\Exception\VacationConflictException;
     use OCA\AdUrlaub\Model\Vacation;

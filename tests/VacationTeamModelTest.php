@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../localbase/lib/Model/ModelApiTrait.php';
-require_once __DIR__ . '/../lib/Model/VacationTeam.php';
 
 use OCA\AdUrlaub\Model\VacationTeam;
 
