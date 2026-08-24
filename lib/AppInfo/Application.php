@@ -9,7 +9,11 @@ use OCA\AdUrlaub\Listener\AbsenceQueryListener;
 use OCA\AdUrlaub\Listener\IntegrationCapabilityQueryListener;
 use OCA\AdUrlaub\Listener\StandaloneNavigationListener;
 use OCA\AdUrlaub\Privacy\VacationPrivacyProviderListener;
+use OCA\AdUrlaub\Permission\NextcloudVacationPermissionSource;
+use OCA\AdUrlaub\Permission\VacationPermissionProviderListener;
+use OCA\AdUrlaub\Permission\VacationPermissionSourceInterface;
 use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
 use OCA\LocalBase\Calendar\AbsenceQueryEvent;
 use OCA\LocalBase\Integration\IntegrationCapabilityQueryEvent;
@@ -29,6 +33,8 @@ final class Application extends App implements IBootstrap {
         $context->registerEventListener(AbsenceQueryEvent::class, AbsenceQueryListener::class);
         $context->registerEventListener(IntegrationCapabilityQueryEvent::class, IntegrationCapabilityQueryListener::class);
         $context->registerEventListener(RegisterPersonalDataProvidersEvent::class, VacationPrivacyProviderListener::class);
+        $context->registerEventListener(RegisterPermissionProvidersEvent::class, VacationPermissionProviderListener::class);
+        $context->registerServiceAlias(VacationPermissionSourceInterface::class, NextcloudVacationPermissionSource::class);
         $context->registerEventListener(RetentionProviderRegistryEvent::class, VacationPrivacyProviderListener::class);
         $context->registerEventListener(LoadAdditionalEntriesEvent::class, StandaloneNavigationListener::class);
     }
