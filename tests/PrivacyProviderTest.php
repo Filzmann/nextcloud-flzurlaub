@@ -21,8 +21,9 @@ namespace {
     use OCA\AdUrlaub\Privacy\VacationRetentionProvider;
     use OCA\AdUrlaub\Repository\VacationRepository;
     use OCA\AdUrlaub\Service\VacationRetentionPolicyService;
-    use OCA\LocalBase\Privacy\PersonalDataProviderRegistryEvent;
-    use OCA\LocalBase\Privacy\PersonalDataRequest;
+    use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
+    use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
+    use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
     use OCA\LocalBase\Privacy\PersonalDataSubject;
     use OCA\LocalBase\Privacy\RetentionPreviewRequest;
     use OCA\LocalBase\Privacy\RetentionProviderRegistryEvent;
@@ -36,24 +37,41 @@ namespace {
     $policy=new VacationRetentionPolicyService($config);
     $policy->save(['enabled'=>true,'reviewAfterDays'=>30,'action'=>'REVIEW']);
     $clock=new class implements OCP\AppFramework\Utility\ITimeFactory { public function getTime():int{return strtotime('2026-08-12T12:00:00+00:00');} };
-    $subject=new PersonalDataSubject(PersonalDataSubject::NEXTCLOUD_USER,'self');
+    $subject=new DataSubjectRef('nextcloud-user','self');
     $personal=new VacationPersonalDataProvider($repo,$policy);
-    $report=$personal->collect(new PersonalDataRequest($subject,'de',PersonalDataRequest::PURPOSE_SELF_SERVICE,50));
-    if(count($report->items())!==1)throw new RuntimeException('Urlaubsauskunft ist nicht strikt subjectgebunden.');
-    $item=$report->items()[0]->toArray();
+    $descriptor=$personal->descriptor();
+    if($descriptor->appId()!=='adurlaub'||$descriptor->contractVersion()!=='1.0'||!$descriptor->supportsSubjectType('nextcloud-user'))throw new RuntimeException('Urlaubs-Provider beschreibt den Standalone-V1-Vertrag nicht korrekt.');
+    $report=$personal->collect(new PersonalDataRequest($subject,'de','access-report',50,[]));
+    if(count($report->entries())!==1||$report->status()!=='complete')throw new RuntimeException('Urlaubsauskunft ist nicht strikt subjectgebunden oder meldet einen falschen Status.');
+    $entry=$report->entries()[0];
+    $item=[
+        'categoryId'=>$entry->categoryId(),'categoryLabel'=>$entry->categoryLabel(),'reference'=>$entry->reference(),
+        'summary'=>$entry->summary(),'purpose'=>$entry->purpose(),'source'=>$entry->source(),
+        'recipientCategories'=>$entry->recipientCategories(),'retention'=>$entry->retention(),
+        'thirdCountryTransfer'=>$entry->thirdCountryTransfer(),'automatedDecision'=>$entry->automatedDecision(),
+        'thirdPartyContentNotice'=>$entry->thirdPartyContentNotice(),'attributes'=>$entry->attributes(),
+    ];
     if($item['reference']!=='vacation:11'||$item['attributes']['Notiz']!=='Eigene Notiz'||str_contains(json_encode($item,JSON_THROW_ON_ERROR),'Fremde'))throw new RuntimeException('Eigene Urlaubsdaten oder Drittpersonenschutz sind falsch.');
     foreach(['Von','Bis','Status','Notiz'] as $label)if(!array_key_exists($label,$item['attributes']))throw new RuntimeException("Deutsche Detailbezeichnung fehlt: {$label}");
     foreach(['startDate','endDate','status','note'] as $technical)if(array_key_exists($technical,$item['attributes']))throw new RuntimeException("Technischer Feldname ist sichtbar: {$technical}");
-    foreach(['Folgende Urlaubszeiträume','01.07.26 bis 10.07.26','Urlaubsplanung','09.08.26'] as $expected)if(!str_contains(json_encode($item,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE),$expected))throw new RuntimeException("Menschenlesbare Urlaubsangabe fehlt: {$expected}");
-    $processing=$report->processing()->toArray();
-    if(!str_contains($processing['retentionCriteria'],'30 Tage')||!in_array('Urlaubsplanung und Genehmigung', $processing['purposes'],true))throw new RuntimeException('Art.-15-Angaben für Urlaub fehlen.');
-    if($personal->collect(new PersonalDataRequest($subject,'de',PersonalDataRequest::PURPOSE_SELF_SERVICE,1))->isComplete())throw new RuntimeException('Begrenzter Urlaubsbericht behauptet Vollständigkeit.');
+    foreach(['Urlaubszeitraum','01.07.26 bis 10.07.26','Urlaubsplanung','09.08.26'] as $expected)if(!str_contains(json_encode($item,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE),$expected))throw new RuntimeException("Menschenlesbare Urlaubsangabe fehlt: {$expected}");
+    if(!str_contains($item['retention'],'30 Tage')||$item['purpose']!=='Urlaubsplanung, Genehmigung und Verfügbarkeitsprüfung')throw new RuntimeException('Art.-15-Angaben für Urlaub fehlen.');
+    $repo->items[]=Vacation::get(['id'=>13,'employeeUid'=>'self','startDate'=>'2026-08-20','endDate'=>'2026-08-22','status'=>'planned','note'=>'Weitere eigene Notiz']);
+    if($personal->collect(new PersonalDataRequest($subject,'de','access-report',1,[]))->status()!=='partial')throw new RuntimeException('Begrenzter Urlaubsbericht behauptet Vollständigkeit.');
+    array_pop($repo->items);
+    $unsupported=$personal->collect(new PersonalDataRequest(new DataSubjectRef('external-applicant','self'),'de','access-report',50,[]));
+    if($unsupported->status()!=='not_applicable'||$unsupported->entries()!==[])throw new RuntimeException('Ein nicht unterstützter Subject-Typ erhielt Urlaubsdaten.');
+    try{
+        $personal->collect((new PersonalDataRequest($subject,'de','access-report',50,['adurlaub'=>'opaque']))->forProvider('adurlaub',50));
+        throw new RuntimeException('Ein unbekannter Provider-Cursor wurde akzeptiert.');
+    }catch(InvalidArgumentException){}
 
     $retention=new VacationRetentionProvider($repo,$policy,$clock);
-    $preview=$retention->preview(new RetentionPreviewRequest($subject,50));
+    $retentionSubject=new PersonalDataSubject(PersonalDataSubject::NEXTCLOUD_USER,'self');
+    $preview=$retention->preview(new RetentionPreviewRequest($retentionSubject,50));
     if(count($preview->candidates())!==1||$preview->candidates()[0]->toArray()['action']!=='REVIEW')throw new RuntimeException('Urlaubs-Retention berücksichtigt die Adminregel nicht.');
     $listener=new VacationPrivacyProviderListener($personal,$retention);
-    $personalRegistry=new PersonalDataProviderRegistryEvent();$listener->handle($personalRegistry);
+    $personalRegistry=new RegisterPersonalDataProvidersEvent();$listener->handle($personalRegistry);
     $retentionRegistry=new RetentionProviderRegistryEvent();$listener->handle($retentionRegistry);
     if(array_keys($personalRegistry->providers())!==['adurlaub']||array_keys($retentionRegistry->providers())!==['adurlaub'])throw new RuntimeException('Urlaubs-Provider werden nicht registriert.');
     echo "AD Urlaub privacy provider test passed\n";

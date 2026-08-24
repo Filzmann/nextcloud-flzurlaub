@@ -36,8 +36,10 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 
 ## Architektur und Sicherheit
 
-- AD Urlaub registriert subjectgebundene PersonalData- und Retention-Provider
-  über die öffentlichen LocalBase-Registry-Events. Die Auskunft enthält nur
+- AD Urlaub registriert den subjectgebundenen PersonalDataProvider lazy über
+  den öffentlichen Standalone-V1-Vertrag von `filzmann_data_protection` und
+  den bestehenden reinen Retention-Dry-Run bis zu dessen gesonderter
+  Migration weiterhin über den LocalBase-Pilot. Die Auskunft enthält nur
   Urlaube der typisierten UID einschließlich eigener Notizen; fremde Notizen
   werden niemals übernommen. Retention liefert ausschließlich
   administrativ konfigurierte `REVIEW`-Kandidaten und verändert keine Daten.
