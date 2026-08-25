@@ -7,6 +7,7 @@ namespace OCA\AdUrlaub\Privacy;
 use OCA\AdUrlaub\AppInfo\AppId;
 use OCA\AdUrlaub\Model\Vacation;
 use OCA\AdUrlaub\Repository\VacationRepository;
+use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepository;
 use OCA\AdUrlaub\Service\VacationRetentionPolicyService;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
@@ -16,7 +17,7 @@ use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
 use InvalidArgumentException;
 
 final class VacationPersonalDataProvider implements PersonalDataProvider {
-    public function __construct(private VacationRepository $vacations,private VacationRetentionPolicyService $retention){}
+    public function __construct(private VacationRepository $vacations,private VacationRetentionPolicyService $retention,private TemporaryAdminAccessRepository $adminAccess){}
     public function descriptor():ProviderDescriptor{
         return new ProviderDescriptor(AppId::VALUE,'AD Urlaub','1.0',['nextcloud-user'],['personal-data'],500);
     }
@@ -25,8 +26,8 @@ final class VacationPersonalDataProvider implements PersonalDataProvider {
         if($request->cursor()!==null)throw new InvalidArgumentException('AD Urlaub does not support cursor paging.');
         $policy=$this->retention->policy();
         $vacations=$this->vacations->findByEmployeeUid($request->subject()->subjectId(),$request->pageLimit()+1);
-        $limited=count($vacations)>$request->pageLimit();
-        if($limited)$vacations=array_slice($vacations,0,$request->pageLimit());
+        $adminHistory=$this->adminAccess->historyForUid($request->subject()->subjectId(),$request->pageLimit()+1);
+        $limited=count($vacations)+count($adminHistory)>$request->pageLimit();
         $items=array_map(static fn(Vacation $vacation)=>new PersonalDataEntry(
             categoryId:'vacation',
             categoryLabel:'Urlaubszeitraum',
@@ -46,6 +47,8 @@ final class VacationPersonalDataProvider implements PersonalDataProvider {
                 'Notiz'=>$vacation->note()!==''?$vacation->note():'Keine Notiz hinterlegt',
             ],
         ),$vacations);
+        foreach($adminHistory as $grant){$uid=$request->subject()->subjectId();$roles=[];if($grant['targetUid']===$uid)$roles[]='Ziel der Vollzugriffsfreigabe';if($grant['grantedBy']===$uid)$roles[]='Freigebende Administration';if($grant['revokedBy']===$uid)$roles[]='Widerrufende Administration';$actualEnd=$grant['revokedAt']??$grant['endsAt'];$items[]=new PersonalDataEntry(categoryId:'admin-access',categoryLabel:'Zeitlich begrenzter Admin-Vollzugriff',reference:'admin-access:'.$grant['id'],summary:self::germanDateTime($grant['startsAt']).' bis '.self::germanDateTime($actualEnd),purpose:'Nachweis einer zeitlich begrenzten administrativen Urlaubsfreigabe',source:'App-lokale Freigabe im Nextcloud-Adminbereich',recipientCategories:['Berechtigte Nextcloud-Administrator*innen und prüfberechtigte Stellen'],retention:'Keine feste Löschfrist festgelegt; die sicherheitsrelevante Freigabehistorie bleibt bis zu einer gesonderten Aufbewahrungsentscheidung erhalten.',thirdCountryTransfer:'Durch AD Urlaub sind keine Drittlandübermittlungen für diese Freigabehistorie vorgesehen.',automatedDecision:'Der Server beendet den Vollzugriff spätestens nach 24 Stunden automatisch.',thirdPartyContentNotice:'Kennungen anderer beteiligter Administrator*innen werden nicht ausgegeben.',attributes:['Eigene Rolle im Vorgang'=>implode(', ',$roles),'Beginn'=>self::germanDateTime($grant['startsAt']),'Geplantes Ende'=>self::germanDateTime($grant['endsAt']),'Tatsächliches Ende'=>self::germanDateTime($actualEnd),'Status'=>$grant['revokedAt']===null?'planmäßig beendet oder noch aktiv':'widerrufen']);}
+        if($limited)$items=array_slice($items,0,$request->pageLimit());
         if($items===[])return new PersonalDataPage('not_applicable');
         return new PersonalDataPage($limited?'partial':'complete',$items,$limited?['Ausgabelimit erreicht; weitere Urlaubszeiträume können vorhanden sein.']:[]);
     }
@@ -59,4 +62,5 @@ final class VacationPersonalDataProvider implements PersonalDataProvider {
         return self::germanDate($start).' bis '.self::germanDate($end);
     }
     private static function germanDate(\DateTimeImmutable $date):string{return $date->format('d.m.y');}
+    private static function germanDateTime(\DateTimeImmutable $date):string{return $date->format('d.m.y, H:i').' Uhr';}
 }

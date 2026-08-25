@@ -21,36 +21,50 @@ namespace OCP {
     }
 }
 
+namespace OCA\AdUrlaub\Service {
+    final class TemporaryAdminAccessChecker {
+        public bool $active = false;
+        public function hasActiveGrant(string $uid): bool { return $this->active; }
+    }
+    final class VacationSettingsService {
+        public function enabledPeerGroups(): array { return []; }
+        public function asnPeerGroup(): string { return 'ad-ASN-*'; }
+    }
+}
+
 namespace {
 
     use OCA\AdUrlaub\Service\VacationAccessService;
     use OCA\AdUrlaub\Service\VacationSettingsService;
     use OCA\AdUrlaub\Service\VacationVisibilityPolicy;
+    use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
     use OCA\LocalBase\Organization\AdOrganizationHierarchy;
     use OCA\LocalBase\Organization\AdOrganizationPermissionPolicy;
-    use OCA\LocalBase\Organization\AdSuiteAdminSettingsService;
     use OCP\IGroupManager;
     use OCP\IUserManager;
     use OCP\IUserSession;
 
     $groups = new class implements IGroupManager {
+        public bool $admin = false;
         public function get($gid): ?object { return null; }
         public function getUserGroupIds($user): array { return []; }
-        public function isAdmin($uid): bool { return false; }
+        public function isAdmin($uid): bool { return $this->admin; }
         public function search($search): array { return []; }
     };
     $session = new class implements IUserSession {
-        public function getUser(): ?object { return null; }
+        public ?object $user = null;
+        public function getUser(): ?object { return $this->user; }
     };
     $users = new class implements IUserManager {
-        public function get($uid): ?object { return null; }
+        public ?object $user = null;
+        public function get($uid): ?object { return $this->user; }
     };
 
     $policy = new AdOrganizationPermissionPolicy(new AdOrganizationHierarchy());
     $visibility = new VacationVisibilityPolicy($policy);
-    $adminSettings = (new ReflectionClass(AdSuiteAdminSettingsService::class))->newInstanceWithoutConstructor();
-    $settings = new VacationSettingsService($adminSettings);
-    $access = new VacationAccessService($groups, $session, $users, $policy, $visibility, $settings);
+    $settings = new VacationSettingsService();
+    $adminAccess = new TemporaryAdminAccessChecker();
+    $access = new VacationAccessService($groups, $session, $users, $policy, $visibility, $settings, $adminAccess);
 
     $assert = static function (bool $condition, string $message): void {
         if (!$condition) throw new RuntimeException($message);
@@ -64,6 +78,15 @@ namespace {
     $assert($access->canManageStatus('missing', 'requested') === false, 'Anonymous sessions unexpectedly manage status changes.');
     $assert($access->isVisibleEmployee('missing') === false, 'Missing employees unexpectedly become visible.');
     $assert($access->visibleEmployees() === [], 'Anonymous sessions unexpectedly receive an employee directory.');
+
+    $actor = new class implements \OCP\IUser { public function getUID(): string { return 'admin'; } public function getDisplayName(): string { return 'Admin'; } };
+    $target = new class implements \OCP\IUser { public function getUID(): string { return 'target'; } public function getDisplayName(): string { return 'Target'; } };
+    $session->user = $actor; $users->user = $target; $groups->admin = true;
+    $assert($access->canManage('target') === false, 'Native Administration erhält ohne app-lokale Freigabe Vollzugriff.');
+    $assert($access->isVisibleEmployee('target') === false, 'Native Administration sieht ohne app-lokale Freigabe alle Urlaubsdaten.');
+    $adminAccess->active = true;
+    $assert($access->canManage('target') === true, 'Aktive app-lokale Freigabe erteilt keinen Vollzugriff.');
+    $assert($access->isVisibleEmployee('target') === true, 'Aktive app-lokale Freigabe erteilt keine Vollsicht.');
 
     echo "VacationAccessService deny-by-default tests passed\n";
 }

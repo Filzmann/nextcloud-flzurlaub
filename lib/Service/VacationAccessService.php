@@ -25,6 +25,7 @@ final class VacationAccessService {
         private AdOrganizationPermissionPolicy $policy,
         private VacationVisibilityPolicy $visibility,
         private VacationSettingsService $settings,
+        private TemporaryAdminAccessChecker $temporaryAdminAccess,
         private ?AdOrganizationSettingsService $organization = null,
     ) {}
 
@@ -57,7 +58,7 @@ final class VacationAccessService {
 
         return $this->visibility->canView(
             $actor->getUID(),
-            $this->groups->isAdmin($actor->getUID()),
+            $this->hasFullAdminAccess($actor->getUID()),
             $this->groupIds($actor),
             $target->getUID(),
             $this->groupIds($target),
@@ -69,7 +70,7 @@ final class VacationAccessService {
         $actor = $this->currentUser();
         if ($actor === null) return [];
         $actorGroups = $this->groupIds($actor);
-        $isAdmin = $this->groups->isAdmin($actor->getUID());
+        $isAdmin = $this->hasFullAdminAccess($actor->getUID());
         $users = [];
         $definition = $this->definition();
         $roleGroups = $definition->roleGroupIds();
@@ -124,7 +125,7 @@ final class VacationAccessService {
         $targetGroups = $this->groupIds($target);
         if ($this->policy->canManage(
             $actor->getUID(),
-            $this->groups->isAdmin($actor->getUID()),
+            $this->hasFullAdminAccess($actor->getUID()),
             $actorGroups,
             $employeeUid,
             $targetGroups,
@@ -144,6 +145,10 @@ final class VacationAccessService {
 
     private function groupIds(IUser $user): array {
         return array_map('strval', $this->groups->getUserGroupIds($user));
+    }
+
+    private function hasFullAdminAccess(string $uid): bool {
+        return $this->groups->isAdmin($uid) && $this->temporaryAdminAccess->hasActiveGrant($uid);
     }
 
     private function asnTeamCodes(array $groupIds): array {

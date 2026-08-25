@@ -6,6 +6,7 @@ namespace OCA\AdUrlaub\Controller;
 
 use OCA\AdUrlaub\AppInfo\Application;
 use OCA\AdUrlaub\Service\VacationDemoPackService;
+use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -16,7 +17,7 @@ use Psr\Log\LoggerInterface;
 
 /** Zweck: Startet den Urlaubs-Demo-Pack ausschließlich mit Admin- und CSRF-Schutz. */
 final class DemoAdminController extends Controller {
-    public function __construct(IRequest $request, private IUserSession $session, private IGroupManager $groups, private VacationDemoPackService $demoPack, private LoggerInterface $logger) {
+    public function __construct(IRequest $request, private IUserSession $session, private IGroupManager $groups, private VacationDemoPackService $demoPack, private LoggerInterface $logger, private TemporaryAdminAccessChecker $temporaryAdminAccess) {
         parent::__construct(Application::APP_ID, $request);
     }
     public function install(): JSONResponse {
@@ -30,6 +31,6 @@ final class DemoAdminController extends Controller {
     }
     private function isAdmin(): bool {
         $user = $this->session->getUser();
-        return $user !== null && $this->groups->isAdmin($user->getUID());
+        return $user !== null && $this->groups->isAdmin($user->getUID()) && $this->temporaryAdminAccess->hasActiveGrant($user->getUID());
     }
 }

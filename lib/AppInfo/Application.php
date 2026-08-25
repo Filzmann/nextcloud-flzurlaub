@@ -12,6 +12,10 @@ use OCA\AdUrlaub\Privacy\VacationPrivacyProviderListener;
 use OCA\AdUrlaub\Permission\NextcloudVacationPermissionSource;
 use OCA\AdUrlaub\Permission\VacationPermissionProviderListener;
 use OCA\AdUrlaub\Permission\VacationPermissionSourceInterface;
+use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepository;
+use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
+use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
+use OCA\AdUrlaub\Service\TemporaryAdminAccessService;
 use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
 use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
@@ -35,6 +39,8 @@ final class Application extends App implements IBootstrap {
         $context->registerEventListener(RegisterPersonalDataProvidersEvent::class, VacationPrivacyProviderListener::class);
         $context->registerEventListener(RegisterPermissionProvidersEvent::class, VacationPermissionProviderListener::class);
         $context->registerServiceAlias(VacationPermissionSourceInterface::class, NextcloudVacationPermissionSource::class);
+        $context->registerServiceAlias(TemporaryAdminAccessChecker::class, TemporaryAdminAccessService::class);
+        $context->registerServiceAlias(TemporaryAdminAccessRepositoryInterface::class, TemporaryAdminAccessRepository::class);
         $context->registerEventListener(RetentionProviderRegistryEvent::class, VacationPrivacyProviderListener::class);
         $context->registerEventListener(LoadAdditionalEntriesEvent::class, StandaloneNavigationListener::class);
     }

@@ -5,7 +5,7 @@
     <name>AD Urlaub</name>
     <summary>Urlaubsplanung für alle AD-Fachgruppen.</summary>
     <description>Plant und genehmigt ganztägige Urlaubszeiträume und stellt sie anderen lokalen Apps read-only bereit.</description>
-    <version>0.7.0-rc.1</version>
+    <version>0.7.0-rc.2</version>
     <licence>agpl</licence>
     <author>Simon</author>
     <namespace>AdUrlaub</namespace>

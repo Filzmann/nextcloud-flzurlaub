@@ -10,4 +10,7 @@ return ['routes' => [
     ['name' => 'api#update', 'url' => '/api/vacations/{id}', 'verb' => 'PUT'],
     ['name' => 'api#delete', 'url' => '/api/vacations/{id}', 'verb' => 'DELETE'],
     ['name' => 'demo_admin#install', 'url' => '/api/admin/demo-pack/install', 'verb' => 'POST'],
+    ['name' => 'temporary_admin_access#status', 'url' => '/api/admin/full-access', 'verb' => 'GET'],
+    ['name' => 'temporary_admin_access#activate', 'url' => '/api/admin/full-access', 'verb' => 'POST'],
+    ['name' => 'temporary_admin_access#revoke', 'url' => '/api/admin/full-access/{targetUid}', 'verb' => 'DELETE'],
 ]];
