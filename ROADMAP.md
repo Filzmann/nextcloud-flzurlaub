@@ -2,24 +2,26 @@
 
 Diese Datei bündelt geplante Erweiterungen und offene Produktentscheidungen. Verbindliche Fach-, Sicherheits- und Architekturregeln stehen in `AGENTS.md`.
 
-## Zukunftsplanung – nicht freigegeben
+## Nextcloud-Kompatibilitätsgate
 
-### ADU-L10N – AD Urlaub vollständig lokalisieren
+### ADU-NC-COMPAT – OpenDesk-Boden 33 und künftige Majors nachweisen
 
-Status: später, nicht freigegeben; Pilot-App, Reihenfolge und Rohtext-Gate
-werden vor jeder Umsetzung appübergreifend separat freigegeben
+Status: `info.xml` bleibt bei 34/34; NC 33.0.7 ist nur statisch geprüft. Vor
+`min-version="33"` müssen Fresh Install/Upgrade, DI, Migrationen, Jobs,
+Urlaubs- und Genehmigungsrechte, Konfliktabfrage sowie Standalone-,
+LocalBase- und Kalenderkombinationen einschließlich fehlendem Provider,
+Assets und sichtbare Jahresmatrix grün sein. Die Obergrenze folgt ausschließlich
+dem lückenlosen app-lokalen `verify-nextcloud-future-compatibility`-Nachweis.
 
-- Manuelle Monats- und Wochenendnamen sowie sichtbare UI-, Konflikt-,
-  Validierungs- und Fehlermeldungen auf aktive Nextcloud-Locale und
-  Nextcloud-l10n umstellen.
-- ISO-Datumsbereiche, Urlaubsstatus, Rollen-/Bereichsschlüssel und
-  Providerpayloads unverändert lassen; Ferien- und Feiertagsnamen nur gemäß
-  ihrer belastbaren Provider-/Locale-Quelle darstellen.
-- Deutsche Ausgabe, eine weitere Locale, Fallback, Jahresgrenzen,
-  Pluralformen, Platzhalter, Escaping und zugängliche Tagesbeschriftungen
-  testen.
-- Erst nach vollständiger Pilotmigration den app-eigenen Rohtext-Check
-  verbindlich schalten.
+## Systemweit gegatete app-lokale Aufgabe
+
+### ADU-L10N – Oberfläche und Datumsdarstellung lokalisieren
+
+Aktivierung ausschließlich nach Freigabe des Root-Vorhabens `ZM-06`.
+Sichtbare Texte sowie Monats- und Wochentagsnamen werden app-lokal auf
+Nextcloud-l10n umgestellt; ISO-Zeiträume, Status-, Rollen-, Bereichs- und
+Providerwerte bleiben sprachneutral. Provider-Namen werden nur gemäß ihrer
+belastbaren Locale-Quelle dargestellt.
 
 ## Aktueller Fokus
 
