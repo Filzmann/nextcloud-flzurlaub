@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Dokumentations- und Steuerungsstruktur vereinheitlicht.
+
 ## 0.7.0-rc.1
 
 - Subjectgebundene persönliche Datenauskunft für eigene Urlaubszeiträume einschließlich eigener Notizen ergänzt.
