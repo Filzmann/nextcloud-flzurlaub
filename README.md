@@ -8,8 +8,8 @@ Der Zugriff verwendet ausschließlich die fest hinterlegte HTTPS-Adresse der Ope
 
 ## Staging-Kompatibilität
 
-- Nextcloud 34
-- PHP 8.3 oder neuer innerhalb des von Nextcloud 34 unterstützten Bereichs
+- Nextcloud 33 bis 34
+- PHP 8.3 oder neuer innerhalb des von Nextcloud 33 bis 34 unterstützten Bereichs
 - Laufzeitbasis: `localbase`; `orgsuite` ist ab zwei AD-Fachprodukten optional aktiv
 - App-ID und Installationsordner: `adurlaub`
 

@@ -10,4 +10,7 @@ return [
     'postGrantUiStatuses' => [200],
     'grantService' => OCA\AdUrlaub\Service\TemporaryAdminAccessService::class,
     'permissionProbe' => static fn(string $uid): bool => OCP\Server::get(VacationAccessService::class)->canApprove($uid),
+    'apiSmokes' => [
+        ['/index.php/apps/adurlaub/api/week?start=2035-01-01', [200]],
+    ],
 ];

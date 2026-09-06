@@ -5,17 +5,6 @@ und Freigabegates. Der aktuelle Funktionsumfang steht in `README.md`,
 erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
 `docs/architecture.md`.
 
-## Nextcloud-Kompatibilitätsgate
-
-### ADU-NC-COMPAT – OpenDesk-Boden 33 und künftige Majors nachweisen
-
-Status: `info.xml` bleibt bei 34/34; NC 33.0.7 ist nur statisch geprüft. Vor
-`min-version="33"` müssen Fresh Install/Upgrade, DI, Migrationen, Jobs,
-Urlaubs- und Genehmigungsrechte, Konfliktabfrage sowie Standalone-,
-LocalBase- und Kalenderkombinationen einschließlich fehlendem Provider,
-Assets und sichtbare Jahresmatrix grün sein. Die Obergrenze folgt ausschließlich
-dem lückenlosen app-lokalen `verify-nextcloud-future-compatibility`-Nachweis.
-
 ## Systemweit gegatete app-lokale Aufgabe
 
 ### ADU-L10N – Oberfläche und Datumsdarstellung lokalisieren
