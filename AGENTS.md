@@ -46,6 +46,11 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Jeder eigene Urlaubszeitraum erscheint menschenlesbar mit Zeitraum, Zweck
   und einer aus der aktuellen Retention-Regel abgeleiteten Aussage. Ein
   REVIEW-Stichtag wird nicht als automatische Löschfrist dargestellt.
+- AD Urlaub registriert zusätzlich einen `ProcessingMetadataProvider` lazy
+  über den öffentlichen V1-Vertrag des Datenschutz-Centers. Seine einzige
+  fachliche Policyquelle ist `resources/privacy-processing.json`; sie enthält
+  keine personenbezogenen Laufzeitdaten und markiert ungeklärte Entscheidungen
+  als `PRIVACY-DECISION-REQUIRED`.
 - Controller bleiben dünn; Rechte liegen in `VacationAccessService`, Fachlogik in `VacationService`, Datenzugriff im Repository.
 - Jeder schreibende API-Pfad prüft serverseitig Zielperson und Besitz/Adminrecht. UI-Ausblendungen sind kein Schutz.
 - Auch lesende Team-, Jahres- und Wochenendpunkte liefern nur den durch `VacationVisibilityPolicy` erlaubten Personen- und Ansichtsausschnitt; direkte Requests auf andere Teams bleiben gesperrt.

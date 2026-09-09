@@ -21,6 +21,16 @@ AD Urlaub funktioniert einzeln. Ohne AD Kalender bleibt die Urlaubsplanung volls
 
 Der Befehl `adurlaub:demo:seed` erzeugt synthetische Testdaten und wird nicht automatisch ausgeführt.
 
+## Datenschutz
+
+Der app-eigene Processing-Katalog beschreibt Urlaubsverwaltung einschließlich
+freiwilliger Notizen sowie temporäre Adminfreigaben über den öffentlichen
+V1-Vertrag des Datenschutz-Centers. Er enthält ausschließlich Policy-Metadaten
+und keine personenbezogenen Laufzeitdatensätze. Offene Rechtsgrundlagen,
+Retention-, Backup-, Restore- und Betroffenenrechtsentscheidungen bleiben als
+`PRIVACY-DECISION-REQUIRED` sichtbar. Die vorhandene Retention-Vorschau liefert
+weiterhin nur `REVIEW`-Kandidaten und verändert keine Daten.
+
 ## Zeitlich begrenzter Admin-Vollzugriff
 
 Ein Nextcloud-Administrationskonto erhält nicht automatisch Zugriff auf alle Urlaubsdaten. Der fachliche Vollzugriff wird im Adminbereich von AD Urlaub pro Administrationskonto für 1, 4, 8 oder höchstens 24 Stunden aktiviert und kann vorzeitig widerrufen werden. Beginn, geplantes Ende, Freigabe und Widerruf werden app-lokal protokolliert und in Datenschutz- sowie Berechtigungsprovider einbezogen.

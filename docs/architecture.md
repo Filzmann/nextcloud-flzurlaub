@@ -36,6 +36,20 @@ Auch lesende Team-, Jahres- und Wochenendpunkte liefern nur den durch
 `VacationVisibilityPolicy` erlaubten Ausschnitt. Urlaubsnotizen verbleiben in
 AD Urlaub und werden nicht an Consumer übertragen.
 
+## Processing-Metadaten
+
+Der zusätzliche `ProcessingMetadataProvider` veröffentlicht den app-eigenen
+Katalog `resources/privacy-processing.json` lazy über den öffentlichen
+Standalone-V1-Vertrag des Datenschutz-Centers. Er trennt Urlaubsverwaltung
+einschließlich freiwilliger Notizen von der Historie temporärer
+Adminfreigaben. Der Katalog enthält keine personenbezogenen Laufzeitdaten und
+ersetzt fehlende fachliche Entscheidungen nicht durch technische Defaults.
+
+Die vorhandene administrativ konfigurierbare Retention-Vorschau bleibt bis zu
+ihrer gesonderten Migration im LocalBase-Pilot. Sie liefert ausschließlich
+`REVIEW`-Kandidaten, führt keine Löschung oder Anonymisierung aus und wird im
+Katalog nicht als freigegebene Aufbewahrungsregel dargestellt.
+
 ## Organisation und Ansichten
 
 Gruppen, Rollen, Bereiche, Assistenzteam-Präfix, Hierarchie und

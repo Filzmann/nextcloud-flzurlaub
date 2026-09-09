@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Einen app-eigenen Processing-Metadata-Katalog für Urlaubsverwaltung und
+  temporäre Adminfreigaben über den V1-Vertrag des Datenschutz-Centers
+  veröffentlicht; die bestehende Retention-Vorschau bleibt `REVIEW`-only.
 - Nextcloud 33.0.7 bis 34.0.2 durch Fresh Install und Upgrade 33→34 mit
   App-Suiten, DI-/Registrierungs-, API-, Rechte-, HTTPS-, Asset- und UI-Smokes unterstützt.
 - Dokumentations- und Steuerungsstruktur vereinheitlicht.
