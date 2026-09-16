@@ -99,6 +99,22 @@ abzunehmen.
 | E5 | Fehlerisolation | Einen optionalen Konfliktprovider gezielt fehlschlagen lassen. | Der Fehler erweitert keine Rechte und erzeugt keine stillschweigende Genehmigung oder Datenlöschung. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | E6 | Demo-Pack-Schutz | Demo-Pack ohne Bestätigung versuchen und anschließend nur in einer vorgesehenen Testumgebung bestätigen. | Ohne Bestätigung bleibt die Aktion gesperrt; ausschließlich synthetische lokale Konten und Urlaube werden verwendet. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 
+## Automatisierter lokaler Nachweis vom 11.09.2026
+
+Im Rahmen der risikoarmen Luna-Prüfung wurden aus dem Repository-Root nur die
+lokalen, nicht mutierenden Prüfungen ausgeführt:
+
+| Prüfung | Ergebnis | Aussagegrenze |
+|---|---|---|
+| `php tests/run.php` | erfolgreich | PHP-Syntax sowie Workflow-, Sichtbarkeits-, Rechte-, Privacy-, Retention-, Migrations- und Providerverträge sind grün. |
+| `node tests/run-js.mjs` | erfolgreich | JavaScript- und Feiertagskalender-Smokes sind grün. |
+| `git diff --check` | erfolgreich | Keine Whitespace-Fehler im aktuellen Arbeitsbaum. |
+
+DDEV, `occ`, Installation, App-Aktivierung, Urlaubsdaten und externe Provider
+wurden nicht verändert. Dieser Nachweis ersetzt weder die offene manuelle
+Staging-Abnahme noch die fachlichen Entscheidungen zu Retention und globaler
+Administration.
+
 ## Abschlussentscheidung
 
 | Feld | Eintrag |
