@@ -21,4 +21,5 @@ if (!app.includes('const formElement = event.currentTarget') || !app.includes('f
 if (!main.includes('new window.AdUrlaub.modules.VacationApp') || !main.includes('.start()')) throw new Error('main.js ist kein schlanker Bootstrap.');
 for (const url of [mainUrl, holidayCalendarUrl, planUrl, appUrl, adminUrl]) execFileSync('node', ['--check', url.pathname], {stdio:'inherit'});
 execFileSync(process.execPath, [new URL('./js/holiday-calendar-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
+execFileSync(process.execPath, [new URL('./js/admin-access-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
 console.log('AD Urlaub JavaScript tests passed');

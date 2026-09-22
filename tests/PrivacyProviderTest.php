@@ -40,7 +40,7 @@ namespace {
     $policy->save(['enabled'=>true,'reviewAfterDays'=>30,'action'=>'REVIEW']);
     $clock=new class implements OCP\AppFramework\Utility\ITimeFactory { public function getTime():int{return strtotime('2026-08-12T12:00:00+00:00');} };
     $subject=new DataSubjectRef('nextcloud-user','self');
-    $adminAccess=new TemporaryAdminAccessRepository();$adminAccess->items=[['id'=>7,'targetUid'=>'self','grantedBy'=>'other-admin','startsAt'=>new DateTimeImmutable('2026-08-12T08:00:00+00:00'),'endsAt'=>new DateTimeImmutable('2026-08-12T12:00:00+00:00'),'revokedAt'=>null,'revokedBy'=>null]];
+    $adminAccess=new TemporaryAdminAccessRepository();$adminAccess->items=[['id'=>7,'targetUid'=>'self','grantedBy'=>'self','startsAt'=>new DateTimeImmutable('2026-08-12T08:00:00+00:00'),'endsAt'=>new DateTimeImmutable('2026-08-12T12:00:00+00:00'),'revokedAt'=>new DateTimeImmutable('2026-08-12T10:00:00+00:00'),'revokedBy'=>'other-admin']];
     $personal=new VacationPersonalDataProvider($repo,$policy,$adminAccess);
     $descriptor=$personal->descriptor();
     if($descriptor->appId()!=='adurlaub'||$descriptor->contractVersion()!=='1.0'||!$descriptor->supportsSubjectType('nextcloud-user'))throw new RuntimeException('Urlaubs-Provider beschreibt den Standalone-V1-Vertrag nicht korrekt.');
@@ -59,7 +59,8 @@ namespace {
     foreach(['startDate','endDate','status','note'] as $technical)if(array_key_exists($technical,$item['attributes']))throw new RuntimeException("Technischer Feldname ist sichtbar: {$technical}");
     foreach(['Urlaubszeitraum','01.07.26 bis 10.07.26','Urlaubsplanung','09.08.26'] as $expected)if(!str_contains(json_encode($item,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE),$expected))throw new RuntimeException("Menschenlesbare Urlaubsangabe fehlt: {$expected}");
     if(!str_contains($item['retention'],'30 Tage')||$item['purpose']!=='Urlaubsplanung, Genehmigung und Verfügbarkeitsprüfung')throw new RuntimeException('Art.-15-Angaben für Urlaub fehlen.');
-    $grant=$report->entries()[1];$grantJson=json_encode([$grant->categoryLabel(),$grant->summary(),$grant->attributes(),$grant->thirdPartyContentNotice()],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);if(!str_contains($grantJson,'Admin-Vollzugriff')||str_contains($grantJson,'other-admin'))throw new RuntimeException('Adminfreigabe fehlt oder legt eine fremde Admin-ID offen.');
+    $grant=$report->entries()[1];$grantJson=json_encode([$grant->categoryLabel(),$grant->summary(),$grant->source(),$grant->recipientCategories(),$grant->attributes(),$grant->thirdPartyContentNotice()],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);if(!str_contains($grantJson,'Admin-Vollzugriff')||str_contains($grantJson,'other-admin'))throw new RuntimeException('Adminfreigabe fehlt oder legt eine fremde Admin-ID offen.');
+    foreach(['Freigebendes Mitglied von Datenschutzbeauftragte','App-lokale Freigabesteuerung in AD Urlaub','Datenschutz-Prüfrolle'] as $expected)if(!str_contains($grantJson,$expected))throw new RuntimeException("Adminfreigabe projiziert Rolle oder Quelle nicht korrekt: {$expected}");
     $repo->items[]=Vacation::get(['id'=>13,'employeeUid'=>'self','startDate'=>'2026-08-20','endDate'=>'2026-08-22','status'=>'planned','note'=>'Weitere eigene Notiz']);
     if($personal->collect(new PersonalDataRequest($subject,'de','access-report',1,[]))->status()!=='partial')throw new RuntimeException('Begrenzter Urlaubsbericht behauptet Vollständigkeit.');
     array_pop($repo->items);

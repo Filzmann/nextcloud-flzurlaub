@@ -66,7 +66,8 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Das Template stellt den optionalen Menühost mit `data-suite="ad"` und `data-current-app="adurlaub"` bereit, lädt aber keine OrgSuite-Assets direkt.
 - Ohne AD Kalender bleibt Urlaubsplanung möglich; lediglich die automatische Prüfung gegen Dienste und Termine entfällt. Dieser Standalone-Zustand ist kein Fehler.
 - Urlaubs-, Team- und Genehmigungsrechte bleiben ausschliesslich serverseitig im AD Urlaub; Menuesichtbarkeit ist keine Berechtigung.
-- Native Nextcloud-Administration erteilt keinen fachlichen Urlaubs-Vollzugriff. Er setzt pro Administrationskonto eine aktive, app-lokale Freigabe von höchstens 24 Stunden voraus; Beginn, geplantes Ende und Widerruf bleiben historisch protokolliert.
+- Native Nextcloud-Administration erteilt keinen fachlichen Urlaubs-Vollzugriff. Er setzt pro Administrationskonto eine aktive, app-lokale Freigabe von höchstens 24 Stunden voraus; Beginn, geplantes Ende und Widerruf bleiben historisch protokolliert. Ausschließlich Mitglieder der Nextcloud-Gruppe `Datenschutzbeauftragte` verwalten Freigaben und Historie im AD-Urlaub-Hauptbereich; native Administration allein genügt weder für die Steuerung noch für den fachlichen Zugriff.
+- Ein natives Administrationskonto ohne aktive Freigabe erhält im Hauptbereich eine sichere Hinweismeldung. Der Direktlink zur Freigabesteuerung erscheint nur, wenn dasselbe Konto zugleich Mitglied von `Datenschutzbeauftragte` ist.
 - Das Installieren fachlicher Demodaten benötigt dieselbe aktive Freigabe. Änderungen an Freigabehistorie oder Urlaubsrechten werden gleichzeitig im PersonalDataProvider und PermissionProvider nachgeführt.
 
 ## Git und Tests

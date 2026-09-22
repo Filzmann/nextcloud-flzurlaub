@@ -36,6 +36,23 @@ Auch lesende Team-, Jahres- und Wochenendpunkte liefern nur den durch
 `VacationVisibilityPolicy` erlaubten Ausschnitt. Urlaubsnotizen verbleiben in
 AD Urlaub und werden nicht an Consumer übertragen.
 
+## Zeitlich begrenzter fachlicher Admin-Vollzugriff
+
+Native Nextcloud-Administration bleibt von fachlicher Urlaubsberechtigung
+getrennt. Vollzugriff entsteht nur für ein aktuell natives Administrationskonto
+mit aktiver app-lokaler Freigabe und endet spätestens nach 24 Stunden. Nur
+Mitglieder der kanonischen Nextcloud-Gruppe `Datenschutzbeauftragte` dürfen
+Freigaben erteilen, widerrufen und deren Historie lesen; ein nativer Admin ohne
+diese Rolle und gewöhnliche Konten werden ohne Zustandsänderung abgewiesen.
+
+Die Steuerung liegt im authentifizierten AD-Urlaub-Hauptbereich und bleibt
+außerhalb der technischen Nextcloud-Administration. Schreibende Requests
+verwenden den Nextcloud-CSRF-Schutz. Ein natives Administrationskonto ohne
+aktive Freigabe sieht eine sichere Hinweismeldung; der Direktlink zur
+Freigabesteuerung erscheint nur bei gleichzeitiger DPO-Rolle. Audit- und
+Art.-15-Projektionen geben ausschließlich die subjectgebundene Beteiligung und
+Zeitpunkte aus und neutralisieren Kennungen anderer beteiligter Personen.
+
 ## Processing-Metadaten
 
 Der zusätzliche `ProcessingMetadataProvider` veröffentlicht den app-eigenen

@@ -1,5 +1,6 @@
 <?php
 \OCP\Util::addScript('localbase', 'api/api-client');
+\OCP\Util::addScript('adurlaub', 'admin-access');
 \OCP\Util::addScript('localbase', 'ui/ui');
 \OCP\Util::addScript('adurlaub', 'models/holiday-calendar');
 \OCP\Util::addScript('adurlaub', 'components/vacation-plan');
@@ -16,6 +17,29 @@
             <label>Jahr <input id="adu-year" type="number" min="2000" max="2100" step="1"></label>
         </div>
     </header>
+    <?php if ($_['showMissingAdminGrant'] ?? false): ?>
+        <section class="adu-admin-access adu-admin-access--warning" aria-labelledby="adu-missing-admin-grant-heading">
+            <h2 id="adu-missing-admin-grant-heading">Kein fachlicher Admin-Vollzugriff</h2>
+            <p>Native Nextcloud-Administration erteilt keinen fachlichen Vollzugriff. Für geschützte Urlaubsverwaltung und fachliche Demodaten fehlt eine aktive app-lokale Freigabe.</p>
+            <?php if ($_['showAdminAccessLink'] ?? false): ?><p><a href="#adu-full-access">Freigabesteuerung öffnen</a></p><?php endif; ?>
+        </section>
+    <?php endif; ?>
+    <?php if ($_['canManageAdminAccess'] ?? false): ?>
+        <section id="adu-full-access" class="adu-admin-access" aria-labelledby="adu-full-access-heading">
+            <h2 id="adu-full-access-heading">Zeitlich begrenzter Admin-Vollzugriff</h2>
+            <p>Nur Mitglieder der Nextcloud-Gruppe Datenschutzbeauftragte dürfen Freigaben für aktive native Administrationskonten verwalten. Maximal 24 Stunden sind zulässig.</p>
+            <form id="adu-full-access-form">
+                <label>Admin-Benutzerkennung <input name="targetUid" required maxlength="64" autocomplete="off"></label>
+                <label>Dauer <select name="durationMinutes" required><option value="60">1 Stunde</option><option value="240">4 Stunden</option><option value="480">8 Stunden</option><option value="1440">24 Stunden</option></select></label>
+                <label><input id="adu-full-access-enabled" name="enabled" type="checkbox" required> Vollzugriff für diesen Zeitraum aktivieren</label>
+                <button type="submit" class="primary">Freigabe aktivieren</button>
+            </form>
+            <p id="adu-full-access-status" role="status" aria-live="polite"></p>
+            <div class="adu-table-wrap adu-admin-access-history">
+                <table><caption>Protokollierte Admin-Vollzugriffszeiträume</caption><thead><tr><th>Ziel-Admin</th><th>Freigegeben von</th><th>Von</th><th>Geplant bis</th><th>Tatsächlich bis / Status</th><th>Aktion</th></tr></thead><tbody id="adu-full-access-history"><tr><td colspan="6">Freigaben werden geladen.</td></tr></tbody></table>
+            </div>
+        </section>
+    <?php endif; ?>
     <div id="adu-notice" role="status" aria-live="polite"></div>
     <p id="adu-integration-status" class="adu-integration-status" role="status" hidden></p>
     <section id="adu-calendar-view" class="adu-section" aria-labelledby="adu-plan-title">
