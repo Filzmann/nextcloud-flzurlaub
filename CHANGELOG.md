@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Retention-Dry-Run vom LocalBase-Pilot auf den öffentlichen
+  V1-Providervertrag des Datenschutz-Centers migriert; globale Vorschauen sind
+  paginiert, datenminimiert und weiterhin strikt `REVIEW`-only.
 - Die zeitlich begrenzte fachliche Adminfreigabe auf Mitglieder der
   Nextcloud-Gruppe `Datenschutzbeauftragte` begrenzt, die Steuerung aus dem
   technischen Adminbereich in den rollenabhängigen Hauptbereich verschoben

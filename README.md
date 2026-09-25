@@ -28,8 +28,11 @@ freiwilliger Notizen sowie temporäre Adminfreigaben über den öffentlichen
 V1-Vertrag des Datenschutz-Centers. Er enthält ausschließlich Policy-Metadaten
 und keine personenbezogenen Laufzeitdatensätze. Offene Rechtsgrundlagen,
 Retention-, Backup-, Restore- und Betroffenenrechtsentscheidungen bleiben als
-`PRIVACY-DECISION-REQUIRED` sichtbar. Die vorhandene Retention-Vorschau liefert
-weiterhin nur `REVIEW`-Kandidaten und verändert keine Daten.
+`PRIVACY-DECISION-REQUIRED` sichtbar. Die Retention-Vorschau registriert sich
+lazy über den öffentlichen V1-Vertrag des Datenschutz-Centers, liefert globale
+Treffer paginiert und datenminimiert ausschließlich als
+`REVIEW`-Kandidaten und verändert keine Daten. Ohne kompatibles
+Datenschutz-Center bleibt AD Urlaub eigenständig nutzbar.
 
 ## Zeitlich begrenzter Admin-Vollzugriff
 

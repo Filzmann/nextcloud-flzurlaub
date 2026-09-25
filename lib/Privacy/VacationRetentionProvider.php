@@ -6,27 +6,44 @@ namespace OCA\AdUrlaub\Privacy;
 
 use DateInterval;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use OCA\AdUrlaub\AppInfo\AppId;
 use OCA\AdUrlaub\Model\Vacation;
 use OCA\AdUrlaub\Repository\VacationRepository;
 use OCA\AdUrlaub\Service\VacationRetentionPolicyService;
-use OCA\LocalBase\Privacy\RetentionPreviewCandidate;
-use OCA\LocalBase\Privacy\RetentionPreviewPage;
-use OCA\LocalBase\Privacy\RetentionPreviewRequest;
-use OCA\LocalBase\Privacy\RetentionProvider;
-use OCP\AppFramework\Utility\ITimeFactory;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionCandidate;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPolicy;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewPage;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProvider;
+use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProviderDescriptor;
 
 final class VacationRetentionProvider implements RetentionProvider {
-    public function __construct(private VacationRepository $vacations,private VacationRetentionPolicyService $policy,private ITimeFactory $clock){}
-    public function appId():string{return AppId::VALUE;}
+    public const POLICY_ID='vacation_review';
+    public function __construct(private VacationRepository $vacations,private VacationRetentionPolicyService $policy){}
+    public function descriptor():RetentionProviderDescriptor{return new RetentionProviderDescriptor(AppId::VALUE,'AD Urlaub','1.0',200);}
+    public function policies():array{
+        $policy=$this->policy->policy();
+        return [new RetentionPolicy(self::POLICY_ID,'Urlaubszeiträume','Administrative Prüfung beendeter Urlaubszeiträume nach der app-eigenen Vorschaufrist','COMPLETED_AT',$policy['reviewAfterDays'],'REVIEW','1.0')];
+    }
+    public function isEnabled():bool{return $this->policy->policy()['enabled'];}
     public function preview(RetentionPreviewRequest $request):RetentionPreviewPage{
         $policy=$this->policy->policy();
-        if(!$policy['enabled'])return new RetentionPreviewPage([]);
-        $cutoff=(new DateTimeImmutable('@'.$this->clock->getTime()))->sub(new DateInterval('P'.$policy['reviewAfterDays'].'D'))->format('Y-m-d');
-        $items=array_map(static fn(Vacation $vacation)=>new RetentionPreviewCandidate(
-            'vacation:'.$vacation->id(),'vacation',RetentionPreviewCandidate::REVIEW,
+        if(!$policy['enabled']||$request->policyId()!==self::POLICY_ID)return new RetentionPreviewPage('not_applicable');
+        $offset=$this->offset($request->cursor());
+        $cutoff=(new DateTimeImmutable($request->evaluatedAt()))->sub(new DateInterval('P'.$policy['reviewAfterDays'].'D'))->format('Y-m-d');
+        $rows=$this->vacations->findEndedBefore($cutoff,$request->limit()+1,$offset);
+        $hasMore=count($rows)>$request->limit();
+        if($hasMore)array_pop($rows);
+        $items=array_map(static fn(Vacation $vacation)=>new RetentionCandidate(
+            self::POLICY_ID,'vacation:'.$vacation->id(),$vacation->endDate().'T00:00:00+00:00','REVIEW',
             sprintf('Urlaub endete vor dem administrativ konfigurierten REVIEW-Stichtag (%d Tage).',$policy['reviewAfterDays'])
-        ),$this->vacations->findEndedByEmployeeUid($request->subject()->id(),$cutoff,$request->limit()));
-        return new RetentionPreviewPage($items);
+        ),$rows);
+        return new RetentionPreviewPage($hasMore?'partial':'complete',$items,[],$hasMore?(string)($offset+$request->limit()):null);
+    }
+    private function offset(?string $cursor):int{
+        if($cursor===null)return 0;
+        if(!preg_match('/^(?:0|[1-9][0-9]{0,8})$/',$cursor))throw new InvalidArgumentException('Invalid vacation retention cursor.');
+        return (int)$cursor;
     }
 }

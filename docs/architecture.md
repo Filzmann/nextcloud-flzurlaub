@@ -62,10 +62,15 @@ einschließlich freiwilliger Notizen von der Historie temporärer
 Adminfreigaben. Der Katalog enthält keine personenbezogenen Laufzeitdaten und
 ersetzt fehlende fachliche Entscheidungen nicht durch technische Defaults.
 
-Die vorhandene administrativ konfigurierbare Retention-Vorschau bleibt bis zu
-ihrer gesonderten Migration im LocalBase-Pilot. Sie liefert ausschließlich
+Die administrativ konfigurierbare Retention-Vorschau registriert sich lazy
+über den öffentlichen V1-Vertrag des Datenschutz-Centers. Die app-eigene
+globale Abfrage liefert Treffer seitenweise mit opaker Fortsetzung und nur
+technische Urlaubsreferenz, Endzeitpunkt, Maßnahme und Begründung; UID und
+Notiz verlassen diesen Pfad nicht. Sie liefert ausschließlich
 `REVIEW`-Kandidaten, führt keine Löschung oder Anonymisierung aus und wird im
-Katalog nicht als freigegebene Aufbewahrungsregel dargestellt.
+Katalog nicht als freigegebene Aufbewahrungsregel dargestellt. Fehlende,
+deaktivierte oder inkompatible Provider lösen keinen LocalBase-, SQL- oder
+Reflection-Fallback aus.
 
 ## Organisation und Ansichten
 

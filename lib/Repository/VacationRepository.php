@@ -95,6 +95,16 @@ final class VacationRepository {
         return Vacation::get_all(array_map([$this,'mapRow'],$rows));
     }
 
+    /** @return list<Vacation> */
+    public function findEndedBefore(string $cutoff,int $limit,int $offset=0):array{
+        $qb=$this->db->getQueryBuilder();
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+            ->where($qb->expr()->lte('end_date',$qb->createNamedParameter($cutoff,IQueryBuilder::PARAM_STR)))
+            ->orderBy('end_date','ASC')->addOrderBy('id','ASC')
+            ->setFirstResult($offset)->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
+        return Vacation::get_all(array_map([$this,'mapRow'],$rows));
+    }
+
     public function findCoveringDate(string $employeeUid, string $date): ?Vacation {
         $qb = $this->db->getQueryBuilder();
         $qb

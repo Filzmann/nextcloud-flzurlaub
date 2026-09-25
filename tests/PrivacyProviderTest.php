@@ -9,8 +9,15 @@ namespace OCA\AdUrlaub\Repository {
     use OCA\AdUrlaub\Model\Vacation;
     class VacationRepository {
         public array $items=[];
+        public int $deleteCalls=0;
         public function findByEmployeeUid(string $uid,int $limit):array{return array_slice(array_values(array_filter($this->items,fn(Vacation $v)=>$v->employeeUid()===$uid)),0,$limit);}
         public function findEndedByEmployeeUid(string $uid,string $cutoff,int $limit):array{return array_slice(array_values(array_filter($this->items,fn(Vacation $v)=>$v->employeeUid()===$uid&&$v->endDate()<=$cutoff)),0,$limit);}
+        public function findEndedBefore(string $cutoff,int $limit,int $offset=0):array{
+            $items=array_values(array_filter($this->items,fn(Vacation $v)=>$v->endDate()<=$cutoff));
+            usort($items,static fn(Vacation $left,Vacation $right):int=>[$left->endDate(),$left->id()]<=>[$right->endDate(),$right->id()]);
+            return array_slice($items,$offset,$limit);
+        }
+        public function delete(int $id):void{$this->deleteCalls++;}
     }
     class TemporaryAdminAccessRepository { public array $items=[]; public function historyForUid(string $uid,int $limit):array{return array_slice(array_values(array_filter($this->items,static fn(array $item):bool=>in_array($uid,[$item['targetUid'],$item['grantedBy'],$item['revokedBy']],true))),0,$limit);} }
 }
@@ -26,9 +33,8 @@ namespace {
     use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
     use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
     use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-    use OCA\LocalBase\Privacy\PersonalDataSubject;
-    use OCA\LocalBase\Privacy\RetentionPreviewRequest;
-    use OCA\LocalBase\Privacy\RetentionProviderRegistryEvent;
+    use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+    use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
 
     $repo=new VacationRepository();
     $repo->items=[
@@ -38,7 +44,6 @@ namespace {
     $config=new class implements OCP\IAppConfig { public array $values=[]; public function getValueString(string $appId,string $key,string $default=''):string{return $this->values[$appId][$key]??$default;} public function setValueString(string $appId,string $key,string $value):void{$this->values[$appId][$key]=$value;} };
     $policy=new VacationRetentionPolicyService($config);
     $policy->save(['enabled'=>true,'reviewAfterDays'=>30,'action'=>'REVIEW']);
-    $clock=new class implements OCP\AppFramework\Utility\ITimeFactory { public function getTime():int{return strtotime('2026-08-12T12:00:00+00:00');} };
     $subject=new DataSubjectRef('nextcloud-user','self');
     $adminAccess=new TemporaryAdminAccessRepository();$adminAccess->items=[['id'=>7,'targetUid'=>'self','grantedBy'=>'self','startsAt'=>new DateTimeImmutable('2026-08-12T08:00:00+00:00'),'endsAt'=>new DateTimeImmutable('2026-08-12T12:00:00+00:00'),'revokedAt'=>new DateTimeImmutable('2026-08-12T10:00:00+00:00'),'revokedBy'=>'other-admin']];
     $personal=new VacationPersonalDataProvider($repo,$policy,$adminAccess);
@@ -71,13 +76,24 @@ namespace {
         throw new RuntimeException('Ein unbekannter Provider-Cursor wurde akzeptiert.');
     }catch(InvalidArgumentException){}
 
-    $retention=new VacationRetentionProvider($repo,$policy,$clock);
-    $retentionSubject=new PersonalDataSubject(PersonalDataSubject::NEXTCLOUD_USER,'self');
-    $preview=$retention->preview(new RetentionPreviewRequest($retentionSubject,50));
-    if(count($preview->candidates())!==1||$preview->candidates()[0]->toArray()['action']!=='REVIEW')throw new RuntimeException('Urlaubs-Retention berücksichtigt die Adminregel nicht.');
+    $retention=new VacationRetentionProvider($repo,$policy);
+    $preview=$retention->preview(new RetentionPreviewRequest('vacation_review','2026-08-12T12:00:00+00:00',1));
+    if($preview->status()!=='partial'||count($preview->candidates())!==1||$preview->candidates()[0]->toArray()['action']!=='REVIEW'||$preview->nextCursor()===null)throw new RuntimeException('Globale Urlaubs-Retention oder Pagination fehlt.');
+    $continued=$retention->preview(new RetentionPreviewRequest('vacation_review','2099-01-01T00:00:00+00:00',1,$preview->nextCursor()));
+    $continuedJson=json_encode($continued->candidates()[0]->toArray(),JSON_THROW_ON_ERROR);
+    if($continued->status()!=='complete'||count($continued->candidates())!==1||str_contains($continuedJson,'self')||str_contains($continuedJson,'Notiz'))throw new RuntimeException('Urlaubs-Retention-Folgeseite ist unvollständig oder legt personenbezogene Inhalte offen.');
+    if($retention->preview(new RetentionPreviewRequest('unknown_policy','2026-08-12T12:00:00+00:00',20))->status()!=='not_applicable')throw new RuntimeException('Eine unbekannte Urlaubs-Retention-Policy wird nicht kontrolliert abgelehnt.');
+    try{$retention->preview(new RetentionPreviewRequest('vacation_review','2026-08-12T12:00:00+00:00',20,'manipulated'));throw new RuntimeException('Ein manipulierter Provider-Cursor wurde akzeptiert.');}catch(InvalidArgumentException){}
+    if($repo->deleteCalls!==0)throw new RuntimeException('Retention-Preview verändert Urlaube.');
     $listener=new VacationPrivacyProviderListener($personal,$retention);
     $personalRegistry=new RegisterPersonalDataProvidersEvent();$listener->handle($personalRegistry);
-    $retentionRegistry=new RetentionProviderRegistryEvent();$listener->handle($retentionRegistry);
+    $retentionRegistry=new RegisterRetentionProvidersEvent();$listener->handle($retentionRegistry);
     if(array_keys($personalRegistry->providers())!==['adurlaub']||array_keys($retentionRegistry->providers())!==['adurlaub'])throw new RuntimeException('Urlaubs-Provider werden nicht registriert.');
+    $policy->save(['enabled'=>false,'reviewAfterDays'=>0,'action'=>'REVIEW']);
+    $disabledRegistry=new RegisterRetentionProvidersEvent();$listener->handle($disabledRegistry);
+    if($disabledRegistry->providers()!==[])throw new RuntimeException('Eine deaktivierte Urlaubs-Retention registriert fälschlich einen Provider.');
+
+    $application=(string)file_get_contents(dirname(__DIR__).'/lib/AppInfo/Application.php');
+    if(!str_contains($application,'registerEventListener(RegisterRetentionProvidersEvent::class, VacationPrivacyProviderListener::class)')||str_contains($application,'RetentionProviderRegistryEvent'))throw new RuntimeException('Der Bootstrap verwendet nicht ausschließlich den Standalone-V1-Retention-Vertrag.');
     echo "AD Urlaub privacy provider test passed\n";
 }

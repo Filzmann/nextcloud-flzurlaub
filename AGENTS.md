@@ -38,8 +38,11 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 
 - AD Urlaub registriert den subjectgebundenen PersonalDataProvider lazy über
   den öffentlichen Standalone-V1-Vertrag von `filzmann_data_protection` und
-  den bestehenden reinen Retention-Dry-Run bis zu dessen gesonderter
-  Migration weiterhin über den LocalBase-Pilot. Die Auskunft enthält nur
+  den reinen Retention-Dry-Run ebenfalls lazy über dessen öffentlichen
+  V1-`RegisterRetentionProvidersEvent`. Die globale, fortsetzbare Vorschau
+  bleibt app-eigener Datenzugriff und liefert nur datenminimierte
+  `REVIEW`-Kandidaten; bei fehlendem oder inkompatiblem Datenschutz-Center
+  bleibt AD Urlaub funktionsfähig. Die Auskunft enthält nur
   Urlaube der typisierten UID einschließlich eigener Notizen; fremde Notizen
   werden niemals übernommen. Retention liefert ausschließlich
   administrativ konfigurierte `REVIEW`-Kandidaten und verändert keine Daten.
