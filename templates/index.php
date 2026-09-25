@@ -11,19 +11,24 @@
 <main id="adurlaub-app" class="adu-app">
     <div class="orgsuite-host" data-orgsuite data-suite="ad" data-current-app="adurlaub"></div>
     <header class="adu-header">
-        <h1>AD Urlaub</h1>
+        <div class="adu-title-row">
+            <h1>AD Urlaub</h1>
+            <?php if ($_['showMissingAdminGrant'] ?? false): ?>
+                <details class="adu-admin-access-warning">
+                    <summary aria-label="Informationen zum fehlenden fachlichen Admin-Vollzugriff"><span aria-hidden="true">⚠</span></summary>
+                    <div class="adu-admin-access-warning__panel">
+                        <strong>Kein fachlicher Admin-Vollzugriff aktiv.</strong>
+                        <p>Native Nextcloud-Administration erteilt keinen fachlichen Vollzugriff. Mitglieder der Gruppe Datenschutzbeauftragte können eine app-lokale Freigabe von höchstens 24 Stunden erteilen.</p>
+                        <?php if ($_['showAdminAccessLink'] ?? false): ?><a href="#adu-full-access" target="_blank" rel="noopener noreferrer">Freigabesteuerung in neuem Tab öffnen</a><?php endif; ?>
+                    </div>
+                </details>
+            <?php endif; ?>
+        </div>
         <div class="adu-controls">
             <label>Team <select id="adu-team"></select></label>
             <label>Jahr <input id="adu-year" type="number" min="2000" max="2100" step="1"></label>
         </div>
     </header>
-    <?php if ($_['showMissingAdminGrant'] ?? false): ?>
-        <section class="adu-admin-access adu-admin-access--warning" aria-labelledby="adu-missing-admin-grant-heading">
-            <h2 id="adu-missing-admin-grant-heading">Kein fachlicher Admin-Vollzugriff</h2>
-            <p>Native Nextcloud-Administration erteilt keinen fachlichen Vollzugriff. Für geschützte Urlaubsverwaltung und fachliche Demodaten fehlt eine aktive app-lokale Freigabe.</p>
-            <?php if ($_['showAdminAccessLink'] ?? false): ?><p><a href="#adu-full-access">Freigabesteuerung öffnen</a></p><?php endif; ?>
-        </section>
-    <?php endif; ?>
     <?php if ($_['canManageAdminAccess'] ?? false): ?>
         <section id="adu-full-access" class="adu-admin-access" aria-labelledby="adu-full-access-heading">
             <h2 id="adu-full-access-heading">Zeitlich begrenzter Admin-Vollzugriff</h2>
