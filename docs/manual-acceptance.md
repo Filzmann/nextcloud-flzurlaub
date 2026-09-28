@@ -28,20 +28,6 @@ Ergebniskennzeichnung: `[ ] erfolgreich` / `[ ] nicht erfolgreich` /
 `[ ] nicht geprüft`. Bei „nicht erfolgreich“ oder „nicht geprüft“ ist eine
 Begründung verpflichtend.
 
-## Automatisierter Vorabstand am 08.08.2026
-
-Für `0.6.0-rc.2` sind die vollständigen PHP- und JavaScript-Suiten, der
-authentifizierte selbstbereinigende HTTP-Smoke, die reale DDEV-Rechtematrix
-sowie das isolierte Fresh-/Upgrade-Migrationsschema grün. Die Matrix deckt
-positive und negative Sicht-, Bearbeitungs- und Genehmigungsbeziehungen für
-PDL, BL, Büroorganisation, PFK, EB und Assistenzteam ab. Der gemeinsame
-AD-Kalender-/Urlaubsvertrag wurde zusätzlich durch den realen
-Default-Shift-/Abwesenheits-Smoke des AD Kalenders nachgewiesen.
-
-Diese Nachweise füllen das folgende manuelle Formular nicht automatisch aus.
-Insbesondere Sichtkontrolle, Tastaturführung, persönlicher Zeitzonenfall,
-Provider-Ausfallbilder und die fachliche Gesamtentscheidung bleiben manuell
-abzunehmen.
 
 ## A. Einstieg, Ansichten und Jahresmatrix
 
@@ -113,21 +99,6 @@ ist.
 | F4 | CSRF, Ablauf, Widerruf und Rollenverlust | Schreibenden Request ohne CSRF senden, eine aktive Freigabe widerrufen, Ablauf abwarten beziehungsweise kontrolliert simulieren und Ziel-Adminstatus sowie DPO-Rolle jeweils entziehen. | Fehlendes CSRF mutiert nicht; Widerruf, Ablauf und Verlust des Ziel-Adminstatus beenden den fachlichen Zugriff; ohne DPO-Rolle sind Steuerung und Historie nicht mehr erreichbar. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | F5 | Tastaturbedienung und Fokus | Steuerung, Dauer, Bestätigung, Absenden, Historie und Widerruf nur per Tastatur bedienen; Fehlermeldung auslösen. | Alle Funktionen sind erreichbar, Fokus sichtbar, Status verständlich und Fehler werden als Alert ausgegeben. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 
-## Automatisierter lokaler Nachweis vom 11.09.2026
-
-Im Rahmen der risikoarmen Luna-Prüfung wurden aus dem Repository-Root nur die
-lokalen, nicht mutierenden Prüfungen ausgeführt:
-
-| Prüfung | Ergebnis | Aussagegrenze |
-|---|---|---|
-| `php tests/run.php` | erfolgreich | PHP-Syntax sowie Workflow-, Sichtbarkeits-, Rechte-, Privacy-, Retention-, Migrations- und Providerverträge sind grün. |
-| `node tests/run-js.mjs` | erfolgreich | JavaScript- und Feiertagskalender-Smokes sind grün. |
-| `git diff --check` | erfolgreich | Keine Whitespace-Fehler im aktuellen Arbeitsbaum. |
-
-DDEV, `occ`, Installation, App-Aktivierung, Urlaubsdaten und externe Provider
-wurden nicht verändert. Dieser Nachweis ersetzt weder die offene manuelle
-Staging-Abnahme noch die fachlichen Entscheidungen zu Retention und globaler
-Administration.
 
 ## Abschlussentscheidung
 
