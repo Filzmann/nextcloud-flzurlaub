@@ -59,18 +59,29 @@ Der zusätzliche `ProcessingMetadataProvider` veröffentlicht den app-eigenen
 Katalog `resources/privacy-processing.json` lazy über den öffentlichen
 Standalone-V1-Vertrag des Datenschutz-Centers. Er trennt Urlaubsverwaltung
 einschließlich freiwilliger Notizen von der Historie temporärer
-Adminfreigaben. Der Katalog enthält keine personenbezogenen Laufzeitdaten und
-ersetzt fehlende fachliche Entscheidungen nicht durch technische Defaults.
+Adminfreigaben. Der Katalog enthält keine personenbezogenen Laufzeitdaten.
+Fachlicher Data Owner ist ausschließlich die jeweils zuständige Führungskraft;
+IKT bleibt auf den technischen Betrieb begrenzt, Datenschutzbeauftragte
+entscheiden über Policies und begründete Holds.
 
 Die administrativ konfigurierbare Retention-Vorschau registriert sich lazy
 über den öffentlichen V1-Vertrag des Datenschutz-Centers. Die app-eigene
 globale Abfrage liefert Treffer seitenweise mit opaker Fortsetzung und nur
 technische Urlaubsreferenz, Endzeitpunkt, Maßnahme und Begründung; UID und
 Notiz verlassen diesen Pfad nicht. Sie liefert ausschließlich
-`REVIEW`-Kandidaten, führt keine Löschung oder Anonymisierung aus und wird im
-Katalog nicht als freigegebene Aufbewahrungsregel dargestellt. Fehlende,
+`REVIEW`-Kandidaten und führt noch keine Löschung oder Anonymisierung aus. Die
+beschlossene Policy löscht freiwillige Notizen sechs Monate nach Urlaubsende
+und den verbleibenden Urlaubsdatensatz drei volle Kalenderjahre nach Ende des
+Urlaubsjahres. Abgeleitete Intervalle führen keine eigene Historie.
+Adminfreigabehistorien werden sechs Monate nach ihrem tatsächlichen Ende
+vollständig gelöscht und durch Restore nie reaktiviert. Fehlende,
 deaktivierte oder inkompatible Provider lösen keinen LocalBase-, SQL- oder
 Reflection-Fallback aus.
+
+Die Policy ist kein Implementierungs- oder Rechtsnachweis. Die V1-Ausführung
+bleibt bis zu grünen app-lokalen Lösch-, Restore-, Hold-, Backupgrenz- und
+Fehlertests REVIEW-only; Rechtsgrundlagen und betriebliche Backupfristen
+bleiben fachlich beziehungsweise rechtlich zu klären.
 
 ## Organisation und Ansichten
 
