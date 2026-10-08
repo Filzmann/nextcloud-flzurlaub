@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- Retention-Dry-Run vom LocalBase-Pilot auf den öffentlichen
+  V1-Providervertrag des Datenschutz-Centers migriert; globale Vorschauen sind
+  paginiert, datenminimiert und weiterhin strikt `REVIEW`-only.
+- Die zeitlich begrenzte fachliche Adminfreigabe auf Mitglieder der
+  Nextcloud-Gruppe `Datenschutzbeauftragte` begrenzt, die Steuerung aus dem
+  technischen Adminbereich in den rollenabhängigen Hauptbereich verschoben
+  und Allow-, Deny-, Manipulations-, UI-, Audit- und Providerprojektionen
+  automatisiert abgesichert.
+- Einen app-eigenen Processing-Metadata-Katalog für Urlaubsverwaltung und
+  temporäre Adminfreigaben über den V1-Vertrag des Datenschutz-Centers
+  veröffentlicht; die bestehende Retention-Vorschau bleibt `REVIEW`-only.
+- Nextcloud 33.0.7 bis 34.0.2 durch Fresh Install und Upgrade 33→34 mit
+  App-Suiten, DI-/Registrierungs-, API-, Rechte-, HTTPS-, Asset- und UI-Smokes unterstützt.
+- Dokumentations- und Steuerungsstruktur vereinheitlicht.
+
 ## 0.7.0-rc.1
 
 - Subjectgebundene persönliche Datenauskunft für eigene Urlaubszeiträume einschließlich eigener Notizen ergänzt.

@@ -13,8 +13,8 @@ if (!str_contains($listener, 'AbsenceQueryEvent') || !str_contains($listener, 'A
 if (!preg_match('/#\[NoCSRFRequired\]\s+#\[NoAdminRequired\]\s+public function index/s', $page)) throw new RuntimeException('Lesende App-Seite besitzt keinen expliziten Nextcloud-CSRF-Vertrag.');
 if (preg_match('/#\[NoCSRFRequired\][\s\S]{0,80}public function (create|update|delete|setDayStatus)/', $controller)) throw new RuntimeException('Schreibender Urlaubs-Endpunkt umgeht CSRF-Schutz.');
 foreach (['/\$team->contains\(\$employeeUid\)/', '/canManageStatus\(\$employeeUid,\s*\$existing->status\(\)\)/', '/canManageStatus\(\$employeeUid,\s*\$status\)/'] as $contract) if (preg_match($contract, $controller) !== 1) throw new RuntimeException("Team- oder Statusrecht fehlt: {$contract}");
-if (!str_contains($controller, "isVisibleEmployee(\$payload['employeeUid'])")) throw new RuntimeException('Schreibzugriff ist nicht auf sichtbare AD-Personen begrenzt.');
-if (!str_contains($controller, 'isVisibleEmployee($vacation->employeeUid())')) throw new RuntimeException('Löschzugriff ist nicht auf sichtbare AD-Personen begrenzt.');
-if (!str_contains($controller, 'isVisibleEmployee($existing->employeeUid())') || !str_contains($controller, 'isVisibleEmployee($employeeUid)')) throw new RuntimeException('Änderungszugriff ist nicht auf sichtbare AD-Personen begrenzt.');
+if (!str_contains($controller, "isVisibleEmployee(\$payload['employeeUid'])")) throw new RuntimeException('Schreibzugriff ist nicht auf sichtbare FLZ-Personen begrenzt.');
+if (!str_contains($controller, 'isVisibleEmployee($vacation->employeeUid())')) throw new RuntimeException('Löschzugriff ist nicht auf sichtbare FLZ-Personen begrenzt.');
+if (!str_contains($controller, 'isVisibleEmployee($existing->employeeUid())') || !str_contains($controller, 'isVisibleEmployee($employeeUid)')) throw new RuntimeException('Änderungszugriff ist nicht auf sichtbare FLZ-Personen begrenzt.');
 if (substr_count($controller, 'catch (VacationOverlapException $error)') < 2 || substr_count($controller, 'Http::STATUS_CONFLICT') < 4) throw new RuntimeException('Überschneidende Urlaube erhalten keinen klaren Konfliktstatus.');
 echo "SecuritySmokeTest: OK\n";

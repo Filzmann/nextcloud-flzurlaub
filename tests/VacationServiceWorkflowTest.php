@@ -11,8 +11,8 @@ namespace OCP {
     interface IUser { public function getUID(): string; }
 }
 
-namespace OCA\AdUrlaub\Repository {
-    use OCA\AdUrlaub\Model\Vacation;
+namespace OCA\FlzUrlaub\Repository {
+    use OCA\FlzUrlaub\Model\Vacation;
 
     class VacationRepository {
         /** @var list<Vacation> */ public array $vacations = [];
@@ -36,7 +36,7 @@ namespace OCA\AdUrlaub\Repository {
     }
 }
 
-namespace OCA\AdUrlaub\Service {
+namespace OCA\FlzUrlaub\Service {
     use OCP\IUser;
 
     class VacationAccessService {
@@ -49,12 +49,12 @@ namespace OCA\AdUrlaub\Service {
 
 namespace {
 
-    use OCA\AdUrlaub\Exception\VacationConflictException;
-    use OCA\AdUrlaub\Model\Vacation;
-    use OCA\AdUrlaub\Model\VacationTeam;
-    use OCA\AdUrlaub\Repository\VacationRepository;
-    use OCA\AdUrlaub\Service\VacationAccessService;
-    use OCA\AdUrlaub\Service\VacationService;
+    use OCA\FlzUrlaub\Exception\VacationConflictException;
+    use OCA\FlzUrlaub\Model\Vacation;
+    use OCA\FlzUrlaub\Model\VacationTeam;
+    use OCA\FlzUrlaub\Repository\VacationRepository;
+    use OCA\FlzUrlaub\Service\VacationAccessService;
+    use OCA\FlzUrlaub\Service\VacationService;
     use OCA\LocalBase\Calendar\ScheduleConflict;
     use OCA\LocalBase\Calendar\ScheduleConflictQueryEvent;
     use OCP\EventDispatcher\IEventDispatcher;

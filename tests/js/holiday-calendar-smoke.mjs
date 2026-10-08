@@ -32,7 +32,7 @@ const context = {
 runInNewContext(holidaySource, context, { filename: fileURLToPath(new URL('../../js/models/holiday-calendar.js', import.meta.url)) });
 runInNewContext(planSource, context, { filename: fileURLToPath(new URL('../../js/components/vacation-plan.js', import.meta.url)) });
 
-const holidays = new context.window.AdUrlaub.models.HolidayCalendar({
+const holidays = new context.window.FlzUrlaub.models.HolidayCalendar({
     year: 2026,
     fetchedAt: '2026-07-22T12:00:00Z',
     cacheStatus: 'current',
@@ -49,7 +49,7 @@ if (holidays.schoolHolidayName('2026-02-02') !== 'Winterferien'
 const status = new FakeNode();
 const elements = { 'holiday-status': status };
 const state = { year: 2026, teams: [], teamId: '', plan: { requests: [], holidays: holidays.toArray() } };
-const plan = new context.window.AdUrlaub.components.VacationPlan({ elements, state, holidays });
+const plan = new context.window.FlzUrlaub.components.VacationPlan({ elements, state, holidays });
 plan.renderHolidayStatus();
 const flatten = node => [node, ...node.children.flatMap(flatten)];
 const statusTexts = flatten(status).map(node => node.textContent).join(' ');
@@ -65,10 +65,10 @@ const days = Array.from({ length: 7 }, (_, offset) => ({
 }));
 const [holidayBand, publicHolidayBand, dayHeader] = plan.renderHeader(days);
 const winterBand = holidayBand.children[1];
-if (!holidayBand.className.includes('adu-school-holiday-row')
+if (!holidayBand.className.includes('flz-vacation-school-holiday-row')
     || winterBand.textContent !== ''
     || winterBand.children[0]?.textContent !== 'Winterferien'
-    || !winterBand.children[0]?.className.includes('adu-holiday-label')
+    || !winterBand.children[0]?.className.includes('flz-vacation-holiday-label')
     || winterBand.colSpan !== 6
     || winterBand.title !== 'Winterferien'
     || !winterBand.className.includes('is-school-holiday')
@@ -90,7 +90,7 @@ if (!saturdayHeading.className.includes('is-saturday')
 const publicHoliday = publicHolidayBand.children[2];
 if (publicHoliday.textContent !== ''
     || publicHoliday.children[0]?.textContent !== 'Testfeiertag'
-    || !publicHoliday.children[0]?.className.includes('adu-holiday-label')
+    || !publicHoliday.children[0]?.className.includes('flz-vacation-holiday-label')
     || publicHoliday.colSpan !== 1
     || publicHoliday.title !== 'Testfeiertag'
     || !publicHoliday.className.includes('is-public-holiday')) {

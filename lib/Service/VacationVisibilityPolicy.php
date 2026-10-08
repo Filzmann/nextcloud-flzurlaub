@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\AdOrganizationDefinition;
-use OCA\LocalBase\Organization\AdOrganizationPermissionPolicy;
-use OCA\LocalBase\Organization\AdOrganizationSettingsService;
+use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
+use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 
 /**
  * Zweck: Begrenzt lesbare Urlaubspersonen auf gemeinsame Ansichten, gemeinsame Assistenzteams und Unterstellungen.
@@ -15,8 +15,8 @@ use OCA\LocalBase\Organization\AdOrganizationSettingsService;
  */
 final class VacationVisibilityPolicy {
     public function __construct(
-        private AdOrganizationPermissionPolicy $management,
-        private ?AdOrganizationSettingsService $organization = null,
+        private FlzOrganizationPermissionPolicy $management,
+        private ?FlzOrganizationSettingsService $organization = null,
     ) {}
 
     public function canView(string $actorUid, bool $isAdmin, array $actorGroups, string $targetUid, array $targetGroups): bool {
@@ -61,7 +61,7 @@ final class VacationVisibilityPolicy {
         return $areas === [] || array_intersect($areas, $groups) !== [];
     }
 
-    private function definition(): AdOrganizationDefinition {
-        return $this->organization?->definition() ?? AdOrganizationDefinition::defaults();
+    private function definition(): FlzOrganizationDefinition {
+        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Listener;
+namespace OCA\FlzUrlaub\Listener;
 
 use OCA\LocalBase\Service\StandaloneAppNavigationService;
 use OCP\EventDispatcher\Event;
@@ -16,6 +16,6 @@ final class StandaloneNavigationListener implements IEventListener {
 
     public function handle(Event $event): void {
         if (!$event instanceof LoadAdditionalEntriesEvent) return;
-        $this->navigation->addWhenStandalone('adurlaub', 'Urlaub', 'adurlaub.page.index', 'app.svg', 81);
+        $this->navigation->addWhenStandalone('flzurlaub', 'Urlaub', 'flzurlaub.page.index', 'app.svg', 81);
     }
 }

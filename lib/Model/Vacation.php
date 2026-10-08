@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Model;
+namespace OCA\FlzUrlaub\Model;
 
 use DateTimeImmutable;
 use InvalidArgumentException;

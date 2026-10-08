@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
-use OCA\AdUrlaub\Exception\VacationConflictException;
-use OCA\AdUrlaub\Exception\VacationOverlapException;
-use OCA\AdUrlaub\Model\Vacation;
-use OCA\AdUrlaub\Model\VacationTeam;
-use OCA\AdUrlaub\Repository\VacationRepository;
+use OCA\FlzUrlaub\Exception\VacationConflictException;
+use OCA\FlzUrlaub\Exception\VacationOverlapException;
+use OCA\FlzUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Model\VacationTeam;
+use OCA\FlzUrlaub\Repository\VacationRepository;
 use OCA\LocalBase\Calendar\ScheduleConflictQueryEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 

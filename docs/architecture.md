@@ -1,4 +1,4 @@
-# Fach- und Integrationsarchitektur von AD Urlaub
+# Fach- und Integrationsarchitektur von Filzmann Urlaubsplanung
 
 Diese Datei dokumentiert den geltenden Ist-Vertrag. Zukünftige Ziele stehen
 in `ROADMAP.md`; kurze harte Arbeits-, Rechte- und Testregeln stehen in
@@ -10,15 +10,15 @@ Urlaube sind ganztägige inklusive Datumsbereiche je Nextcloud-UID. Zeiträume
 derselben Person dürfen sich unabhängig vom Status nicht überschneiden;
 angrenzende Zeiträume bleiben erlaubt. `planned` wird als `U?` angezeigt und
 blockiert nicht. `approved` wird als `U` angezeigt und blockiert Dienste,
-Termine, Standarddienste und Meetingverfügbarkeit im AD Kalender.
+Termine, Standarddienste und Meetingverfügbarkeit im Filzmann Kalender.
 
-AD Urlaub ist die kanonische schreibende Urlaubsquelle. AdPlaner besitzt keine
+Filzmann Urlaubsplanung ist die kanonische schreibende Urlaubsquelle. FlzPlaner besitzt keine
 parallele Urlaubspersistenz. Der read-only Cross-App-Vertrag ist
 `OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent` für die bounded
 Ermittlung betroffener Konto-UIDs sowie `AbsenceQueryEvent` mit
 `AbsenceInterval`. Ganztägige inklusive Urlaubsdaten werden an den lokalen
 Datumsgrenzen der im Event angefragten fachlichen Zeitzone ausgewertet;
-Urlaubsnotizen verlassen AD Urlaub nicht. Fachapps greifen nicht direkt auf
+Urlaubsnotizen verlassen Filzmann Urlaubsplanung nicht. Fachapps greifen nicht direkt auf
 Tabellen anderer Apps zu.
 
 ## Sichtbarkeit und Genehmigung
@@ -34,13 +34,60 @@ Genehmigungen mit überschneidenden Diensten oder Terminen werden mit einer
 read-only Konfliktliste abgelehnt; es erfolgt keine automatische Löschung.
 Auch lesende Team-, Jahres- und Wochenendpunkte liefern nur den durch
 `VacationVisibilityPolicy` erlaubten Ausschnitt. Urlaubsnotizen verbleiben in
-AD Urlaub und werden nicht an Consumer übertragen.
+Filzmann Urlaubsplanung und werden nicht an Consumer übertragen.
+
+## Zeitlich begrenzter fachlicher Admin-Vollzugriff
+
+Native Nextcloud-Administration bleibt von fachlicher Urlaubsberechtigung
+getrennt. Vollzugriff entsteht nur für ein aktuell natives Administrationskonto
+mit aktiver app-lokaler Freigabe und endet spätestens nach 24 Stunden. Nur
+Mitglieder der kanonischen Nextcloud-Gruppe `Datenschutzbeauftragte` dürfen
+Freigaben erteilen, widerrufen und deren Historie lesen; ein nativer Admin ohne
+diese Rolle und gewöhnliche Konten werden ohne Zustandsänderung abgewiesen.
+
+Die Steuerung liegt im authentifizierten Filzmann-Urlaubsplanung-Hauptbereich und bleibt
+außerhalb der technischen Nextcloud-Administration. Schreibende Requests
+verwenden den Nextcloud-CSRF-Schutz. Ein natives Administrationskonto ohne
+aktive Freigabe sieht eine sichere Hinweismeldung; der Direktlink zur
+Freigabesteuerung erscheint nur bei gleichzeitiger DPO-Rolle. Audit- und
+Art.-15-Projektionen geben ausschließlich die subjectgebundene Beteiligung und
+Zeitpunkte aus und neutralisieren Kennungen anderer beteiligter Personen.
+
+## Processing-Metadaten
+
+Der zusätzliche `ProcessingMetadataProvider` veröffentlicht den app-eigenen
+Katalog `resources/privacy-processing.json` lazy über den öffentlichen
+Standalone-V1-Vertrag des Datenschutz-Centers. Er trennt Urlaubsverwaltung
+einschließlich freiwilliger Notizen von der Historie temporärer
+Adminfreigaben. Der Katalog enthält keine personenbezogenen Laufzeitdaten.
+Fachlicher Data Owner ist ausschließlich die jeweils zuständige Führungskraft;
+IKT bleibt auf den technischen Betrieb begrenzt, Datenschutzbeauftragte
+entscheiden über Policies und begründete Holds.
+
+Die administrativ konfigurierbare Retention-Vorschau registriert sich lazy
+über den öffentlichen V1-Vertrag des Datenschutz-Centers. Die app-eigene
+globale Abfrage liefert Treffer seitenweise mit opaker Fortsetzung und nur
+technische Urlaubsreferenz, Endzeitpunkt, Maßnahme und Begründung; UID und
+Notiz verlassen diesen Pfad nicht. Sie liefert ausschließlich
+`REVIEW`-Kandidaten und führt noch keine Löschung oder Anonymisierung aus. Die
+beschlossene Policy löscht freiwillige Notizen sechs Monate nach Urlaubsende
+und den verbleibenden Urlaubsdatensatz drei volle Kalenderjahre nach Ende des
+Urlaubsjahres. Abgeleitete Intervalle führen keine eigene Historie.
+Adminfreigabehistorien werden sechs Monate nach ihrem tatsächlichen Ende
+vollständig gelöscht und durch Restore nie reaktiviert. Fehlende,
+deaktivierte oder inkompatible Provider lösen keinen LocalBase-, SQL- oder
+Reflection-Fallback aus.
+
+Die Policy ist kein Implementierungs- oder Rechtsnachweis. Die V1-Ausführung
+bleibt bis zu grünen app-lokalen Lösch-, Restore-, Hold-, Backupgrenz- und
+Fehlertests REVIEW-only; Rechtsgrundlagen und betriebliche Backupfristen
+bleiben fachlich beziehungsweise rechtlich zu klären.
 
 ## Organisation und Ansichten
 
 Gruppen, Rollen, Bereiche, Assistenzteam-Präfix, Hierarchie und
 Organisationssichten stammen aus derselben konfigurierbaren
-`AdOrganizationDefinition` wie AD Kalender und AdPlaner. Separate
+`FlzOrganizationDefinition` wie Filzmann Kalender und FlzPlaner. Separate
 Assistenzteamgruppen mit einem Urlaubssuffix sind keine unterstützte
 Datenquelle.
 
@@ -67,10 +114,10 @@ weder Konflikte, Verfügbarkeit, Genehmigungen noch Rechte.
 
 ## Standalone, Demo und Administration
 
-Ohne AD Kalender bleibt Urlaubsplanung gültig; nur die automatische
+Ohne Filzmann Kalender bleibt Urlaubsplanung gültig; nur die automatische
 Dienst-/Terminkonfliktprüfung entfällt. Organisationsweite Gruppen- und
-Genehmigungsfreigaben liegen bei Einzelinstallation im Adminabschnitt von AD
-Urlaub und ab zwei AD-Produkten im OrgSuite-Adminabschnitt. AD Urlaub besitzt
+Genehmigungsfreigaben liegen bei Einzelinstallation im Adminabschnitt von FLZ
+Urlaub und ab zwei FLZ-Produkten im OrgSuite-Adminabschnitt. Filzmann Urlaubsplanung besitzt
 derzeit keine persönlichen Dauereinstellungen und deshalb keinen leeren
 Einstellungstab.
 

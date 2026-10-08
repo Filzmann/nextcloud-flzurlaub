@@ -11,9 +11,9 @@
             this.notice = notice;
             this.location = location;
             const ids = ['team', 'year', 'calendar-head', 'calendar-body', 'own-form', 'own-requests', 'conflicts', 'calendar-view', 'plan-title', 'integration-status', 'holiday-status'];
-            this.elements = Object.fromEntries(ids.map(id => [id, document.getElementById(`adu-${id}`)]));
+            this.elements = Object.fromEntries(ids.map(id => [id, document.getElementById(`flz-vacation-${id}`)]));
             this.state = { teams: [], teamId: '', year: new Date().getFullYear(), currentUser: null, plan: null, integrations: {} };
-            this.plan = new window.AdUrlaub.components.VacationPlan({ elements: this.elements, state: this.state });
+            this.plan = new window.FlzUrlaub.components.VacationPlan({ elements: this.elements, state: this.state });
             this.bindEvents();
         }
 
@@ -48,7 +48,7 @@
             status.hidden = automaticCheck;
             status.textContent = automaticCheck
                 ? ''
-                : 'AD Kalender ist nicht aktiv. Dienstkonflikte werden nicht automatisch geprüft.';
+                : 'Filzmann Kalender ist nicht aktiv. Dienstkonflikte werden nicht automatisch geprüft.';
         }
 
         async loadYear() {
@@ -138,7 +138,7 @@
         }
     }
 
-    window.AdUrlaub = window.AdUrlaub || {};
-    window.AdUrlaub.modules = window.AdUrlaub.modules || {};
-    window.AdUrlaub.modules.VacationApp = VacationApp;
+    window.FlzUrlaub = window.FlzUrlaub || {};
+    window.FlzUrlaub.modules = window.FlzUrlaub.modules || {};
+    window.FlzUrlaub.modules.VacationApp = VacationApp;
 }());

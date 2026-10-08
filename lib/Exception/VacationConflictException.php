@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Exception;
+namespace OCA\FlzUrlaub\Exception;
 
 use RuntimeException;
 

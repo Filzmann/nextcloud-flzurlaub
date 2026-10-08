@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Listener;
+namespace OCA\FlzUrlaub\Listener;
 
-use OCA\AdUrlaub\Repository\VacationRepository;
+use OCA\FlzUrlaub\Repository\VacationRepository;
 use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;

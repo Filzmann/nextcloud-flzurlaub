@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Integration\AdIntegrationCapabilities;
+use OCA\LocalBase\Integration\FlzIntegrationCapabilities;
 use OCA\LocalBase\Service\IntegrationCapabilityService;
 
 /**
@@ -17,7 +17,7 @@ final class IntegrationStatusService {
 
     /** @return array{available:bool,providers:list<string>} */
     public function calendarConflictCheck(): array {
-        $key = AdIntegrationCapabilities::SCHEDULE_CONFLICT_READ;
+        $key = FlzIntegrationCapabilities::SCHEDULE_CONFLICT_READ;
         $snapshot = $this->capabilities->query([$key]);
         $providers = $snapshot[$key] ?? [];
 

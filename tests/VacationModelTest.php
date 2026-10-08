@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-use OCA\AdUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Model\Vacation;
 
 $planned = Vacation::get(['employeeUid'=>'alice','startDate'=>'2026-07-13','endDate'=>'2026-07-15','status'=>'planned','note'=>'Test']);
 if ($planned->toArray()['marker'] !== 'U?' || $planned->toArray()['blocks']) throw new RuntimeException('Planned-Vertrag verletzt.');

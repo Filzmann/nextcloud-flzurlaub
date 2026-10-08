@@ -7,14 +7,15 @@ require_once __DIR__ . '/../../localbase/tests/bootstrap.php';
 $root = dirname(__DIR__);
 
 spl_autoload_register(static function (string $class) use ($root): void {
-    $prefix = 'OCA\\AdUrlaub\\';
-    if (!str_starts_with($class, $prefix)) {
+    $mappings = [
+        'OCA\\FlzUrlaub\\' => $root . '/lib/',
+        'OCA\\FlzDataProtection\\' => $root . '/tests/stubs/FlzDataProtection/',
+    ];
+    foreach ($mappings as $prefix => $directory) {
+        if (!str_starts_with($class, $prefix)) continue;
+        $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+        $path = $directory . $relative . '.php';
+        if (is_file($path)) require_once $path;
         return;
-    }
-
-    $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
-    $path = $root . '/lib/' . $relative . '.php';
-    if (is_file($path)) {
-        require_once $path;
     }
 });

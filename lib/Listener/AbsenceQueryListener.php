@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Listener;
+namespace OCA\FlzUrlaub\Listener;
 
 use DateTimeImmutable;
-use OCA\AdUrlaub\Model\Vacation;
-use OCA\AdUrlaub\Repository\VacationRepository;
+use OCA\FlzUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Repository\VacationRepository;
 use OCA\LocalBase\Calendar\AbsenceInterval;
 use OCA\LocalBase\Calendar\AbsenceQueryEvent;
 use OCP\EventDispatcher\Event;

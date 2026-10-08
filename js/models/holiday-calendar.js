@@ -55,7 +55,7 @@
         }
     }
 
-    window.AdUrlaub = window.AdUrlaub || {};
-    window.AdUrlaub.models = window.AdUrlaub.models || {};
-    window.AdUrlaub.models.HolidayCalendar = HolidayCalendar;
+    window.FlzUrlaub = window.FlzUrlaub || {};
+    window.FlzUrlaub.models = window.FlzUrlaub.models || {};
+    window.FlzUrlaub.models.HolidayCalendar = HolidayCalendar;
 }());

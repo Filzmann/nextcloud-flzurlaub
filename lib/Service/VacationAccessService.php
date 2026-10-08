@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\AdOrganizationDefinition;
-use OCA\LocalBase\Organization\AdOrganizationPermissionPolicy;
-use OCA\LocalBase\Organization\AdOrganizationSettingsService;
+use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
+use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -22,10 +22,11 @@ final class VacationAccessService {
         private IGroupManager $groups,
         private IUserSession $session,
         private IUserManager $users,
-        private AdOrganizationPermissionPolicy $policy,
+        private FlzOrganizationPermissionPolicy $policy,
         private VacationVisibilityPolicy $visibility,
         private VacationSettingsService $settings,
-        private ?AdOrganizationSettingsService $organization = null,
+        private TemporaryAdminAccessChecker $temporaryAdminAccess,
+        private ?FlzOrganizationSettingsService $organization = null,
     ) {}
 
     public function currentUser(): ?IUser {
@@ -57,7 +58,7 @@ final class VacationAccessService {
 
         return $this->visibility->canView(
             $actor->getUID(),
-            $this->groups->isAdmin($actor->getUID()),
+            $this->hasFullAdminAccess($actor->getUID()),
             $this->groupIds($actor),
             $target->getUID(),
             $this->groupIds($target),
@@ -69,7 +70,7 @@ final class VacationAccessService {
         $actor = $this->currentUser();
         if ($actor === null) return [];
         $actorGroups = $this->groupIds($actor);
-        $isAdmin = $this->groups->isAdmin($actor->getUID());
+        $isAdmin = $this->hasFullAdminAccess($actor->getUID());
         $users = [];
         $definition = $this->definition();
         $roleGroups = $definition->roleGroupIds();
@@ -124,7 +125,7 @@ final class VacationAccessService {
         $targetGroups = $this->groupIds($target);
         if ($this->policy->canManage(
             $actor->getUID(),
-            $this->groups->isAdmin($actor->getUID()),
+            $this->hasFullAdminAccess($actor->getUID()),
             $actorGroups,
             $employeeUid,
             $targetGroups,
@@ -146,6 +147,10 @@ final class VacationAccessService {
         return array_map('strval', $this->groups->getUserGroupIds($user));
     }
 
+    private function hasFullAdminAccess(string $uid): bool {
+        return $this->groups->isAdmin($uid) && $this->temporaryAdminAccess->hasActiveGrant($uid);
+    }
+
     private function asnTeamCodes(array $groupIds): array {
         $codes = [];
         $definition = $this->definition();
@@ -161,7 +166,7 @@ final class VacationAccessService {
         return array_values(array_unique($codes));
     }
 
-    private function definition(): AdOrganizationDefinition {
-        return $this->organization?->definition() ?? AdOrganizationDefinition::defaults();
+    private function definition(): FlzOrganizationDefinition {
+        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
     }
 }
