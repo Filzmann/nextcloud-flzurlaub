@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Controller;
+namespace OCA\FlzUrlaub\Controller;
 
 use DateTimeImmutable;
-use OCA\AdUrlaub\AppInfo\Application;
-use OCA\AdUrlaub\Exception\VacationConflictException;
-use OCA\AdUrlaub\Exception\VacationOverlapException;
-use OCA\AdUrlaub\Service\IntegrationStatusService;
-use OCA\AdUrlaub\Service\HolidayCalendarService;
-use OCA\AdUrlaub\Service\VacationAccessService;
-use OCA\AdUrlaub\Service\VacationService;
-use OCA\AdUrlaub\Service\VacationTeamService;
+use OCA\FlzUrlaub\AppInfo\Application;
+use OCA\FlzUrlaub\Exception\VacationConflictException;
+use OCA\FlzUrlaub\Exception\VacationOverlapException;
+use OCA\FlzUrlaub\Service\IntegrationStatusService;
+use OCA\FlzUrlaub\Service\HolidayCalendarService;
+use OCA\FlzUrlaub\Service\VacationAccessService;
+use OCA\FlzUrlaub\Service\VacationService;
+use OCA\FlzUrlaub\Service\VacationTeamService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;

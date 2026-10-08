@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\AppInfo;
+namespace OCA\FlzUrlaub\AppInfo;
 
-final class AppId { public const VALUE = 'adurlaub'; }
+final class AppId { public const VALUE = 'flzurlaub'; }

@@ -10,18 +10,18 @@ namespace OCP\EventDispatcher {
 namespace {
     require_once dirname(__DIR__) . '/bootstrap.php';
 
-    use OCA\AdUrlaub\Privacy\VacationProcessingMetadataProvider;
-    use OCA\AdUrlaub\Privacy\VacationProcessingMetadataProviderListener;
-    use OCA\FilzmannDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
+    use OCA\FlzUrlaub\Privacy\VacationProcessingMetadataProvider;
+    use OCA\FlzUrlaub\Privacy\VacationProcessingMetadataProviderListener;
+    use OCA\FlzDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
     use OCP\EventDispatcher\Event;
 
     $provider = new VacationProcessingMetadataProvider();
     $catalog = $provider->catalog();
     $descriptor = $provider->descriptor();
-    if ($descriptor->appId() !== 'adurlaub' || $descriptor->displayName() !== 'AD Urlaub' || $descriptor->contractVersion() !== '1.0') {
-        throw new RuntimeException('Der Processing-Metadata-Provider beschreibt AD Urlaub nicht korrekt.');
+    if ($descriptor->appId() !== 'flzurlaub' || $descriptor->displayName() !== 'Filzmann Urlaubsplanung' || $descriptor->contractVersion() !== '1.0') {
+        throw new RuntimeException('Der Processing-Metadata-Provider beschreibt Filzmann Urlaubsplanung nicht korrekt.');
     }
-    if ($catalog->appId() !== 'adurlaub') {
+    if ($catalog->appId() !== 'flzurlaub') {
         throw new RuntimeException('Processing-Metadata-Provider und Katalog verwenden nicht die kanonische App-ID.');
     }
     if ($catalog->processingIds() !== [
@@ -34,7 +34,7 @@ namespace {
         throw new RuntimeException('Der Processing-Katalog enthält personenbezogene Laufzeitdaten.');
     }
     $encodedCatalog=json_encode($catalog->toArray(),JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
-    if(!str_contains($encodedCatalog,'App-lokaler Freigabevorgang durch Datenschutzbeauftragte in AD Urlaub')||str_contains($encodedCatalog,'Laufzeitdurchsetzung der Ziel- und Gruppenbedingungen sowie Allow-, Deny- und Manipulationsprüfungen stehen aus'))throw new RuntimeException('Der Processing-Katalog projiziert den umgesetzten DPO-Freigabevertrag nicht korrekt.');
+    if(!str_contains($encodedCatalog,'App-lokaler Freigabevorgang durch Datenschutzbeauftragte in Filzmann Urlaubsplanung')||str_contains($encodedCatalog,'Laufzeitdurchsetzung der Ziel- und Gruppenbedingungen sowie Allow-, Deny- und Manipulationsprüfungen stehen aus'))throw new RuntimeException('Der Processing-Katalog projiziert den umgesetzten DPO-Freigabevertrag nicht korrekt.');
 
     $registration = new RegisterProcessingMetadataProvidersEvent();
     $listener = new VacationProcessingMetadataProviderListener($provider);
@@ -43,7 +43,7 @@ namespace {
         throw new RuntimeException('Ein fremdes Event registriert den Processing-Metadata-Provider.');
     }
     $listener->handle($registration);
-    if (($registration->providers()['adurlaub'] ?? null) !== $provider) {
+    if (($registration->providers()['flzurlaub'] ?? null) !== $provider) {
         throw new RuntimeException('Der Processing-Metadata-Provider wird nicht lazy registriert.');
     }
 
@@ -52,5 +52,5 @@ namespace {
         throw new RuntimeException('Der Bootstrap registriert den Processing-Metadata-Provider nicht am öffentlichen V1-Event.');
     }
 
-    echo "AD Urlaub processing metadata provider test passed\n";
+    echo "Filzmann Urlaubsplanung processing metadata provider test passed\n";
 }

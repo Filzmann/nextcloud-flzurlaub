@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
-use OCA\AdUrlaub\Model\VacationTeam;
-use OCA\LocalBase\Organization\AdOrganizationDefinition;
-use OCA\LocalBase\Organization\AdOrganizationSettingsService;
+use OCA\FlzUrlaub\Model\VacationTeam;
+use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 
 /**
@@ -18,7 +18,7 @@ final class VacationTeamService {
     public function __construct(
         private IGroupManager $groups,
         private VacationAccessService $access,
-        private ?AdOrganizationSettingsService $organization = null,
+        private ?FlzOrganizationSettingsService $organization = null,
     ) {}
 
     /** @return list<VacationTeam> */
@@ -112,7 +112,7 @@ final class VacationTeamService {
         return $definition['areas'] === [] || array_intersect($employee['areas'], $definition['areas']) !== [];
     }
 
-    private function definition(): AdOrganizationDefinition {
-        return $this->organization?->definition() ?? AdOrganizationDefinition::defaults();
+    private function definition(): FlzOrganizationDefinition {
+        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
     }
 }

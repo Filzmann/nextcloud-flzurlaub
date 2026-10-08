@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Migration;
+namespace OCA\FlzUrlaub\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -15,8 +15,8 @@ final class Version000006Date202608250001 extends SimpleMigrationStep {
     public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
-        if (!$schema->hasTable('adu_admin_access')) {
-            $table = $schema->createTable('adu_admin_access');
+        if (!$schema->hasTable('flz_vacation_admin_access')) {
+            $table = $schema->createTable('flz_vacation_admin_access');
             $table->addColumn('id', Types::BIGINT, ['autoincrement' => true, 'notnull' => true]);
             $table->addColumn('target_uid', Types::STRING, ['length' => 64, 'notnull' => true]);
             $table->addColumn('granted_by', Types::STRING, ['length' => 64, 'notnull' => true]);
@@ -26,8 +26,8 @@ final class Version000006Date202608250001 extends SimpleMigrationStep {
             $table->addColumn('revoked_by', Types::STRING, ['length' => 64, 'notnull' => false]);
             $table->addColumn('created_at', Types::DATETIME_IMMUTABLE, ['notnull' => true]);
             $table->setPrimaryKey(['id']);
-            $table->addIndex(['target_uid', 'starts_at', 'ends_at'], 'adu_admin_target_time');
-            $table->addIndex(['granted_by', 'starts_at'], 'adu_admin_grantor_time');
+            $table->addIndex(['target_uid', 'starts_at', 'ends_at'], 'flz_vacation_admin_target_time');
+            $table->addIndex(['granted_by', 'starts_at'], 'flz_vacation_admin_grantor_time');
         }
         return $schema;
     }

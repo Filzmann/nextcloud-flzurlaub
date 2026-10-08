@@ -1,16 +1,16 @@
 (function() {
     'use strict';
-    const client = new window.LocalBase.api.ApiClient({ appId: 'adurlaub' });
-    const confirmation = document.getElementById('adu-demo-confirm');
-    const button = document.getElementById('adu-demo-install');
-    const notice = document.getElementById('adu-demo-notice');
+    const client = new window.LocalBase.api.ApiClient({ appId: 'flzurlaub' });
+    const confirmation = document.getElementById('flz-vacation-demo-confirm');
+    const button = document.getElementById('flz-vacation-demo-install');
+    const notice = document.getElementById('flz-vacation-demo-notice');
     if (!confirmation || !button || !notice) return;
     confirmation.addEventListener('change', () => { button.disabled = !confirmation.checked; });
     button.addEventListener('click', async () => {
         if (!confirmation.checked) return;
         button.disabled = true;
         notice.hidden = false;
-        notice.className = 'adu-admin-notice';
+        notice.className = 'flz-vacation-admin-notice';
         notice.textContent = 'Demo-Pack wird geprüft und installiert …';
         try {
             const response = await client.request('/api/admin/demo-pack/install', { method: 'POST', body: '{}' });

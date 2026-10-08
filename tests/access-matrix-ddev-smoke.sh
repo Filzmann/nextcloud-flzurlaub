@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-base_url="${ADU_BASE_URL:-https://nextcloud-dev.ddev.site}"
-ddev_project="${ADU_DDEV_PROJECT:-$(cd "$(dirname "$0")/../../nextcloud-dev" && pwd)}"
+base_url="${FLZU_BASE_URL:-https://nextcloud-dev.ddev.site}"
+ddev_project="${FLZU_DDEV_PROJECT:-$(cd "$(dirname "$0")/../../nextcloud-dev" && pwd)}"
 suffix="$(date +%s)-$$"
 # Nur im Arbeitsspeicher vorhandenes Einmalpasswort für alle temporären Matrix-Konten.
 password="$(php -r 'echo bin2hex(random_bytes(24));')"
 team_code="Smoke$$"
-team_group="ad-ASN-$team_code"
+team_group="flz-ASN-$team_code"
 created_users=()
 
 occ() {
@@ -37,13 +37,13 @@ create_user() {
 assert_access() {
     local uid="$1"
     local expected="$2"
-    ADU_BASE_URL="$base_url" ADU_USER="$uid" ADU_PASSWORD="$password" ADU_EXPECTED="$expected" \
+    FLZU_BASE_URL="$base_url" FLZU_USER="$uid" FLZU_PASSWORD="$password" FLZU_EXPECTED="$expected" \
         "$(dirname "$0")/access-http-smoke.sh"
 }
 
 occ group:add "$team_group" >/dev/null
 
-prefix="adu-smoke-${suffix}"
+prefix="flz-vacation-smoke-${suffix}"
 pdl="${prefix}-pdl"
 bl_now="${prefix}-bl-now"
 bo_actor="${prefix}-bo-actor"
@@ -58,19 +58,19 @@ bo_peer="${prefix}-bo-peer"
 pdl_target="${prefix}-pdl-target"
 bl_target="${prefix}-bl-target"
 
-create_user "$pdl" ad-PDL
-create_user "$bl_now" ad-BL ad-Bereich-Nordost ad-Bereich-West
-create_user "$bo_actor" ad-Buero ad-Bereich-Nordost
-create_user "$pfk_actor" ad-PFK
-create_user "$eb_actor" ad-EB ad-Bereich-West "$team_group"
+create_user "$pdl" flz-PDL
+create_user "$bl_now" flz-BL flz-Bereich-Nordost flz-Bereich-West
+create_user "$bo_actor" flz-Buero flz-Bereich-Nordost
+create_user "$pfk_actor" flz-PFK
+create_user "$eb_actor" flz-EB flz-Bereich-West "$team_group"
 create_user "$assistant_actor" "$team_group"
-create_user "$pfk_target" ad-PFK
-create_user "$bo_no" ad-Buero ad-Bereich-Nordost
-create_user "$bo_west" ad-Buero ad-Bereich-West
-create_user "$bo_south" ad-Buero ad-Bereich-Sued
-create_user "$bo_peer" ad-Buero ad-Bereich-Nordost
-create_user "$pdl_target" ad-PDL
-create_user "$bl_target" ad-BL ad-Bereich-Nordost ad-Bereich-West
+create_user "$pfk_target" flz-PFK
+create_user "$bo_no" flz-Buero flz-Bereich-Nordost
+create_user "$bo_west" flz-Buero flz-Bereich-West
+create_user "$bo_south" flz-Buero flz-Bereich-Sued
+create_user "$bo_peer" flz-Buero flz-Bereich-Nordost
+create_user "$pdl_target" flz-PDL
+create_user "$bl_target" flz-BL flz-Bereich-Nordost flz-Bereich-West
 
 assert_access "$pdl" "$pdl=true:true:false,$pfk_target=true:true:true,$bo_no=false:*:*"
 assert_access "$bl_now" "$bl_now=true:true:false,$bo_no=true:true:true,$bo_west=true:true:true,$bo_south=false:*:*,$pfk_target=false:*:*"
@@ -79,4 +79,4 @@ assert_access "$pfk_actor" "$pfk_actor=true:true:false,$pfk_target=true:*:*,$pdl
 assert_access "$eb_actor" "$eb_actor=true:true:false,$assistant_actor=true:true:true,$bo_west=false:*:*"
 assert_access "$assistant_actor" "$assistant_actor=true:true:false,$eb_actor=true:*:*,$pfk_target=false:*:*"
 
-echo "AD Urlaub DDEV access matrix smoke: OK"
+echo "Filzmann Urlaubsplanung DDEV access matrix smoke: OK"

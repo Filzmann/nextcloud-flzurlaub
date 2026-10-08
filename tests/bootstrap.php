@@ -8,8 +8,8 @@ $root = dirname(__DIR__);
 
 spl_autoload_register(static function (string $class) use ($root): void {
     $mappings = [
-        'OCA\\AdUrlaub\\' => $root . '/lib/',
-        'OCA\\FilzmannDataProtection\\' => $root . '/tests/stubs/FilzmannDataProtection/',
+        'OCA\\FlzUrlaub\\' => $root . '/lib/',
+        'OCA\\FlzDataProtection\\' => $root . '/tests/stubs/FlzDataProtection/',
     ];
     foreach ($mappings as $prefix => $directory) {
         if (!str_starts_with($class, $prefix)) continue;

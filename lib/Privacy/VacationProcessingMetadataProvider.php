@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Privacy;
+namespace OCA\FlzUrlaub\Privacy;
 
 use DomainException;
 use InvalidArgumentException;
 use JsonException;
-use OCA\AdUrlaub\AppInfo\AppId;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
+use OCA\FlzUrlaub\AppInfo\AppId;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
 
 final class VacationProcessingMetadataProvider implements ProcessingMetadataProvider {
     public function descriptor(): ProcessingMetadataProviderDescriptor {
-        return new ProcessingMetadataProviderDescriptor(AppId::VALUE, 'AD Urlaub', '1.0');
+        return new ProcessingMetadataProviderDescriptor(AppId::VALUE, 'Filzmann Urlaubsplanung', '1.0');
     }
 
     public function catalog(): ProcessingMetadataCatalog {

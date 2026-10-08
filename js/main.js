@@ -2,13 +2,13 @@
     'use strict';
 
     const client = new window.LocalBase.api.ApiClient({
-        appId: 'adurlaub',
+        appId: 'flzurlaub',
         errorMessage: (data, status) => data?.error || `HTTP ${status}`,
     });
-    const notice = new window.LocalBase.ui.Notice('adu-notice', {
-        baseClass: 'adu-notice',
-        typeClassPrefix: 'adu-notice--',
+    const notice = new window.LocalBase.ui.Notice('flz-vacation-notice', {
+        baseClass: 'flz-vacation-notice',
+        typeClassPrefix: 'flz-vacation-notice--',
     });
 
-    new window.AdUrlaub.modules.VacationApp({ client, notice }).start();
+    new window.FlzUrlaub.modules.VacationApp({ client, notice }).start();
 }());

@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
 use DateTimeImmutable;
-use OCA\AdUrlaub\Model\Vacation;
-use OCA\AdUrlaub\Repository\VacationRepository;
-use OCA\LocalBase\Service\AdDemoFixtureCatalog;
+use OCA\FlzUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Repository\VacationRepository;
+use OCA\LocalBase\Service\FlzDemoFixtureCatalog;
 use OCA\LocalBase\Service\DemoAccountProvisioningService;
 
 /**
- * Zweck: Installiert synthetische Urlaubsfälle für jede konfigurierte AD-Fachgruppe.
+ * Zweck: Installiert synthetische Urlaubsfälle für jede konfigurierte FLZ-Fachgruppe.
  * Vertrag: Es werden ausschließlich registrierte Suite-Demokonten verwendet; reale Gruppenmitglieder werden nie ausgewählt.
  */
 final class VacationDemoPackService {
     public function __construct(
         private DemoAccountProvisioningService $accounts,
-        private AdDemoFixtureCatalog $fixtures,
+        private FlzDemoFixtureCatalog $fixtures,
         private VacationRepository $vacations,
     ) {}
 
     /** @return array{accounts:array,coveredGroups:int,createdVacations:int,skippedVacations:int} */
     public function install(): array {
         $fixtures = $this->fixtures->all();
-        $accounts = $this->accounts->provision('ad-suite-demo', $fixtures);
+        $accounts = $this->accounts->provision('flz-full-suite-demo', $fixtures);
         $monday = new DateTimeImmutable('monday next week');
         $coveredGroups = count(array_unique(array_merge(...array_column($fixtures, 'groups'))));
         $createdVacations = 0;

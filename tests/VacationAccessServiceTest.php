@@ -21,25 +21,25 @@ namespace OCP {
     }
 }
 
-namespace OCA\AdUrlaub\Service {
+namespace OCA\FlzUrlaub\Service {
     final class TemporaryAdminAccessChecker {
         public bool $active = false;
         public function hasActiveGrant(string $uid): bool { return $this->active; }
     }
     final class VacationSettingsService {
         public function enabledPeerGroups(): array { return []; }
-        public function asnPeerGroup(): string { return 'ad-ASN-*'; }
+        public function asnPeerGroup(): string { return 'flz-ASN-*'; }
     }
 }
 
 namespace {
 
-    use OCA\AdUrlaub\Service\VacationAccessService;
-    use OCA\AdUrlaub\Service\VacationSettingsService;
-    use OCA\AdUrlaub\Service\VacationVisibilityPolicy;
-    use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
-    use OCA\LocalBase\Organization\AdOrganizationHierarchy;
-    use OCA\LocalBase\Organization\AdOrganizationPermissionPolicy;
+    use OCA\FlzUrlaub\Service\VacationAccessService;
+    use OCA\FlzUrlaub\Service\VacationSettingsService;
+    use OCA\FlzUrlaub\Service\VacationVisibilityPolicy;
+    use OCA\FlzUrlaub\Service\TemporaryAdminAccessChecker;
+    use OCA\LocalBase\Organization\FlzOrganizationHierarchy;
+    use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
     use OCP\IGroupManager;
     use OCP\IUserManager;
     use OCP\IUserSession;
@@ -60,7 +60,7 @@ namespace {
         public function get($uid): ?object { return $this->user; }
     };
 
-    $policy = new AdOrganizationPermissionPolicy(new AdOrganizationHierarchy());
+    $policy = new FlzOrganizationPermissionPolicy(new FlzOrganizationHierarchy());
     $visibility = new VacationVisibilityPolicy($policy);
     $settings = new VacationSettingsService();
     $adminAccess = new TemporaryAdminAccessChecker();

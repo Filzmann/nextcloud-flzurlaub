@@ -1,7 +1,7 @@
-# Manuelles Abnahmeformular – AD Urlaub
+# Manuelles Abnahmeformular – Filzmann Urlaubsplanung
 
 Dieses Formular dokumentiert die fachliche, visuelle und sicherheitsbezogene
-Abnahme von AD Urlaub auf einem realitätsnahen Staging-System. Pro Prüffall
+Abnahme von Filzmann Urlaubsplanung auf einem realitätsnahen Staging-System. Pro Prüffall
 wird genau ein Ergebnis markiert und unter „Warum/Beleg/Abweichung“ knapp
 festgehalten, was beobachtet wurde.
 
@@ -16,7 +16,7 @@ Testkonten, synthetische Urlaubszeiträume und datensparsame Notizen verwenden.
 | Datum und Uhrzeit | |
 | Prüfer*in | |
 | Umgebung und URL | |
-| AD-Urlaub-Version | |
+| Filzmann-Urlaubsplanung-Version | |
 | Nextcloud-Version | |
 | Browser und Version | |
 | Fenstergröße / Zoom | |
@@ -33,8 +33,8 @@ Begründung verpflichtend.
 
 | ID | Was wird geprüft? | Auszuführende Schritte | Erwartetes Ergebnis | Ergebnis | Warum/Beleg/Abweichung |
 |---|---|---|---|---|---|
-| A1 | Standalone-Einstieg | AD Urlaub ohne aktive OrgSuite öffnen. | Ein eigener Nextcloud-Einstieg ist vorhanden und die Urlaubsplanung wird ohne AD Kalender geladen. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
-| A2 | Suite-Einstieg | Mit aktiver OrgSuite über den AD-Einstieg öffnen und zwischen aktivierten AD-Apps wechseln. | Es gibt keinen doppelten Haupteinstieg; AD Urlaub ist im gemeinsamen Menü korrekt markiert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| A1 | Standalone-Einstieg | Filzmann Urlaubsplanung ohne aktive OrgSuite öffnen. | Ein eigener Nextcloud-Einstieg ist vorhanden und die Urlaubsplanung wird ohne Filzmann Kalender geladen. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| A2 | Suite-Einstieg | Mit aktiver OrgSuite über den FLZ-Einstieg öffnen und zwischen aktivierten FLZ-Apps wechseln. | Es gibt keinen doppelten Haupteinstieg; Filzmann Urlaubsplanung ist im gemeinsamen Menü korrekt markiert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | A3 | Jahr und Ansicht | Zwischen zwei Jahren, einem Assistenzteam und mehreren Organisationsansichten wechseln. | Überschrift, Personen, Tage und Urlaube gehören stets zur gewählten Ansicht und zum gewählten Jahr. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | A4 | Bereichsübergreifende Leitung | Eine neutrale Leitung mit zwei Bürobereichen in beiden Ansichten prüfen. | Die Person erscheint in jeder passenden Ansicht, ohne die Büros zusammenzufassen oder innerhalb einer Ansicht doppelt aufzutreten. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | A5 | Ergänzte Ansichten und Reihenfolge | Pflege, Fahrzeugverwaltung und Empfang öffnen. | Stv. PDL steht vor Büroorganisation Pflege und PFK; Fahrzeugverwaltung und Empfang besitzen getrennte globale Ansichten. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
@@ -60,7 +60,7 @@ Begründung verpflichtend.
 | C3 | Peer-Freigabe | Administrative Peer-Freigabe für eine geeignete Fachgruppe aus- und einschalten und direkte Kolleg*innen vergleichen. | Ohne Freigabe wird verweigert; mit Freigabe gilt sie nur in der definierten Fachgruppe und bei BO/EB im gemeinsamen Bereich. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | C4 | Keine Selbstgenehmigung | Den eigenen geplanten Urlaub als normales beziehungsweise leitendes Konto genehmigen; anschließend als Nextcloud-Admin mit aktiver app-lokaler Freigabe prüfen. | Selbstgenehmigung bleibt außer für aktuell freigegebene Nextcloud-Admins gesperrt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | C5 | Lesescope | Ansichten mit eigener Mitgliedschaft, gemeinsamen Assistenzteams, unterstellten und fachlich fremden Personen über UI und direkten Request aufrufen. | Nur der erlaubte Personen- und Ansichtsausschnitt wird geliefert; fremde Ansichten bleiben serverseitig gesperrt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
-| C6 | Urlaubsnotiz | Eine neutrale Notiz als berechtigte und als unberechtigte Person prüfen sowie einen Consumer öffnen. | Die Notiz bleibt ausschließlich im erlaubten AD-Urlaub-Kontext und wird nicht an Consumer-Apps übertragen. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| C6 | Urlaubsnotiz | Eine neutrale Notiz als berechtigte und als unberechtigte Person prüfen sowie einen Consumer öffnen. | Die Notiz bleibt ausschließlich im erlaubten Filzmann-Urlaubsplanung-Kontext und wird nicht an Consumer-Apps übertragen. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 
 ## D. Ferien, Feiertage und zugängliche Darstellung
 
@@ -74,14 +74,14 @@ Begründung verpflichtend.
 | D6 | Veralteter Kalenderstand | Mit vorhandenem Cache einen Providerausfall in einer isolierten Testumgebung simulieren. | Der letzte gültige Stand bleibt sichtbar und wird als veraltet erklärt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | D7 | Noch kein Kalenderstand | Einen nicht gecachten Jahresstand bei simuliertem Providerausfall öffnen. | Die Nichtverfügbarkeit wird verständlich gemeldet und nicht als gültiger leerer Kalender dargestellt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 
-## E. AD-Kalender-Integration und Standalone-Betrieb
+## E. Filzmann-Kalender-Integration und Standalone-Betrieb
 
 | ID | Was wird geprüft? | Auszuführende Schritte | Erwartetes Ergebnis | Ergebnis | Warum/Beleg/Abweichung |
 |---|---|---|---|---|---|
-| E1 | Geplanter Urlaub im Kalender | Mit aktiver Integration einen geplanten Urlaub in AD Kalender anzeigen und dort am selben Tag einen Eintrag anlegen. | `U?` erscheint read-only und blockiert die Kalenderaktion nicht. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| E1 | Geplanter Urlaub im Kalender | Mit aktiver Integration einen geplanten Urlaub in Filzmann Kalender anzeigen und dort am selben Tag einen Eintrag anlegen. | `U?` erscheint read-only und blockiert die Kalenderaktion nicht. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | E2 | Genehmigter Urlaub im Kalender | Einen konfliktfreien Testurlaub genehmigen und Dienste, Termine, Standarddienste sowie Meetingverfügbarkeit prüfen. | `U` erscheint read-only und blockiert die vereinbarten Kalenderwege. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | E3 | Konflikt bei Genehmigung | Einen geplanten Urlaub über einen bestehenden synthetischen Dienst oder Termin genehmigen. | Die Genehmigung wird mit read-only Konfliktliste abgelehnt; es wird weder Urlaub noch Kalendereintrag automatisch gelöscht. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
-| E4 | Standalone ohne Kalender | AD Kalender deaktivieren und Anlegen, Ändern, Genehmigen sowie Löschen mit konfliktfreiem Testfall wiederholen. | Urlaubsplanung bleibt nutzbar; die fehlende automatische Konfliktprüfung wird sichtbar erklärt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| E4 | Standalone ohne Kalender | Filzmann Kalender deaktivieren und Anlegen, Ändern, Genehmigen sowie Löschen mit konfliktfreiem Testfall wiederholen. | Urlaubsplanung bleibt nutzbar; die fehlende automatische Konfliktprüfung wird sichtbar erklärt. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | E5 | Fehlerisolation | Einen optionalen Konfliktprovider gezielt fehlschlagen lassen. | Der Fehler erweitert keine Rechte und erzeugt keine stillschweigende Genehmigung oder Datenlöschung. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | E6 | Demo-Pack-Schutz | Demo-Pack ohne Bestätigung versuchen und anschließend nur in einer vorgesehenen Testumgebung bestätigen. | Ohne Bestätigung bleibt die Aktion gesperrt; ausschließlich synthetische lokale Konten und Urlaube werden verwendet. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 
@@ -93,8 +93,8 @@ ist.
 
 | ID | Was wird geprüft? | Auszuführende Schritte | Erwartetes Ergebnis | Ergebnis | Warum/Beleg/Abweichung |
 |---|---|---|---|---|---|
-| F1 | DPO ohne native Adminrolle | Mit einem Mitglied von `Datenschutzbeauftragte` ohne Adminrolle AD Urlaub öffnen, Historie laden und einem aktiven nativen Testadmin für eine Stunde Zugriff erteilen. | Steuerung und Historie sind erreichbar; die Freigabe wird genau einmal protokolliert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
-| F2 | Nativer Admin ohne DPO-Rolle | Als nativer Testadmin ohne DPO-Rolle AD Urlaub ohne aktive Freigabe öffnen und die Freigabe-API direkt lesen sowie schreibend aufrufen. | Sichere Hinweismeldung ohne Direktlink; Historie und Mutation werden verweigert und bleiben unverändert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| F1 | DPO ohne native Adminrolle | Mit einem Mitglied von `Datenschutzbeauftragte` ohne Adminrolle Filzmann Urlaubsplanung öffnen, Historie laden und einem aktiven nativen Testadmin für eine Stunde Zugriff erteilen. | Steuerung und Historie sind erreichbar; die Freigabe wird genau einmal protokolliert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
+| F2 | Nativer Admin ohne DPO-Rolle | Als nativer Testadmin ohne DPO-Rolle Filzmann Urlaubsplanung ohne aktive Freigabe öffnen und die Freigabe-API direkt lesen sowie schreibend aufrufen. | Sichere Hinweismeldung ohne Direktlink; Historie und Mutation werden verweigert und bleiben unverändert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | F3 | Gewöhnliches Konto und ungültige Ziele | Als gewöhnliches Konto direkte API-Aufrufe versuchen; als DPO ein Nichtadmin-Ziel und eine Dauer über 24 Stunden senden. | Keine Steuerung oder Historie wird offengelegt; alle Aufrufe werden ohne Mutation verweigert. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | F4 | CSRF, Ablauf, Widerruf und Rollenverlust | Schreibenden Request ohne CSRF senden, eine aktive Freigabe widerrufen, Ablauf abwarten beziehungsweise kontrolliert simulieren und Ziel-Adminstatus sowie DPO-Rolle jeweils entziehen. | Fehlendes CSRF mutiert nicht; Widerruf, Ablauf und Verlust des Ziel-Adminstatus beenden den fachlichen Zugriff; ohne DPO-Rolle sind Steuerung und Historie nicht mehr erreichbar. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |
 | F5 | Tastaturbedienung und Fokus | Steuerung, Dauer, Bestätigung, Absenden, Historie und Widerruf nur per Tastatur bedienen; Fehlermeldung auslösen. | Alle Funktionen sind erreichbar, Fokus sichtbar, Status verständlich und Fehler werden als Alert ausgegeben. | [ ] erfolgreich [ ] nicht erfolgreich [ ] nicht geprüft | |

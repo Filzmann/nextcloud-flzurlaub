@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${ADU_BASE_URL:?ADU_BASE_URL fehlt}"
-: "${ADU_USER:?ADU_USER fehlt}"
-: "${ADU_PASSWORD:?ADU_PASSWORD fehlt}"
-: "${ADU_EXPECTED:?ADU_EXPECTED fehlt}"
+: "${FLZU_BASE_URL:?FLZU_BASE_URL fehlt}"
+: "${FLZU_USER:?FLZU_USER fehlt}"
+: "${FLZU_PASSWORD:?FLZU_PASSWORD fehlt}"
+: "${FLZU_EXPECTED:?FLZU_EXPECTED fehlt}"
 
 response="$(mktemp)"
 trap 'rm -f "$response"' EXIT
 
-curl --fail --silent --show-error --insecure --user "$ADU_USER:$ADU_PASSWORD" \
-    "$ADU_BASE_URL/index.php/apps/adurlaub/api/teams" --output "$response"
+curl --fail --silent --show-error --insecure --user "$FLZU_USER:$FLZU_PASSWORD" \
+    "$FLZU_BASE_URL/index.php/apps/flzurlaub/api/teams" --output "$response"
 
-ADU_RESPONSE="$response" php -r '
-$state = json_decode(file_get_contents(getenv("ADU_RESPONSE")), true, flags: JSON_THROW_ON_ERROR);
+FLZU_RESPONSE="$response" php -r '
+$state = json_decode(file_get_contents(getenv("FLZU_RESPONSE")), true, flags: JSON_THROW_ON_ERROR);
 $actual = [];
 foreach ($state["teams"] ?? [] as $team) {
     foreach ($team["employees"] ?? [] as $employee) {
@@ -25,7 +25,7 @@ foreach ($state["teams"] ?? [] as $team) {
         ];
     }
 }
-foreach (explode(",", getenv("ADU_EXPECTED")) as $expectation) {
+foreach (explode(",", getenv("FLZU_EXPECTED")) as $expectation) {
     [$uid, $raw] = explode("=", $expectation, 2);
     [$visible, $manage, $approve] = explode(":", $raw, 3);
     $isVisible = array_key_exists($uid, $actual);
@@ -45,4 +45,4 @@ foreach (explode(",", getenv("ADU_EXPECTED")) as $expectation) {
 }
 '
 
-echo "AD Urlaub access HTTP smoke: OK ($ADU_USER)"
+echo "Filzmann Urlaubsplanung access HTTP smoke: OK ($FLZU_USER)"

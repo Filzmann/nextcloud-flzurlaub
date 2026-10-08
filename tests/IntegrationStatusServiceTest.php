@@ -9,8 +9,8 @@ namespace OCP\EventDispatcher {
 
 namespace {
 
-    use OCA\AdUrlaub\Service\IntegrationStatusService;
-    use OCA\LocalBase\Integration\AdIntegrationCapabilities;
+    use OCA\FlzUrlaub\Service\IntegrationStatusService;
+    use OCA\LocalBase\Integration\FlzIntegrationCapabilities;
     use OCA\LocalBase\Integration\IntegrationCapabilityQueryEvent;
     use OCA\LocalBase\Service\IntegrationCapabilityService;
     use OCP\EventDispatcher\IEventDispatcher;
@@ -20,7 +20,7 @@ namespace {
 
         public function dispatchTyped(object $event): object {
             if ($this->available && $event instanceof IntegrationCapabilityQueryEvent) {
-                $event->provide('adcalendar', [AdIntegrationCapabilities::SCHEDULE_CONFLICT_READ]);
+                $event->provide('flzcalendar', [FlzIntegrationCapabilities::SCHEDULE_CONFLICT_READ]);
             }
             return $event;
         }
@@ -37,10 +37,10 @@ namespace {
     $dispatcher->available = true;
     if ($status->calendarConflictCheck() !== [
         'available' => true,
-        'providers' => ['adcalendar'],
+        'providers' => ['flzcalendar'],
     ]) {
         throw new RuntimeException('Der integrierte Kalenderstatus ist falsch.');
     }
 
-    echo "AD Urlaub integration status test passed\n";
+    echo "Filzmann Urlaubsplanung integration status test passed\n";
 }

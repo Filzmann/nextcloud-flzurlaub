@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
 use InvalidArgumentException;
-use OCA\AdUrlaub\AppInfo\AppId;
+use OCA\FlzUrlaub\AppInfo\AppId;
 use OCP\IAppConfig;
 
 final class VacationRetentionPolicyService {

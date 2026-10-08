@@ -7,7 +7,7 @@ const element=()=>({checked:false,disabled:false,textContent:'',className:'',lis
 const form=element();const history=element();const status=element();const requests=[];
 const context={
     FormData:class{get(name){return {enabled:'on',targetUid:' admin-target ',durationMinutes:'60'}[name]??null;}},
-    document:{getElementById(id){return {'adu-full-access-form':form,'adu-full-access-history':history,'adu-full-access-status':status}[id]||null;},createElement(){return element();}},
+    document:{getElementById(id){return {'flz-vacation-full-access-form':form,'flz-vacation-full-access-history':history,'flz-vacation-full-access-status':status}[id]||null;},createElement(){return element();}},
     window:{LocalBase:{api:{ApiClient:class{async request(path,options={}){requests.push({path,options});return path==='/api/admin/full-access'&&!options.method?{history:[]}:{};}}}}},Intl,Date,encodeURIComponent,JSON,Promise,console,
 };
 runInNewContext(source,context,{filename:fileURLToPath(new URL('../../js/admin-access.js',import.meta.url))});
@@ -19,4 +19,4 @@ const revoke=element();revoke.dataset.revokeUid='admin-target';
 await history.listeners.click({target:{closest(){return revoke;}}});
 if(JSON.stringify(requests)!==JSON.stringify([{path:'/api/admin/full-access/admin-target',options:{method:'DELETE'}},{path:'/api/admin/full-access',options:{}}]))throw new Error('Widerruf verwendet nicht den UID-genauen API-Vertrag.');
 if(status.textContent!=='Der Vollzugriff wurde widerrufen.')throw new Error('Widerruf wird nicht verständlich bestätigt.');
-console.log('AD Urlaub admin access smoke: OK');
+console.log('Filzmann Urlaubsplanung admin access smoke: OK');

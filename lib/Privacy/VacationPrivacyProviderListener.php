@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Privacy;
+namespace OCA\FlzUrlaub\Privacy;
 
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

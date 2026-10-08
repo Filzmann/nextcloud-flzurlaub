@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Controller;
+namespace OCA\FlzUrlaub\Controller;
 
-use OCA\AdUrlaub\AppInfo\Application;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessService;
+use OCA\FlzUrlaub\AppInfo\Application;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;

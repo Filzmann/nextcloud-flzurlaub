@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Repository;
+namespace OCA\FlzUrlaub\Repository;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use OCA\AdUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Model\Vacation;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
@@ -22,7 +22,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('employee_uid')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->lte('start_date', $qb->createNamedParameter($endDate)))
             ->andWhere($qb->expr()->gte('end_date', $qb->createNamedParameter($startDate)))
             ->andWhere($qb->expr()->in(
@@ -50,7 +50,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('id', 'employee_uid', 'start_date', 'end_date', 'status', 'note')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->lte('start_date', $qb->createNamedParameter($endDate)))
             ->andWhere($qb->expr()->gte('end_date', $qb->createNamedParameter($startDate)))
             ->andWhere($qb->expr()->in(
@@ -66,7 +66,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('id', 'employee_uid', 'start_date', 'end_date', 'status', 'note')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->eq(
                 'id',
                 $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT),
@@ -79,7 +79,7 @@ final class VacationRepository {
     /** @return list<Vacation> */
     public function findByEmployeeUid(string $employeeUid,int $limit):array{
         $qb=$this->db->getQueryBuilder();
-        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('flz_vacation_vacations')
             ->where($qb->expr()->eq('employee_uid',$qb->createNamedParameter($employeeUid,IQueryBuilder::PARAM_STR)))
             ->orderBy('start_date','ASC')->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
         return Vacation::get_all(array_map([$this,'mapRow'],$rows));
@@ -88,7 +88,7 @@ final class VacationRepository {
     /** @return list<Vacation> */
     public function findEndedByEmployeeUid(string $employeeUid,string $cutoff,int $limit):array{
         $qb=$this->db->getQueryBuilder();
-        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('flz_vacation_vacations')
             ->where($qb->expr()->eq('employee_uid',$qb->createNamedParameter($employeeUid,IQueryBuilder::PARAM_STR)))
             ->andWhere($qb->expr()->lte('end_date',$qb->createNamedParameter($cutoff,IQueryBuilder::PARAM_STR)))
             ->orderBy('end_date','ASC')->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
@@ -98,7 +98,7 @@ final class VacationRepository {
     /** @return list<Vacation> */
     public function findEndedBefore(string $cutoff,int $limit,int $offset=0):array{
         $qb=$this->db->getQueryBuilder();
-        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('adu_vacations')
+        $rows=$qb->select('id','employee_uid','start_date','end_date','status','note')->from('flz_vacation_vacations')
             ->where($qb->expr()->lte('end_date',$qb->createNamedParameter($cutoff,IQueryBuilder::PARAM_STR)))
             ->orderBy('end_date','ASC')->addOrderBy('id','ASC')
             ->setFirstResult($offset)->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
@@ -109,7 +109,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('id', 'employee_uid', 'start_date', 'end_date', 'status', 'note')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->eq('employee_uid', $qb->createNamedParameter($employeeUid)))
             ->andWhere($qb->expr()->lte('start_date', $qb->createNamedParameter($date)))
             ->andWhere($qb->expr()->gte('end_date', $qb->createNamedParameter($date)))
@@ -124,7 +124,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('id')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->eq('employee_uid', $qb->createNamedParameter($employeeUid)))
             ->andWhere($qb->expr()->lte('start_date', $qb->createNamedParameter($endDate)))
             ->andWhere($qb->expr()->gte('end_date', $qb->createNamedParameter($startDate)))
@@ -157,7 +157,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $insert = $vacation->id() === null;
         if ($insert) {
-            $qb->insert('adu_vacations');
+            $qb->insert('flz_vacation_vacations');
             $values += [
                 'created_by_uid' => $actorUid,
                 'created_at' => $now,
@@ -168,7 +168,7 @@ final class VacationRepository {
             ];
         } else {
             $qb
-                ->update('adu_vacations')
+                ->update('flz_vacation_vacations')
                 ->where($qb->expr()->eq(
                     'id',
                     $qb->createNamedParameter($vacation->id(), IQueryBuilder::PARAM_INT),
@@ -190,7 +190,7 @@ final class VacationRepository {
     public function delete(int $id): void {
         $qb = $this->db->getQueryBuilder();
         $qb
-            ->delete('adu_vacations')
+            ->delete('flz_vacation_vacations')
             ->where($qb->expr()->eq(
                 'id',
                 $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT),
@@ -202,7 +202,7 @@ final class VacationRepository {
         $qb = $this->db->getQueryBuilder();
         $qb
             ->select('id')
-            ->from('adu_vacations')
+            ->from('flz_vacation_vacations')
             ->where($qb->expr()->eq('employee_uid', $qb->createNamedParameter($employeeUid)))
             ->setMaxResults(1);
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Settings;
+namespace OCA\FlzUrlaub\Settings;
 
-use OCA\AdUrlaub\AppInfo\Application;
+use OCA\FlzUrlaub\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Settings\ISettings;
 

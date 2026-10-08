@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace OCA\AdUrlaub\Permission;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
+namespace OCA\FlzUrlaub\Permission;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 /** @template-implements IEventListener<RegisterPermissionProvidersEvent> */

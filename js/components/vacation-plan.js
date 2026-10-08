@@ -6,7 +6,7 @@
      * Zusammenspiel: VacationApp aktualisiert den Zustand und stößt danach die passenden Render-Methoden an.
      */
     class VacationPlan {
-        constructor({ elements, state, holidays = new window.AdUrlaub.models.HolidayCalendar() }) {
+        constructor({ elements, state, holidays = new window.FlzUrlaub.models.HolidayCalendar() }) {
             this.elements = elements;
             this.state = state;
             this.holidays = holidays;
@@ -70,7 +70,7 @@
                 const badge = this.node(
                     'span',
                     `${this.dateShort(request.startDate)}–${this.dateShort(request.endDate)} · ${request.status === 'approved' ? 'genehmigt' : 'geplant'}`,
-                    `adu-request adu-request-${request.status}`,
+                    `flz-vacation-request flz-vacation-request-${request.status}`,
                 );
                 if (request.status === 'planned') {
                     const button = this.node('button', '×');
@@ -108,7 +108,7 @@
 
         renderSchoolHolidayBand(days) {
             const row = document.createElement('tr');
-            row.className = 'adu-school-holiday-row';
+            row.className = 'flz-vacation-school-holiday-row';
             const label = this.node('th', 'Schulferien');
             label.scope = 'col';
             row.append(label);
@@ -123,7 +123,7 @@
                     cell.className = 'is-school-holiday';
                     cell.title = name;
                     cell.setAttribute('aria-label', `${name}: ${this.dateLong(days[start].date)}–${this.dateLong(days[end - 1].date)}`);
-                    cell.append(this.node('span', name, 'adu-holiday-label'));
+                    cell.append(this.node('span', name, 'flz-vacation-holiday-label'));
                 } else {
                     cell.setAttribute('aria-hidden', 'true');
                 }
@@ -135,7 +135,7 @@
 
         renderPublicHolidayBand(days) {
             const row = document.createElement('tr');
-            row.className = 'adu-public-holiday-row';
+            row.className = 'flz-vacation-public-holiday-row';
             const label = this.node('th', 'Feiertage');
             label.scope = 'col';
             row.append(label);
@@ -150,7 +150,7 @@
                     cell.className = 'is-public-holiday';
                     cell.title = name;
                     cell.setAttribute('aria-label', `${name}: ${this.dateLong(days[start].date)}–${this.dateLong(days[end - 1].date)}`);
-                    cell.append(this.node('span', name, 'adu-holiday-label'));
+                    cell.append(this.node('span', name, 'flz-vacation-holiday-label'));
                 } else {
                     cell.setAttribute('aria-hidden', 'true');
                 }
@@ -162,7 +162,7 @@
 
         renderDayHeader(days) {
             const head = document.createElement('tr');
-            head.className = 'adu-day-row';
+            head.className = 'flz-vacation-day-row';
             const name = this.node('th', 'Mitarbeiter*in');
             name.scope = 'col';
             head.append(name);
@@ -202,7 +202,7 @@
             const yearEndSpecial = this.yearEndSpecialName(day.date);
             const cell = document.createElement('td');
             cell.dataset.day = day.date;
-            cell.className = ['adu-vac-cell', status && `adu-vac-${status}`, status && 'has-vacation', day.weekday === 6 && 'is-saturday', day.weekday === 7 && 'is-sunday', publicHoliday && 'is-public-holiday-column', yearEndSpecial && 'is-year-end-special'].filter(Boolean).join(' ');
+            cell.className = ['flz-vacation-vac-cell', status && `flz-vacation-vac-${status}`, status && 'has-vacation', day.weekday === 6 && 'is-saturday', day.weekday === 7 && 'is-sunday', publicHoliday && 'is-public-holiday-column', yearEndSpecial && 'is-year-end-special'].filter(Boolean).join(' ');
             const title = [employee.displayName, this.dateShort(day.date), this.weekdayName(day), yearEndSpecial, schoolHoliday ? `Berliner Schulferien: ${schoolHoliday}` : '', publicHoliday ? `Feiertag: ${publicHoliday}` : '', status === 'approved' ? 'genehmigt' : status === 'planned' ? 'geplant' : ''].filter(Boolean).join(' – ');
             if (employee.canApprove) {
                 const button = this.node('button', status === 'approved' ? 'U' : status === 'planned' ? 'U?' : '');
@@ -267,7 +267,7 @@
         }
     }
 
-    window.AdUrlaub = window.AdUrlaub || {};
-    window.AdUrlaub.components = window.AdUrlaub.components || {};
-    window.AdUrlaub.components.VacationPlan = VacationPlan;
+    window.FlzUrlaub = window.FlzUrlaub || {};
+    window.FlzUrlaub.components = window.FlzUrlaub.components || {};
+    window.FlzUrlaub.components.VacationPlan = VacationPlan;
 }());

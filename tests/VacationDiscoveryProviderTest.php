@@ -19,9 +19,9 @@ namespace OCP {
 }
 
 namespace {
-    use OCA\AdUrlaub\Listener\AbsenceEmployeeDiscoveryListener;
-    use OCA\AdUrlaub\Listener\AbsenceQueryListener;
-    use OCA\AdUrlaub\Repository\VacationRepository;
+    use OCA\FlzUrlaub\Listener\AbsenceEmployeeDiscoveryListener;
+    use OCA\FlzUrlaub\Listener\AbsenceQueryListener;
+    use OCA\FlzUrlaub\Repository\VacationRepository;
     use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
     use OCA\LocalBase\Calendar\AbsenceQueryEvent;
     use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -83,7 +83,7 @@ namespace {
     );
     (new AbsenceEmployeeDiscoveryListener($repository))->handle($event);
     if ($event->employeeUids() !== ['0', 'alice', 'bob']) {
-        throw new RuntimeException('Der AD-Urlaub-Provider beantwortet die begrenzte Discovery nicht.');
+        throw new RuntimeException('Der Filzmann-Urlaubsplanung-Provider beantwortet die begrenzte Discovery nicht.');
     }
     if ($query->parameters[0] !== ['2029-01-01', IQueryBuilder::PARAM_STR]
         || $query->parameters[1] !== ['2026-01-01', IQueryBuilder::PARAM_STR]) {

@@ -25,13 +25,13 @@ namespace OCA\LocalBase\Calendar {
 namespace {
 
     $shared = new \OCA\LocalBase\Calendar\HolidayCalendarService();
-    $service = new \OCA\AdUrlaub\Service\HolidayCalendarService($shared);
+    $service = new \OCA\FlzUrlaub\Service\HolidayCalendarService($shared);
     $calendar = $service->forYear(2026, true);
-    if ($shared->calls !== [[2026, true]]) throw new RuntimeException('AD Urlaub delegiert nicht vollständig an den gemeinsamen Kalendervertrag.');
+    if ($shared->calls !== [[2026, true]]) throw new RuntimeException('Filzmann Urlaubsplanung delegiert nicht vollständig an den gemeinsamen Kalendervertrag.');
     if (($calendar['context']['subdivisionCode'] ?? '') !== 'DE-BE'
         || ($calendar['schoolHolidays'][0]['name'] ?? '') !== 'Winterferien'
         || ($calendar['publicHolidays'][0]['name'] ?? '') !== 'Internationaler Frauentag') {
-        throw new RuntimeException('AD Urlaub verliert Daten des gemeinsamen Kalender-DTOs.');
+        throw new RuntimeException('Filzmann Urlaubsplanung verliert Daten des gemeinsamen Kalender-DTOs.');
     }
     echo "HolidayCalendarServiceTest: OK\n";
 }

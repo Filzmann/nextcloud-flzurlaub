@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace OCP\EventDispatcher { class Event { public function __construct(){} } interface IEventListener { public function handle(Event $event):void; } }
 namespace OCP { interface IAppConfig { public function getValueString(string $appId,string $key,string $default=''):string; public function setValueString(string $appId,string $key,string $value):void; } }
 namespace OCP\AppFramework\Utility { interface ITimeFactory { public function getTime():int; } }
-namespace OCA\AdUrlaub\Repository {
-    use OCA\AdUrlaub\Model\Vacation;
+namespace OCA\FlzUrlaub\Repository {
+    use OCA\FlzUrlaub\Model\Vacation;
     class VacationRepository {
         public array $items=[];
         public int $deleteCalls=0;
@@ -23,18 +23,18 @@ namespace OCA\AdUrlaub\Repository {
 }
 
 namespace {
-    use OCA\AdUrlaub\Model\Vacation;
-    use OCA\AdUrlaub\Privacy\VacationPersonalDataProvider;
-    use OCA\AdUrlaub\Privacy\VacationPrivacyProviderListener;
-    use OCA\AdUrlaub\Privacy\VacationRetentionProvider;
-    use OCA\AdUrlaub\Repository\VacationRepository;
-    use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepository;
-    use OCA\AdUrlaub\Service\VacationRetentionPolicyService;
-    use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
-    use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-    use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-    use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
-    use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
+    use OCA\FlzUrlaub\Model\Vacation;
+    use OCA\FlzUrlaub\Privacy\VacationPersonalDataProvider;
+    use OCA\FlzUrlaub\Privacy\VacationPrivacyProviderListener;
+    use OCA\FlzUrlaub\Privacy\VacationRetentionProvider;
+    use OCA\FlzUrlaub\Repository\VacationRepository;
+    use OCA\FlzUrlaub\Repository\TemporaryAdminAccessRepository;
+    use OCA\FlzUrlaub\Service\VacationRetentionPolicyService;
+    use OCA\FlzDataProtection\PublicApi\V1\DataSubjectRef;
+    use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+    use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+    use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+    use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
 
     $repo=new VacationRepository();
     $repo->items=[
@@ -48,7 +48,7 @@ namespace {
     $adminAccess=new TemporaryAdminAccessRepository();$adminAccess->items=[['id'=>7,'targetUid'=>'self','grantedBy'=>'self','startsAt'=>new DateTimeImmutable('2026-08-12T08:00:00+00:00'),'endsAt'=>new DateTimeImmutable('2026-08-12T12:00:00+00:00'),'revokedAt'=>new DateTimeImmutable('2026-08-12T10:00:00+00:00'),'revokedBy'=>'other-admin']];
     $personal=new VacationPersonalDataProvider($repo,$policy,$adminAccess);
     $descriptor=$personal->descriptor();
-    if($descriptor->appId()!=='adurlaub'||$descriptor->contractVersion()!=='1.0'||!$descriptor->supportsSubjectType('nextcloud-user'))throw new RuntimeException('Urlaubs-Provider beschreibt den Standalone-V1-Vertrag nicht korrekt.');
+    if($descriptor->appId()!=='flzurlaub'||$descriptor->contractVersion()!=='1.0'||!$descriptor->supportsSubjectType('nextcloud-user'))throw new RuntimeException('Urlaubs-Provider beschreibt den Standalone-V1-Vertrag nicht korrekt.');
     $report=$personal->collect(new PersonalDataRequest($subject,'de','access-report',50,[]));
     if(count($report->entries())!==2||$report->status()!=='complete')throw new RuntimeException('Urlaubsauskunft ist nicht strikt subjectgebunden, lässt Adminfreigaben aus oder meldet einen falschen Status.');
     $entry=$report->entries()[0];
@@ -65,14 +65,14 @@ namespace {
     foreach(['Urlaubszeitraum','01.07.26 bis 10.07.26','Urlaubsplanung','09.08.26'] as $expected)if(!str_contains(json_encode($item,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE),$expected))throw new RuntimeException("Menschenlesbare Urlaubsangabe fehlt: {$expected}");
     if(!str_contains($item['retention'],'30 Tage')||$item['purpose']!=='Urlaubsplanung, Genehmigung und Verfügbarkeitsprüfung')throw new RuntimeException('Art.-15-Angaben für Urlaub fehlen.');
     $grant=$report->entries()[1];$grantJson=json_encode([$grant->categoryLabel(),$grant->summary(),$grant->source(),$grant->recipientCategories(),$grant->attributes(),$grant->thirdPartyContentNotice()],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);if(!str_contains($grantJson,'Admin-Vollzugriff')||str_contains($grantJson,'other-admin'))throw new RuntimeException('Adminfreigabe fehlt oder legt eine fremde Admin-ID offen.');
-    foreach(['Freigebendes Mitglied von Datenschutzbeauftragte','App-lokale Freigabesteuerung in AD Urlaub','Datenschutz-Prüfrolle'] as $expected)if(!str_contains($grantJson,$expected))throw new RuntimeException("Adminfreigabe projiziert Rolle oder Quelle nicht korrekt: {$expected}");
+    foreach(['Freigebendes Mitglied von Datenschutzbeauftragte','App-lokale Freigabesteuerung in Filzmann Urlaubsplanung','Datenschutz-Prüfrolle'] as $expected)if(!str_contains($grantJson,$expected))throw new RuntimeException("Adminfreigabe projiziert Rolle oder Quelle nicht korrekt: {$expected}");
     $repo->items[]=Vacation::get(['id'=>13,'employeeUid'=>'self','startDate'=>'2026-08-20','endDate'=>'2026-08-22','status'=>'planned','note'=>'Weitere eigene Notiz']);
     if($personal->collect(new PersonalDataRequest($subject,'de','access-report',1,[]))->status()!=='partial')throw new RuntimeException('Begrenzter Urlaubsbericht behauptet Vollständigkeit.');
     array_pop($repo->items);
     $unsupported=$personal->collect(new PersonalDataRequest(new DataSubjectRef('external-applicant','self'),'de','access-report',50,[]));
     if($unsupported->status()!=='not_applicable'||$unsupported->entries()!==[])throw new RuntimeException('Ein nicht unterstützter Subject-Typ erhielt Urlaubsdaten.');
     try{
-        $personal->collect((new PersonalDataRequest($subject,'de','access-report',50,['adurlaub'=>'opaque']))->forProvider('adurlaub',50));
+        $personal->collect((new PersonalDataRequest($subject,'de','access-report',50,['flzurlaub'=>'opaque']))->forProvider('flzurlaub',50));
         throw new RuntimeException('Ein unbekannter Provider-Cursor wurde akzeptiert.');
     }catch(InvalidArgumentException){}
 
@@ -88,12 +88,12 @@ namespace {
     $listener=new VacationPrivacyProviderListener($personal,$retention);
     $personalRegistry=new RegisterPersonalDataProvidersEvent();$listener->handle($personalRegistry);
     $retentionRegistry=new RegisterRetentionProvidersEvent();$listener->handle($retentionRegistry);
-    if(array_keys($personalRegistry->providers())!==['adurlaub']||array_keys($retentionRegistry->providers())!==['adurlaub'])throw new RuntimeException('Urlaubs-Provider werden nicht registriert.');
+    if(array_keys($personalRegistry->providers())!==['flzurlaub']||array_keys($retentionRegistry->providers())!==['flzurlaub'])throw new RuntimeException('Urlaubs-Provider werden nicht registriert.');
     $policy->save(['enabled'=>false,'reviewAfterDays'=>0,'action'=>'REVIEW']);
     $disabledRegistry=new RegisterRetentionProvidersEvent();$listener->handle($disabledRegistry);
     if($disabledRegistry->providers()!==[])throw new RuntimeException('Eine deaktivierte Urlaubs-Retention registriert fälschlich einen Provider.');
 
     $application=(string)file_get_contents(dirname(__DIR__).'/lib/AppInfo/Application.php');
     if(!str_contains($application,'registerEventListener(RegisterRetentionProvidersEvent::class, VacationPrivacyProviderListener::class)')||str_contains($application,'RetentionProviderRegistryEvent'))throw new RuntimeException('Der Bootstrap verwendet nicht ausschließlich den Standalone-V1-Retention-Vertrag.');
-    echo "AD Urlaub privacy provider test passed\n";
+    echo "Filzmann Urlaubsplanung privacy provider test passed\n";
 }

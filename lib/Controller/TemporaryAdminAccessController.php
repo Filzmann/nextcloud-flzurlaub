@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Controller;
+namespace OCA\FlzUrlaub\Controller;
 
 use DateTimeInterface;
 use InvalidArgumentException;
-use OCA\AdUrlaub\AppInfo\AppId;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessService;
+use OCA\FlzUrlaub\AppInfo\AppId;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;

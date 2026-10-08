@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\AppInfo;
+namespace OCA\FlzUrlaub\AppInfo;
 
-use OCA\AdUrlaub\Listener\AbsenceEmployeeDiscoveryListener;
-use OCA\AdUrlaub\Listener\AbsenceQueryListener;
-use OCA\AdUrlaub\Listener\IntegrationCapabilityQueryListener;
-use OCA\AdUrlaub\Listener\StandaloneNavigationListener;
-use OCA\AdUrlaub\Privacy\VacationProcessingMetadataProviderListener;
-use OCA\AdUrlaub\Privacy\VacationPrivacyProviderListener;
-use OCA\AdUrlaub\Permission\NextcloudVacationPermissionSource;
-use OCA\AdUrlaub\Permission\VacationPermissionProviderListener;
-use OCA\AdUrlaub\Permission\VacationPermissionSourceInterface;
-use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepository;
-use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessService;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
+use OCA\FlzUrlaub\Listener\AbsenceEmployeeDiscoveryListener;
+use OCA\FlzUrlaub\Listener\AbsenceQueryListener;
+use OCA\FlzUrlaub\Listener\IntegrationCapabilityQueryListener;
+use OCA\FlzUrlaub\Listener\StandaloneNavigationListener;
+use OCA\FlzUrlaub\Privacy\VacationProcessingMetadataProviderListener;
+use OCA\FlzUrlaub\Privacy\VacationPrivacyProviderListener;
+use OCA\FlzUrlaub\Permission\NextcloudVacationPermissionSource;
+use OCA\FlzUrlaub\Permission\VacationPermissionProviderListener;
+use OCA\FlzUrlaub\Permission\VacationPermissionSourceInterface;
+use OCA\FlzUrlaub\Repository\TemporaryAdminAccessRepository;
+use OCA\FlzUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessChecker;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
 use OCA\LocalBase\Calendar\AbsenceQueryEvent;
 use OCA\LocalBase\Integration\IntegrationCapabilityQueryEvent;

@@ -1,4 +1,4 @@
-# Roadmap – AD Urlaub
+# Roadmap – Filzmann Urlaubsplanung
 
 Diese Datei enthält ausschließlich offene Arbeit, zurückgestellte Vorhaben
 und Freigabegates. Der aktuelle Funktionsumfang steht in `README.md`,
@@ -10,7 +10,7 @@ erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
 - Die manuellen Prüfungen werden im ausfüllbaren
   [`docs/manual-acceptance.md`](docs/manual-acceptance.md) dokumentiert.
 - Jahresmatrix, eigene Anträge, Genehmigungshierarchie und Bereichsgrenzen auf einem realitätsnahen Staging fachlich abnehmen.
-- Die Konfliktprüfung gegen AD Kalender und den gültigen Standalone-Betrieb ohne Kalender absichern.
+- Die Konfliktprüfung gegen Filzmann Kalender und den gültigen Standalone-Betrieb ohne Kalender absichern.
 - Sichtbarkeit und Datenschutz von Urlaubsnotizen und Organisationsansichten produktiv prüfen.
 - Die additiv migrierten Pflege-, Fahrzeugverwaltungs- und Empfangsansichten samt positiven und negativen Hierarchierechten fachlich abnehmen.
 - Die DPO-gesteuerte Adminfreigabe mit getrennten Konten für DPO, nativen
@@ -24,7 +24,7 @@ erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
 
 ## Bewusst zurückgestellt – niedrigste Priorität
 
-### ADU-L10N – Oberfläche und Datumsdarstellung lokalisieren
+### FLZU-L10N – Oberfläche und Datumsdarstellung lokalisieren
 
 Status seit 17. September 2026: Die Umsetzung beginnt erst nach allen höher
 priorisierten Roadmap-Aufgaben und einer erneuten ausdrücklichen Freigabe des

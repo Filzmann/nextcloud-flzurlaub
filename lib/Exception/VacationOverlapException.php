@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Exception;
+namespace OCA\FlzUrlaub\Exception;
 
 /** Zweck: Kennzeichnet einen Urlaubszeitraum, der sich mit einem Urlaub derselben Person überschneidet. */
 final class VacationOverlapException extends \RuntimeException {

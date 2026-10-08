@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Migration;
+namespace OCA\FlzUrlaub\Migration;
 
 use Closure;
-use OCA\AdUrlaub\BackgroundJob\RefreshHolidayCalendarJob;
+use OCA\FlzUrlaub\BackgroundJob\RefreshHolidayCalendarJob;
 use OCP\BackgroundJob\IJobList;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;

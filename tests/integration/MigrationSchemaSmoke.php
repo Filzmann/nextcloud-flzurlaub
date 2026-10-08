@@ -6,15 +6,15 @@ if (!defined('OC_CONSOLE')) define('OC_CONSOLE', true);
 require dirname(__DIR__, 4) . '/lib/base.php';
 
 use Doctrine\DBAL\Schema\Schema;
-use OCA\AdUrlaub\Migration\Version000001Date202607130001;
-use OCA\AdUrlaub\Migration\Version000003Date202607130003;
+use OCA\FlzUrlaub\Migration\Version000001Date202607130001;
+use OCA\FlzUrlaub\Migration\Version000003Date202607130003;
 use OC\DB\Connection;
 use OC\DB\SchemaWrapper;
 use OCP\DB\Types;
 use OCP\Migration\IOutput;
 
 /**
- * Zweck: Prüft Fresh- und Upgrade-Schema von AD Urlaub gegen die reale lokale Nextcloud-Datenbank.
+ * Zweck: Prüft Fresh- und Upgrade-Schema von Filzmann Urlaubsplanung gegen die reale lokale Nextcloud-Datenbank.
  * Isolation: Ausschließlich zufällig benannte temporäre Tabellen werden erzeugt und im finally entfernt.
  * Vertrag: Die aktuellen Migrationen erzeugen das kanonische Schema; das frühere Import-Schema verliert nur
  * seine Herkunftsfelder und bewahrt vorhandene Fachdaten auch bei fachlich widersprüchlichen Altdaten.
@@ -61,8 +61,8 @@ $platform = $connection->getDatabasePlatform();
 $schemaManager = $connection->createSchemaManager();
 $output = new SilentMigrationOutput();
 $prefix = $connection->getPrefix();
-$freshLogical = 'adu_mig_f_' . bin2hex(random_bytes(5));
-$upgradeLogical = 'adu_mig_u_' . bin2hex(random_bytes(5));
+$freshLogical = 'flz_vacation_mig_f_' . bin2hex(random_bytes(5));
+$upgradeLogical = 'flz_vacation_mig_u_' . bin2hex(random_bytes(5));
 $freshPhysical = $prefix . $freshLogical;
 $upgradePhysical = $prefix . $upgradeLogical;
 $createdTables = [];
@@ -94,8 +94,8 @@ try {
     ];
     $assert(array_keys($freshTable->getColumns()) === $expectedColumns, 'Fresh-Installation erzeugt nicht das kanonische Urlaubsschema.');
     $assert($freshTable->hasPrimaryKey(), 'Fresh-Installation erzeugt keinen Primärschlüssel.');
-    $assert($freshTable->hasIndex('adu_employee_range'), 'Fresh-Installation erzeugt den Mitarbeiter-/Zeitraumindex nicht.');
-    $assert($freshTable->hasIndex('adu_range'), 'Fresh-Installation erzeugt den Zeitraumindex nicht.');
+    $assert($freshTable->hasIndex('flz_vacation_employee_range'), 'Fresh-Installation erzeugt den Mitarbeiter-/Zeitraumindex nicht.');
+    $assert($freshTable->hasIndex('flz_vacation_range'), 'Fresh-Installation erzeugt den Zeitraumindex nicht.');
     $assert(!$freshTable->hasColumn('source_app') && !$freshTable->hasColumn('source_id'), 'Fresh-Installation enthält entfernte Importfelder.');
 
     $connection->executeStatement(
@@ -113,7 +113,7 @@ try {
     $legacyTable = $legacySchema->getTable($upgradePhysical);
     $legacyTable->addColumn('source_app', Types::STRING, ['length' => 32, 'notnull' => false]);
     $legacyTable->addColumn('source_id', Types::BIGINT, ['notnull' => false]);
-    $legacyTable->addUniqueIndex(['source_app', 'source_id'], 'adu_source_unique');
+    $legacyTable->addUniqueIndex(['source_app', 'source_id'], 'flz_vacation_source_unique');
     $applySql($legacySchema->toSql($platform));
     $createdTables[] = $upgradePhysical;
 
@@ -131,8 +131,8 @@ try {
 
     $upgradedTable = $schemaManager->introspectTable($upgradePhysical);
     $assert(!$upgradedTable->hasColumn('source_app') && !$upgradedTable->hasColumn('source_id'), 'Upgrade entfernt die früheren Importfelder nicht.');
-    $assert(!$upgradedTable->hasIndex('adu_source_unique'), 'Upgrade entfernt den früheren Importindex nicht.');
-    $assert($upgradedTable->hasIndex('adu_employee_range') && $upgradedTable->hasIndex('adu_range'), 'Upgrade verliert fachliche Indizes.');
+    $assert(!$upgradedTable->hasIndex('flz_vacation_source_unique'), 'Upgrade entfernt den früheren Importindex nicht.');
+    $assert($upgradedTable->hasIndex('flz_vacation_employee_range') && $upgradedTable->hasIndex('flz_vacation_range'), 'Upgrade verliert fachliche Indizes.');
     $legacyRow = $connection->fetchAssociative(
         'SELECT employee_uid, start_date, end_date, status, note FROM ' . $quote($upgradePhysical)
     );
@@ -147,7 +147,7 @@ try {
         'Upgrade verändert oder verliert vorhandene Fachdaten.'
     );
 
-    echo "AD Urlaub Fresh-/Upgrade-Migrationsschema: OK\n";
+    echo "Filzmann Urlaubsplanung Fresh-/Upgrade-Migrationsschema: OK\n";
 } finally {
     foreach (array_reverse($createdTables) as $table) {
         if ($schemaManager->tablesExist([$table])) $schemaManager->dropTable($table);

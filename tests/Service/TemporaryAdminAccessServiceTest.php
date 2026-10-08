@@ -12,7 +12,7 @@ namespace OCP {
 namespace OCP\AppFramework\Utility {
     interface ITimeFactory extends \Psr\Clock\ClockInterface { public function getTime(): int; public function getDateTime(string $time='now',?\DateTimeZone $timezone=null):\DateTime; public function withTimeZone(\DateTimeZone $timezone):static; public function getTimeZone(?string $timezone=null):\DateTimeZone; }
 }
-namespace OCA\AdUrlaub\Repository {
+namespace OCA\FlzUrlaub\Repository {
     interface TemporaryAdminAccessRepositoryInterface {
         public function replaceActive(string $targetUid,string $grantedBy,\DateTimeImmutable $startsAt,\DateTimeImmutable $endsAt):array;
         public function revokeActive(string $targetUid,string $revokedBy,\DateTimeImmutable $revokedAt):bool;
@@ -21,8 +21,8 @@ namespace OCA\AdUrlaub\Repository {
     }
 }
 namespace {
-    use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
-    use OCA\AdUrlaub\Service\TemporaryAdminAccessService;
+    use OCA\FlzUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
+    use OCA\FlzUrlaub\Service\TemporaryAdminAccessService;
 
     $actor = new class implements OCP\IUser { public function getUID(): string { return 'admin-operator'; } };
     $session = new class($actor) implements OCP\IUserSession { public function __construct(public ?OCP\IUser $user) {} public function getUser(): ?OCP\IUser { return $this->user; } };
@@ -58,9 +58,9 @@ namespace {
     $service = new TemporaryAdminAccessService($session,$groups,$repository,$clock,$logger);
 
     $before=$repository->mutations;
-    try{$service->activate('admin-target',60);throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte freigeben.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
-    try{$service->revoke('admin-target');throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte widerrufen.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
-    try{$service->state();throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte Historie lesen.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->activate('admin-target',60);throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte freigeben.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->revoke('admin-target');throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte widerrufen.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->state();throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte Historie lesen.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
     if($repository->mutations!==$before)throw new RuntimeException('Abgewiesene Adminanfragen dürfen nichts persistieren.');
 
     $session->user=new class implements OCP\IUser{public function getUID():string{return 'privacy-officer';}};
@@ -75,7 +75,7 @@ namespace {
     $groups->admins=['admin-operator'];
     if ($service->hasActiveGrant('admin-target')) throw new RuntimeException('Entzogener Nextcloud-Adminstatus muss die Freigabe sofort unwirksam machen.');
     $groups->admins=['admin-operator','admin-target'];
-    $groups->memberships=[];$before=$repository->mutations;try{$service->revoke('admin-target');throw new RuntimeException('Entzogene Datenschutzrolle durfte widerrufen.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}if($repository->mutations!==$before)throw new RuntimeException('Abgewiesener Widerruf darf keine Historie verändern.');
+    $groups->memberships=[];$before=$repository->mutations;try{$service->revoke('admin-target');throw new RuntimeException('Entzogene Datenschutzrolle durfte widerrufen.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}if($repository->mutations!==$before)throw new RuntimeException('Abgewiesener Widerruf darf keine Historie verändern.');
     $groups->memberships=['privacy-officer'=>['Datenschutzbeauftragte']];
     if (!$service->revoke('admin-target')||$service->hasActiveGrant('admin-target')) throw new RuntimeException('Widerruf muss den aktiven Zeitraum beenden.');
 
@@ -83,14 +83,14 @@ namespace {
 
     $session->user=new class implements OCP\IUser { public function getUID():string{return 'ordinary';} };
     $before=$repository->mutations;
-    try{$service->activate('admin-target',60);throw new RuntimeException('Konto ohne Datenschutzrolle durfte freigeben.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
-    try{$service->revoke('admin-target');throw new RuntimeException('Konto ohne Datenschutzrolle durfte widerrufen.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
-    try{$service->state();throw new RuntimeException('Konto ohne Datenschutzrolle durfte Historie lesen.');}catch(OCA\AdUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->activate('admin-target',60);throw new RuntimeException('Konto ohne Datenschutzrolle durfte freigeben.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->revoke('admin-target');throw new RuntimeException('Konto ohne Datenschutzrolle durfte widerrufen.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
+    try{$service->state();throw new RuntimeException('Konto ohne Datenschutzrolle durfte Historie lesen.');}catch(OCA\FlzUrlaub\Service\TemporaryAdminAccessDeniedException){}
     if($repository->mutations!==$before||$service->currentAdminNeedsGrant())throw new RuntimeException('Gewöhnliches Konto erhielt Adminzustand oder mutierte Historie.');
     $session->user=new class implements OCP\IUser{public function getUID():string{return 'admin-operator';}};
     if(!$service->currentAdminNeedsGrant()||$service->canManageGrants())throw new RuntimeException('Nativer Admin ohne Freigabe erhält falschen Eintritts- oder Linkzustand.');
     $groups->memberships['admin-operator']=['Datenschutzbeauftragte'];if(!$service->canManageGrants())throw new RuntimeException('Admin mit Datenschutzrolle erhält keinen Direktlinkzustand.');
 
-    echo "AD Urlaub temporary admin access service tests passed\n";
+    echo "Filzmann Urlaubsplanung temporary admin access service tests passed\n";
 }
 

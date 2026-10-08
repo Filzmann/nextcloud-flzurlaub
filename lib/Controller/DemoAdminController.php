@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Controller;
+namespace OCA\FlzUrlaub\Controller;
 
-use OCA\AdUrlaub\AppInfo\Application;
-use OCA\AdUrlaub\Service\VacationDemoPackService;
-use OCA\AdUrlaub\Service\TemporaryAdminAccessChecker;
+use OCA\FlzUrlaub\AppInfo\Application;
+use OCA\FlzUrlaub\Service\VacationDemoPackService;
+use OCA\FlzUrlaub\Service\TemporaryAdminAccessChecker;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;

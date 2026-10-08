@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Repository;
+namespace OCA\FlzUrlaub\Repository;
 
 use DateTimeImmutable;
 

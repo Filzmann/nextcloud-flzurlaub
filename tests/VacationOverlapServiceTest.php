@@ -6,8 +6,8 @@ namespace OCP\EventDispatcher {
     interface IEventDispatcher {}
 }
 
-namespace OCA\AdUrlaub\Repository {
-    use OCA\AdUrlaub\Model\Vacation;
+namespace OCA\FlzUrlaub\Repository {
+    use OCA\FlzUrlaub\Model\Vacation;
 
     class VacationRepository {
         public bool $overlap = false;
@@ -28,9 +28,9 @@ namespace OCA\AdUrlaub\Repository {
 
 namespace {
 
-    use OCA\AdUrlaub\Exception\VacationOverlapException;
-    use OCA\AdUrlaub\Repository\VacationRepository;
-    use OCA\AdUrlaub\Service\VacationService;
+    use OCA\FlzUrlaub\Exception\VacationOverlapException;
+    use OCA\FlzUrlaub\Repository\VacationRepository;
+    use OCA\FlzUrlaub\Service\VacationService;
     use OCP\EventDispatcher\IEventDispatcher;
 
     $repositorySource = file_get_contents(__DIR__ . '/../lib/Repository/VacationRepository.php');

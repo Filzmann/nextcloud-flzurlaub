@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Privacy;
+namespace OCA\FlzUrlaub\Privacy;
 
 use DateInterval;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use OCA\AdUrlaub\AppInfo\AppId;
-use OCA\AdUrlaub\Model\Vacation;
-use OCA\AdUrlaub\Repository\VacationRepository;
-use OCA\AdUrlaub\Service\VacationRetentionPolicyService;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProviderDescriptor;
+use OCA\FlzUrlaub\AppInfo\AppId;
+use OCA\FlzUrlaub\Model\Vacation;
+use OCA\FlzUrlaub\Repository\VacationRepository;
+use OCA\FlzUrlaub\Service\VacationRetentionPolicyService;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionCandidate;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPolicy;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewPage;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProvider;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProviderDescriptor;
 
 final class VacationRetentionProvider implements RetentionProvider {
     public const POLICY_ID='vacation_review';
     public function __construct(private VacationRepository $vacations,private VacationRetentionPolicyService $policy){}
-    public function descriptor():RetentionProviderDescriptor{return new RetentionProviderDescriptor(AppId::VALUE,'AD Urlaub','1.0',200);}
+    public function descriptor():RetentionProviderDescriptor{return new RetentionProviderDescriptor(AppId::VALUE,'Filzmann Urlaubsplanung','1.0',200);}
     public function policies():array{
         $policy=$this->policy->policy();
         return [new RetentionPolicy(self::POLICY_ID,'Urlaubszeiträume','Administrative Prüfung beendeter Urlaubszeiträume nach der app-eigenen Vorschaufrist','COMPLETED_AT',$policy['reviewAfterDays'],'REVIEW','1.0')];

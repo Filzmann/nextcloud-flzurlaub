@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\AdUrlaub\Service;
+namespace OCA\FlzUrlaub\Service;
 
 use InvalidArgumentException;
-use OCA\AdUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzUrlaub\Repository\TemporaryAdminAccessRepositoryInterface;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUserSession;
