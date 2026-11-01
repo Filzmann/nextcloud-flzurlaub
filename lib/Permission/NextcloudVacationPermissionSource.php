@@ -6,6 +6,8 @@ final class NextcloudVacationPermissionSource implements VacationPermissionSourc
  public function __construct(private IGroupManager $groups,private FlzOrganizationSettingsService $organization,private VacationSettingsService $settings){}
  public function definition():FlzOrganizationDefinition{return $this->organization->definition();}
  public function teamGroupIds():array{$prefix=$this->definition()->teamGroupPrefix();$ids=[];foreach($this->groups->search($prefix,10000,0) as $group){$id=(string)$group->getGID();if($id!==$prefix&&str_starts_with($id,$prefix))$ids[]=$id;}$ids=array_values(array_unique($ids));sort($ids,SORT_NATURAL|SORT_FLAG_CASE);return $ids;}
- public function enabledPeerGroups():array{return $this->settings->enabledPeerGroups();}
- public function asnPeerGroup():string{return $this->settings->asnPeerGroup();}
+ public function enabledPeerEditGroups():array{return $this->settings->enabledPeerEditGroups();}
+ public function enabledPeerApprovalGroups():array{return $this->settings->enabledPeerApprovalGroups();}
+ public function asnPeerGroup():string{return $this->definition()->teamGroupPrefix().'*';}
+ public function authorizationStatus():string{return $this->settings->status();}
 }

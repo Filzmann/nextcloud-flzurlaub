@@ -23,12 +23,15 @@ Tabellen anderer Apps zu.
 
 ## Sichtbarkeit und Genehmigung
 
-Normale Nutzer*innen lesen nur eigene, gemeinsame Assistenzteam- oder
-organisatorisch unterstellte Ansichten. Bereichsgrenzen bleiben wirksam;
-Nextcloud-Admins sehen alle Ansichten. Nutzer*innen planen eigene Urlaube.
-Genehmigung und Bearbeitung genehmigter Urlaube folgen der gemeinsamen
-Vorgesetztenhierarchie und administrativ freigegebenen Peergrenzen. Eigene
-Genehmigung bleibt außer für Nextcloud-Admins gesperrt.
+Organigramm-Mitglieder lesen alle Organigramm-Mitarbeitenden über getrennte
+Filter für Geschäftsführung/Stab, Pflege, BO je Büro und EB je Büro. AS und
+die zuständige EB lesen das gemeinsame ASN-Team. Nutzer*innen planen eigene
+Urlaube. Direkte Vorgesetzte bearbeiten geplante Urlaube und genehmigen;
+zuständige EB gelten für AS desselben ASN-Teams als direkte Vorgesetzte. Eine
+Genehmigung genügt vorerst. Peer-Bearbeitung und Peer-Genehmigung sind
+getrennte, standardmäßig deaktivierte Rechte. Bereichsgrenzen bleiben für
+BO/EB wirksam. Eigene Genehmigung bleibt außer bei aktivem app-lokalem
+Admin-Vollzugriff gesperrt.
 
 Genehmigungen mit überschneidenden Diensten oder Terminen werden mit einer
 read-only Konfliktliste abgelehnt; es erfolgt keine automatische Löschung.
@@ -91,9 +94,13 @@ Organisationssichten stammen aus derselben konfigurierbaren
 Assistenzteamgruppen mit einem Urlaubssuffix sind keine unterstützte
 Datenquelle.
 
-Büro Nordost, West und Süd bleiben eigenständige Ansichten. Die Pflegeansicht
+Büro Nordost, West und Süd bleiben eigenständige BO-Ansichten. Die Pflegeansicht
 enthält stellvertretende PDL, Büroorganisation Pflege und PFK in dieser
 Reihenfolge. Fahrzeugverwaltung und Empfang besitzen eigene globale Ansichten.
+EB-Ansichten je Büro und die getrennten Peerfreigaben stammen ausschließlich
+aus `OCA\LocalBase\PublicApi\V1\VacationAuthorizationSnapshotService`.
+Fehlende, deaktivierte, inkompatible, ungültige oder nicht verfügbare Provider
+liefern fail-closed keine EB-Ansicht und keine Peerfreigabe.
 
 ## Ferien und Feiertage
 
@@ -124,4 +131,7 @@ Einstellungstab.
 Das Demo-Pack läuft nur nach ausdrücklicher Bestätigung, verwendet gemeinsame
 synthetische Suite-Demokonten und übernimmt niemals fremde oder
 LDAP-verwaltete Konten. Read-only LDAP-Gruppen brechen den Preflight ab.
-WordPress-Bestandsdaten werden nicht importiert.
+WordPress-Bestandsdaten werden nicht importiert. Ein aktuell bestätigter
+nativer Nextcloud-Admin darf ausschließlich dieses synthetische Pack ohne
+fachliche Vollzugriffsfreigabe installieren. Die Ausnahme erteilt keine
+Urlaubslese-, Schreib-, Genehmigungs- oder Freigaberechte.

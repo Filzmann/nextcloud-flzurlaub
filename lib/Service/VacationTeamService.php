@@ -18,6 +18,7 @@ final class VacationTeamService {
     public function __construct(
         private IGroupManager $groups,
         private VacationAccessService $access,
+        private VacationViewDefinitionService $views,
         private ?FlzOrganizationSettingsService $organization = null,
     ) {}
 
@@ -25,7 +26,7 @@ final class VacationTeamService {
     public function all(): array {
         $employees = $this->access->visibleEmployees();
         $teams = $this->asnTeams($employees);
-        foreach ($this->organizationDefinitions() as $definition) {
+        foreach ($this->views->all() as $definition) {
             $members = array_values(array_filter(
                 $employees,
                 fn(array $employee): bool => $this->matchesOrganizationTeam($employee, $definition),
@@ -82,26 +83,6 @@ final class VacationTeamService {
                 'category' => 'asn',
                 'employees' => $members,
             ]);
-        }
-
-        return $result;
-    }
-
-    private function organizationDefinitions(): array {
-        $definition = $this->definition();
-        $result = [];
-        foreach ($definition->organizationTeams() as $team) {
-            $roles = array_values(array_filter(array_map($definition->roleGroupId(...), $team['roles'])));
-            $areas = array_values(array_filter(array_map($definition->areaGroupId(...), $team['areas'])));
-            $result[] = [
-                'id' => $team['id'],
-                'code' => $team['id'],
-                'displayName' => $team['label'],
-                'category' => 'organization',
-                'sortOrder' => $team['sortOrder'],
-                'areas' => $areas,
-                'roles' => $roles,
-            ];
         }
 
         return $result;

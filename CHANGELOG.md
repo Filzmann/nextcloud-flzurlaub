@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Organigrammansichten für alle Organigramm-Mitglieder geöffnet, EB-Ansichten
+  je Büro und getrennte Peer-Bearbeitungs-/Genehmigungsrechte auf den
+  fail-closed öffentlichen LocalBase-V1-Vertrag umgestellt sowie das
+  ausschließlich synthetische Demo-Pack als technische Adminausnahme ohne
+  fachlichen Vollzugriff abgesichert.
 - Nextcloud 35.0.1 durch Fresh Install, Upgrade 34→35 sowie Provider-,
   Berechtigungs-, Runtime-, UI-/API- und Asset-Smokes nachgewiesen und den
   unterstützten Bereich auf die lückenlosen Hauptversionen 33 bis 35

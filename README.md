@@ -21,6 +21,14 @@ Filzmann Urlaubsplanung funktioniert einzeln. Ohne Filzmann Kalender bleibt die 
 
 Der Befehl `flzurlaub:demo:seed` erzeugt synthetische Testdaten und wird nicht automatisch ausgeführt.
 
+Organigramm-Mitglieder können zwischen Geschäftsführung/Stab, Pflege sowie
+BO- und EB-Ansichten je Büro wechseln. AS und zuständige EB sehen ihr
+gemeinsames ASN-Team. Kolleg*innen-Bearbeitung und Kolleg*innen-Genehmigung
+sind getrennte, standardmäßig deaktivierte Berechtigungen. Die Urlaubs-App
+liest diese Freigaben und die EB-Büroansichten ausschließlich über den
+öffentlichen LocalBase-V1-Vertrag und verweigert sie bei jedem ungültigen
+Providerzustand.
+
 ## Datenschutz
 
 Der app-eigene Processing-Katalog beschreibt Urlaubsverwaltung einschließlich
@@ -37,6 +45,11 @@ Datenschutz-Center bleibt Filzmann Urlaubsplanung eigenständig nutzbar.
 ## Zeitlich begrenzter Admin-Vollzugriff
 
 Ein Nextcloud-Administrationskonto erhält nicht automatisch Zugriff auf alle Urlaubsdaten. Ausschließlich Mitglieder der Nextcloud-Gruppe `Datenschutzbeauftragte` verwalten die app-lokale Freigabe im Hauptbereich von Filzmann Urlaubsplanung für ein aktives Administrationskonto; der Datenschutzrolle muss selbst kein nativer Adminstatus zugewiesen sein. Die Freigabe gilt für 1, 4, 8 oder höchstens 24 Stunden und kann vorzeitig widerrufen werden. Native Administration allein genügt weder für die Freigabesteuerung noch für den fachlichen Zugriff. Beginn, geplantes Ende, Freigabe und Widerruf werden app-lokal protokolliert und in Datenschutz- sowie Berechtigungsprovider einbezogen.
+
+Davon ausgenommen ist ausschließlich die manuell bestätigte Installation des
+synthetischen Demo-Packs im technischen Adminbereich. Sie verlangt aktuellen
+nativen Adminstatus, aber keine fachliche Vollzugriffsfreigabe, und eröffnet
+keinen Zugriff auf reale Urlaubsdaten.
 
 ## Roadmap
 
