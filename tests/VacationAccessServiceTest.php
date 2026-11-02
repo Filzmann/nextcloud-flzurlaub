@@ -31,7 +31,7 @@ namespace OCA\FlzUrlaub\Service {
         public array $approveGroups = [];
         public function enabledPeerEditGroups(): array { return $this->editGroups; }
         public function enabledPeerApprovalGroups(): array { return $this->approveGroups; }
-        public function asnPeerGroup(): string { return 'flz-ASN-*'; }
+        public function asnPeerGroup(): string { return 'ASN-*'; }
     }
 }
 
@@ -97,18 +97,18 @@ namespace {
     $groups->admin = false;
     $adminAccess->active = false;
     $groups->memberships = [
-        'admin' => ['flz-GF-AS'],
-        'target' => ['flz-Buero', 'flz-Bereich-West'],
+        'admin' => ['GF-AS'],
+        'target' => ['Buero', 'Bereich-West'],
     ];
     $assert($access->canManage('target') === false, 'Indirekte Führung erhält entgegen dem Direktheitsvertrag Bearbeitungsrecht.');
     $assert($access->canApprove('target') === false, 'Indirekte Führung erhält entgegen dem Direktheitsvertrag Genehmigungsrecht.');
 
-    $groups->memberships['admin'] = ['flz-BL', 'flz-Bereich-West'];
+    $groups->memberships['admin'] = ['BL', 'Bereich-West'];
     $assert($access->canManage('target') === true, 'Direkte Führung kann geplanten Urlaub nicht bearbeiten.');
     $assert($access->canApprove('target') === true, 'Direkte Führung kann Urlaub nicht genehmigen.');
 
-    $groups->memberships = ['admin' => ['flz-PFK'], 'target' => ['flz-PFK']];
-    $settings->editGroups = ['flz-PFK'];
+    $groups->memberships = ['admin' => ['PFK'], 'target' => ['PFK']];
+    $settings->editGroups = ['PFK'];
     $settings->approveGroups = [];
     $assert($access->canManage('target') === true, 'Peer-Bearbeitungsrecht für geplante Urlaube wird nicht angewendet.');
     $assert($access->canApprove('target') === false, 'Peer-Genehmigung ist trotz deaktiviertem Einzelrecht aktiv.');

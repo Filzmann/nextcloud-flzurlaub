@@ -93,23 +93,23 @@ namespace {
     $valid = new VacationAuthorizationSnapshot(
         true,
         4,
-        ['flz-PFK' => true, 'flz-EB' => false],
-        ['flz-PFK' => false, 'flz-EB' => true],
+        ['PFK' => true, 'EB' => false],
+        ['PFK' => false, 'EB' => true],
         [[
             'id' => 'eb-west',
             'label' => 'EB – West',
             'roleKey' => 'eb',
-            'roleGroupId' => 'flz-EB',
+            'roleGroupId' => 'EB',
             'areaKey' => 'west',
-            'areaGroupId' => 'flz-Bereich-West',
+            'areaGroupId' => 'Bereich-West',
         ]],
     );
 
     $logger = new VacationSettingsLogger();
     $service = new VacationSettingsUnderTest(new VacationSettingsApps(['localbase'], ['localbase']), $logger, true, $valid);
     $assert($service->status() === VacationSettingsService::VALID, 'Gültiger öffentlicher Urlaubsvertrag wird nicht erkannt.');
-    $assert($service->enabledPeerEditGroups() === ['flz-PFK'], 'Peer-Bearbeitung wird nicht getrennt projiziert.');
-    $assert($service->enabledPeerApprovalGroups() === ['flz-EB'], 'Peer-Genehmigung wird nicht getrennt projiziert.');
+    $assert($service->enabledPeerEditGroups() === ['PFK'], 'Peer-Bearbeitung wird nicht getrennt projiziert.');
+    $assert($service->enabledPeerApprovalGroups() === ['EB'], 'Peer-Genehmigung wird nicht getrennt projiziert.');
     $assert(array_column($service->ebAreaViews(), 'id') === ['eb-west'], 'Abgeleitete EB-Büroansicht fehlt.');
 
     foreach ([

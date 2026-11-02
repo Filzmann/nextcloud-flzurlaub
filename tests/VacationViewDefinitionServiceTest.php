@@ -14,16 +14,16 @@ $views = [[
     'id' => 'eb-west',
     'label' => 'EB – West',
     'roleKey' => 'eb',
-    'roleGroupId' => 'flz-EB',
+    'roleGroupId' => 'EB',
     'areaKey' => 'west',
-    'areaGroupId' => 'flz-Bereich-West',
+    'areaGroupId' => 'Bereich-West',
 ]];
 $definitions = (new VacationViewDefinitionService(new FixedVacationViewSettings($views)))->all();
 $byId = array_column($definitions, null, 'id');
 
 if (isset($byId['eb'])) throw new RuntimeException('Die zweite, globale EB-Ansicht bleibt neben den kanonischen EB-Büroansichten bestehen.');
 if (($byId['eb-west']['displayName'] ?? null) !== 'EB – West') throw new RuntimeException('Der öffentliche EB-Bürodeskriptor wird nicht verwendet.');
-if (($byId['eb-west']['roles'] ?? null) !== ['flz-EB'] || ($byId['eb-west']['areas'] ?? null) !== ['flz-Bereich-West']) {
+if (($byId['eb-west']['roles'] ?? null) !== ['EB'] || ($byId['eb-west']['areas'] ?? null) !== ['Bereich-West']) {
     throw new RuntimeException('EB-Büroansicht verliert ihre kanonische Rollen-/Bereichskombination.');
 }
 foreach (['office-west', 'pfk', 'staff'] as $required) {
