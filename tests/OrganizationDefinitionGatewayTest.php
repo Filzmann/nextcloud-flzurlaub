@@ -145,7 +145,7 @@ namespace
     use OCA\FlzOrganization\PublicApi\V1\OrganizationSnapshotService;
     use OCA\FlzUrlaub\Service\OrganizationDefinitionGateway;
     use OCA\FlzUrlaub\Service\VacationSettingsService;
-    use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+    use OCA\FlzOrganization\Organization\OrganizationDefinition;
     use OCP\App\IAppManager;
     use OCP\Server;
     use Psr\Log\LoggerInterface;
@@ -187,7 +187,7 @@ namespace
             throw new RuntimeException($message);
         }
     };
-    $definition = FlzOrganizationDefinition::defaults()->toArray();
+    $definition = OrganizationDefinition::defaults()->toArray();
     $logger = new GatewayLogger();
 
     $gateway = new OrganizationDefinitionGateway(new GatewayApps([], []), $logger);

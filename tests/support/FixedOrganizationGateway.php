@@ -6,7 +6,7 @@ namespace OCA\FlzUrlaub\Tests\Support;
 
 use OCA\FlzUrlaub\Service\OrganizationDefinitionGateway;
 use OCA\FlzUrlaub\Service\VacationOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+use OCA\FlzOrganization\Organization\OrganizationDefinition;
 
 final class FixedOrganizationGateway extends OrganizationDefinitionGateway
 {
@@ -17,7 +17,7 @@ final class FixedOrganizationGateway extends OrganizationDefinitionGateway
     public static function defaults(): self
     {
         return new self(VacationOrganizationDefinition::fromArray(
-            FlzOrganizationDefinition::defaults()->toArray(),
+            OrganizationDefinition::defaults()->toArray(),
         ));
     }
 

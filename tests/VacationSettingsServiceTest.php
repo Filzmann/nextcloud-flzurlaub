@@ -5,7 +5,7 @@ declare(strict_types=1);
 use OCA\FlzUrlaub\Service\OrganizationDefinitionGateway;
 use OCA\FlzUrlaub\Service\VacationOrganizationDefinition;
 use OCA\FlzUrlaub\Service\VacationSettingsService;
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
+use OCA\FlzOrganization\Organization\OrganizationDefinition;
 
 final class FixedVacationSettingsGateway extends OrganizationDefinitionGateway
 {
@@ -46,7 +46,7 @@ $assert = static function (bool $condition, string $message): void
         throw new RuntimeException($message);
     }
 };
-$definition = VacationOrganizationDefinition::fromArray(FlzOrganizationDefinition::defaults()->toArray());
+$definition = VacationOrganizationDefinition::fromArray(OrganizationDefinition::defaults()->toArray());
 $service = new VacationSettingsService(new FixedVacationSettingsGateway(
     VacationSettingsService::VALID,
     $definition,

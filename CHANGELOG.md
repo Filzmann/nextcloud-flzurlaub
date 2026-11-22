@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Organisations-Testfixtures stammen aus dem gepinnten `flz_organization`-
+  Provider statt aus wechselnden LocalBase-Standardwerten; dadurch prüfen
+  lokaler Lauf und CI denselben Organisationsvertrag.
 - Selbstgenehmigung bleibt auch bei aktivierten Kolleg*innenrechten gesperrt;
   Fehler des Organisations- oder Peerproviders verweigern den Zugriff
   geschlossen und verwerfen zwischengespeicherte Rechte.
