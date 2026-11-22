@@ -22,4 +22,7 @@ if (!main.includes('new window.FlzUrlaub.modules.VacationApp') || !main.includes
 for (const url of [mainUrl, holidayCalendarUrl, planUrl, appUrl, adminUrl]) execFileSync('node', ['--check', url.pathname], {stdio:'inherit'});
 execFileSync(process.execPath, [new URL('./js/holiday-calendar-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
 execFileSync(process.execPath, [new URL('./js/admin-access-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
+execFileSync(process.execPath, [new URL('./js/admin-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
+execFileSync(process.execPath, [new URL('./js/main-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
+execFileSync(process.execPath, [new URL('./js/category-a-bundle-smoke.mjs', import.meta.url).pathname], {stdio:'inherit'});
 console.log('Filzmann Urlaubsplanung JavaScript tests passed');

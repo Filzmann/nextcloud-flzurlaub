@@ -21,10 +21,21 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Organigramm-Mitglieder lesen alle Organigramm-Mitarbeitenden in umschaltbaren Ansichten für Geschäftsführung/Stab, Pflege, BO je Büro und EB je Büro. AS und die zuständige EB lesen das gemeinsame ASN-Team. Bereichsgrenzen begrenzen Schreib- und Genehmigungsrechte, nicht diese ausdrücklich beschlossene Organigrammsicht. Native Nextcloud-Admins sehen alle Ansichten nur mit aktiver app-lokaler Vollzugriffsfreigabe.
 - Nutzer*innen planen eigene Urlaube. Direkte Vorgesetzte dürfen geplante Urlaube bearbeiten und Urlaube genehmigen; zuständige EB gelten für AS desselben ASN-Teams als direkte Vorgesetzte. Ein Genehmigungsvorgang durch eine zuständige Führungskraft genügt vorerst. Kolleg*innen-Bearbeitung und Kolleg*innen-Genehmigung sind getrennte, standardmäßig deaktivierte Berechtigungen; BO/EB bleiben auf denselben Bürobereich begrenzt. Eigene Genehmigung bleibt außer bei aktivem app-lokalem Admin-Vollzugriff gesperrt.
 - Genehmigungen mit überschneidenden Diensten oder Terminen werden mit einer read-only Konfliktliste abgelehnt; es erfolgt keine automatische Löschung.
-- Gruppen stammen aus derselben konfigurierbaren `FlzOrganizationDefinition` wie Filzmann Kalender und FlzPlaner. Fachrollen, Bereiche, Assistenzteam-Präfix und Organisationssichten werden nicht zusätzlich in Filzmann Urlaubsplanung festverdrahtet.
+- Gruppen, Rollen, Bereiche, Hierarchie, Assistenzteam-Präfix und
+  Organisationssichten stammen ausschließlich aus dem aktivierten,
+  kompatiblen und gültigen öffentlichen V1-Vertrag von `flz_organization`.
+  Filzmann Urlaubsplanung führt dafür keine zweite Konfiguration und keinen
+  LocalBase-Fallback.
 - Filzmann Urlaubsplanung ist die kanonische schreibende Urlaubsquelle. Die Jahresmatrix fasst dynamische Assistenzteams und die konfigurierten Organisationssichten zusammen.
 - Die Jahresmatrix zeigt Schulferien und gesetzliche Feiertage der organisationsweit konfigurierten Kalenderregion stets als read-only Hintergrundebenen. Fixierte Bänder im Tabellenkopf tragen über jedem zusammenhängenden Zeitraum den Namen, ohne einzelne Tagesspalten zu verbreitern; zu lange Namen werden gekürzt und bleiben vollständig als Tooltip und zugängliche Beschriftung verfügbar. Samstage sind leicht grau, Sonntage dunkler grau; gesetzliche Feiertage markieren ihre vollständige Spalte mit derselben Grauebene wie Sonntage. Heiligabend und Silvester erhalten unabhängig davon eine eigene, vom gesetzlichen Feiertag unterscheidbare Spaltenmarkierung. Die zugängliche Tagesbeschriftung nennt Wochenendart, Jahresendtag, Ferien und Feiertage zusätzlich in Textform. Filzmann Urlaubsplanung liest den validierten, dynamischen OpenHolidays-Jahresstand ausschließlich über den gemeinsamen read-only LocalBase-Vertrag; `DE`, `DE-BE` und `Europe/Berlin` bleiben Bestandsdefaults. Der gemeinsame Cache wird täglich sowie bedarfsgesteuert aktualisiert; bei einem Dienstausfall bleibt der letzte gültige Stand mit sichtbarem Veraltet-Hinweis verfügbar. Ferien und Feiertage verändern weder Konflikte, Verfügbarkeit, Genehmigungen noch Rechte.
-- Büro Nordost, Büro West und Büro Süd sind eigenständig auswählbare BO-Organisationssichten. Bereichsübergreifende Leitungen erscheinen durch ihre Bereichsmitgliedschaften in jeder passenden Sicht, ohne die Büros zusammenzufassen. EB-Ansichten werden je Büro ausschließlich aus dem öffentlichen LocalBase-V1-Urlaubsautorisierungssnapshot abgeleitet; fehlende, deaktivierte, inkompatible oder ungültige Provider liefern keine EB-Ansicht und keine Peerfreigabe.
+- Büro Nordost, Büro West und Büro Süd sind eigenständig auswählbare
+  BO-Organisationssichten. Bereichsübergreifende Leitungen erscheinen durch
+  ihre Bereichsmitgliedschaften in jeder passenden Sicht, ohne die Büros
+  zusammenzufassen. EB-Ansichten je Büro und getrennte Peerrechte werden aus
+  dem öffentlichen Organisations- und Autorisierungsvertrag V1 von
+  `flz_organization` abgeleitet; fehlende, deaktivierte, inkompatible,
+  ungültige oder nicht verfügbare Provider liefern keine Organisationssicht
+  und keine fachliche Freigabe.
 - Die Pflegeansicht enthält Stv. PDL, Büroorganisation Pflege und PFK in dieser Reihenfolge. Stv. PDL darf Büroorganisation Pflege und PFK führen; PDL bleibt beiden übergeordnet. Fahrzeugverwaltung und Empfang bilden eigene globale Ansichten und folgen der gemeinsamen GF-Digi-/Sekretariats-Hierarchie.
 - Assistenzteams verwenden dieselbe Nextcloud-Gruppe wie FlzPlaner. Separate Gruppen mit einem Suffix wie `-Urlaub` sind keine unterstützte Datenquelle.
 - Eigene Urlaubszeiträume werden kompakt über Von/Bis/Notiz eingetragen. Berechtigte Koordinator*innen wechseln den Tagesstatus direkt in der Jahresmatrix; Konflikte werden inline angezeigt.
@@ -61,7 +72,15 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - App-Root und Tabellenwrapper erfüllen den im lokalen Skill `work-in-nextcloud-app` vollständig beschriebenen Nextcloud-Scrollvertrag.
 - Modelle nutzen `get(...)`, `get_all([...])` und `toArray()`.
 - Im Frontend bleibt `main.js` ein schlanker Bootstrap. `VacationApp` orchestriert API, Zustand und Ereignisse; `VacationPlan` rendert Teamauswahl, Jahresmatrix, eigene Anträge und Konflikte ohne eigene API-Zugriffe.
-- Organisationsweite Gruppen- und Genehmigungsfreigaben liegen bei einer Einzelinstallation im Adminabschnitt von Filzmann Urlaubsplanung, ab zwei FLZ-Produkten im Adminabschnitt der OrgSuite. Filzmann Urlaubsplanung besitzt derzeit keine persönlichen Dauer-Einstellungen und deshalb keinen leeren Einstellungstab.
+- Der Frontend-Unterbau nutzt `ApiClient` und `Notice` aus dem app-lokal
+  gebündelten Kategorie-A-Paket `flz_shared` unter
+  `window.OCA.FlzUrlaub.Shared`. Zur Laufzeit werden weder private
+  LocalBase-Browserassets noch das benachbarte Paketrepository geladen.
+- Organisationsweite Gruppen-, Hierarchie- und Genehmigungsfreigaben gehören
+  zur eigenständigen Laufzeit-App `flz_organization`. Filzmann Urlaubsplanung
+  konsumiert deren öffentlichen V1-Vertrag ausschließlich read-only und
+  besitzt derzeit keine persönlichen Dauer-Einstellungen und deshalb keinen
+  leeren Einstellungstab.
 
 ## Gemeinsame Suite-Navigation
 

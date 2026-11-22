@@ -1,0 +1,19 @@
+{
+    "schema": 1,
+    "app_id": "flzurlaub",
+    "app_namespace": "FlzUrlaub",
+    "php_namespace": "OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared",
+    "browser_global": "window.OCA.FlzUrlaub.Shared",
+    "packages": {
+        "php": {
+            "name": "filzmann/shared-runtime",
+            "version": "0.1.0",
+            "sha256": "415a26d0b27ab55ae56b65f19a37ef41473e84595ae4aa4c05ba0dde12b27644"
+        },
+        "browser": {
+            "name": "@filzmann/shared-browser",
+            "version": "0.1.0",
+            "sha256": "eb2c516d3beb43714f7c8782930ff82e435c39be2c479e75b801f0480be000f6"
+        }
+    }
+}

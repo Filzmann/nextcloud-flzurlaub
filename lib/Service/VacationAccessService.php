@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -25,7 +23,7 @@ final class VacationAccessService {
         private VacationAuthorizationPolicy $authorization,
         private VacationSettingsService $settings,
         private TemporaryAdminAccessChecker $temporaryAdminAccess,
-        private ?FlzOrganizationSettingsService $organization = null,
+        private OrganizationDefinitionGateway $organization,
     ) {}
 
     public function currentUser(): ?IUser {
@@ -71,7 +69,8 @@ final class VacationAccessService {
         $actorGroups = $this->groupIds($actor);
         $isAdmin = $this->hasFullAdminAccess($actor->getUID());
         $users = [];
-        $definition = $this->definition();
+        $definition = $this->organization->definition();
+        if ($definition === null) return [];
         $roleGroups = $definition->roleGroupIds();
         foreach ($roleGroups as $role) {
             foreach ($this->groups->get($role)?->getUsers() ?? [] as $user) {
@@ -151,7 +150,7 @@ final class VacationAccessService {
         return $this->groups->isAdmin($uid) && $this->temporaryAdminAccess->hasActiveGrant($uid);
     }
 
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
+    private function definition() {
+        return $this->organization->definition();
     }
 }

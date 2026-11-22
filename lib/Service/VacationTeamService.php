@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace OCA\FlzUrlaub\Service;
 
 use OCA\FlzUrlaub\Model\VacationTeam;
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 
 /**
@@ -19,7 +17,7 @@ final class VacationTeamService {
         private IGroupManager $groups,
         private VacationAccessService $access,
         private VacationViewDefinitionService $views,
-        private ?FlzOrganizationSettingsService $organization = null,
+        private OrganizationDefinitionGateway $organization,
     ) {}
 
     /** @return list<VacationTeam> */
@@ -57,7 +55,8 @@ final class VacationTeamService {
     private function asnTeams(array $employees): array {
         $employeeMap = array_column($employees, null, 'uid');
         $result = [];
-        $definition = $this->definition();
+        $definition = $this->organization->definition();
+        if ($definition === null) return [];
         $prefix = $definition->teamGroupPrefix();
         foreach ($this->groups->search($prefix) as $group) {
             $groupId = (string)$group->getGID();
@@ -93,7 +92,7 @@ final class VacationTeamService {
         return $definition['areas'] === [] || array_intersect($employee['areas'], $definition['areas']) !== [];
     }
 
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
+    private function definition() {
+        return $this->organization->definition();
     }
 }

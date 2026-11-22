@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    const client = new window.LocalBase.api.ApiClient({ appId: 'flzurlaub' });
+    const client = new window.OCA.FlzUrlaub.Shared.api.ApiClient({ appId: 'flzurlaub' });
     const confirmation = document.getElementById('flz-vacation-demo-confirm');
     const button = document.getElementById('flz-vacation-demo-install');
     const notice = document.getElementById('flz-vacation-demo-notice');

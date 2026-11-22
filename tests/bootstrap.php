@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
+$flzUrlaubRoot = dirname(__DIR__);
+
+require_once $flzUrlaubRoot . '/vendor/flz-shared/php/vendor/autoload.php';
 require_once __DIR__ . '/../../localbase/tests/bootstrap.php';
 
-$root = dirname(__DIR__);
-
-spl_autoload_register(static function (string $class) use ($root): void {
+spl_autoload_register(static function (string $class) use ($flzUrlaubRoot): void {
     $mappings = [
-        'OCA\\FlzUrlaub\\' => $root . '/lib/',
-        'OCA\\FlzDataProtection\\' => $root . '/tests/stubs/FlzDataProtection/',
+        'OCA\\FlzUrlaub\\' => $flzUrlaubRoot . '/lib/',
+        // Contract tests exercise the real optional provider through this test-only boundary.
+        'OCA\\FlzOrganization\\' => dirname($flzUrlaubRoot) . '/flz_organization/lib/',
+        'OCA\\FlzDataProtection\\' => $flzUrlaubRoot . '/tests/stubs/FlzDataProtection/',
     ];
     foreach ($mappings as $prefix => $directory) {
         if (!str_starts_with($class, $prefix)) continue;
@@ -19,3 +22,5 @@ spl_autoload_register(static function (string $class) use ($root): void {
         return;
     }
 });
+
+require_once __DIR__ . '/support/FixedOrganizationGateway.php';

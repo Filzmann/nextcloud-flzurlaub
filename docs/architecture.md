@@ -21,6 +21,16 @@ Datumsgrenzen der im Event angefragten fachlichen Zeitzone ausgewertet;
 Urlaubsnotizen verlassen Filzmann Urlaubsplanung nicht. Fachapps greifen nicht direkt auf
 Tabellen anderer Apps zu.
 
+## Frontend und gebündelte Browserbibliothek
+
+`main.js` bleibt der schlanke Bootstrap für `VacationApp`; API-Zugriffe und
+sichtbare Statusmeldungen verwenden die app-lokal gebündelten
+Kategorie-A-Verträge `ApiClient` und `Notice` aus `flz_shared`. Das
+reproduzierbare Browserartefakt liegt vollständig unter `js/shared`, besitzt
+einen eigenen Paket-Lock und stellt seine Laufzeittypen ausschließlich unter
+`window.OCA.FlzUrlaub.Shared` bereit. Es lädt weder Browserassets aus
+LocalBase noch Dateien aus einem benachbarten Workspace-Repository.
+
 ## Sichtbarkeit und Genehmigung
 
 Organigramm-Mitglieder lesen alle Organigramm-Mitarbeitenden über getrennte
@@ -89,18 +99,21 @@ bleiben fachlich beziehungsweise rechtlich zu klären.
 ## Organisation und Ansichten
 
 Gruppen, Rollen, Bereiche, Assistenzteam-Präfix, Hierarchie und
-Organisationssichten stammen aus derselben konfigurierbaren
-`FlzOrganizationDefinition` wie Filzmann Kalender und FlzPlaner. Separate
+Organisationssichten stammen aus dem aktivierten, kompatiblen und gültigen
+öffentlichen V1-Vertrag von `flz_organization`. Filzmann Urlaubsplanung hält
+nur eine app-lokale read-only Projektion der validierten Definition und führt
+weder eine zweite Konfiguration noch einen LocalBase-Fallback. Separate
 Assistenzteamgruppen mit einem Urlaubssuffix sind keine unterstützte
 Datenquelle.
 
 Büro Nordost, West und Süd bleiben eigenständige BO-Ansichten. Die Pflegeansicht
 enthält stellvertretende PDL, Büroorganisation Pflege und PFK in dieser
 Reihenfolge. Fahrzeugverwaltung und Empfang besitzen eigene globale Ansichten.
-EB-Ansichten je Büro und die getrennten Peerfreigaben stammen ausschließlich
-aus `OCA\LocalBase\PublicApi\V1\VacationAuthorizationSnapshotService`.
+EB-Ansichten je Büro werden aus der validierten Organisationsdefinition
+abgeleitet. Hierarchieentscheidungen und getrennte Peerfreigaben stammen aus
+`OCA\FlzOrganization\PublicApi\V1\OrganizationAuthorizationService`.
 Fehlende, deaktivierte, inkompatible, ungültige oder nicht verfügbare Provider
-liefern fail-closed keine EB-Ansicht und keine Peerfreigabe.
+liefern fail-closed keine Organisationssicht und keine fachliche Freigabe.
 
 ## Ferien und Feiertage
 
@@ -122,11 +135,11 @@ weder Konflikte, Verfügbarkeit, Genehmigungen noch Rechte.
 ## Standalone, Demo und Administration
 
 Ohne Filzmann Kalender bleibt Urlaubsplanung gültig; nur die automatische
-Dienst-/Terminkonfliktprüfung entfällt. Organisationsweite Gruppen- und
-Genehmigungsfreigaben liegen bei Einzelinstallation im Adminabschnitt von FLZ
-Urlaub und ab zwei FLZ-Produkten im OrgSuite-Adminabschnitt. Filzmann Urlaubsplanung besitzt
-derzeit keine persönlichen Dauereinstellungen und deshalb keinen leeren
-Einstellungstab.
+Dienst-/Terminkonfliktprüfung entfällt. Die eigenständige Laufzeit-App
+`flz_organization` ist die einzige Quelle für organisationsweite Gruppen,
+Hierarchie und Genehmigungsfreigaben. Filzmann Urlaubsplanung konsumiert
+diesen Vertrag read-only und besitzt derzeit keine persönlichen
+Dauereinstellungen und deshalb keinen leeren Einstellungstab.
 
 Das Demo-Pack läuft nur nach ausdrücklicher Bestätigung, verwendet gemeinsame
 synthetische Suite-Demokonten und übernimmt niemals fremde oder

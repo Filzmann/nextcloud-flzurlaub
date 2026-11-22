@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use OCA\FlzUrlaub\Service\VacationSettingsService;
 use OCA\FlzUrlaub\Service\VacationViewDefinitionService;
+use OCA\FlzUrlaub\Tests\Support\FixedOrganizationGateway;
 
 final class FixedVacationViewSettings extends VacationSettingsService {
     public function __construct(private array $views) {}
@@ -18,7 +19,7 @@ $views = [[
     'areaKey' => 'west',
     'areaGroupId' => 'Bereich-West',
 ]];
-$definitions = (new VacationViewDefinitionService(new FixedVacationViewSettings($views)))->all();
+$definitions = (new VacationViewDefinitionService(new FixedVacationViewSettings($views), FixedOrganizationGateway::defaults()))->all();
 $byId = array_column($definitions, null, 'id');
 
 if (isset($byId['eb'])) throw new RuntimeException('Die zweite, globale EB-Ansicht bleibt neben den kanonischen EB-Büroansichten bestehen.');
@@ -30,7 +31,7 @@ foreach (['office-west', 'pfk', 'staff'] as $required) {
     if (!isset($byId[$required])) throw new RuntimeException("Bestehende Organigrammansicht fehlt: {$required}");
 }
 
-$withoutProvider = (new VacationViewDefinitionService(new FixedVacationViewSettings([])))->all();
+$withoutProvider = (new VacationViewDefinitionService(new FixedVacationViewSettings([]), FixedOrganizationGateway::defaults()))->all();
 if (array_filter($withoutProvider, static fn(array $view): bool => str_starts_with($view['id'], 'eb-')) !== []) {
     throw new RuntimeException('Fehlender oder ungültiger Provider erzeugt dennoch EB-Büroansichten.');
 }

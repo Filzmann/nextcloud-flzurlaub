@@ -10,12 +10,18 @@ Der Zugriff verwendet ausschließlich die fest hinterlegte HTTPS-Adresse der Ope
 
 - Nextcloud 33 bis 35
 - PHP 8.3 oder neuer innerhalb des von Nextcloud 33 bis 35 unterstützten Bereichs
-- Laufzeitbasis: `localbase`; `orgsuite` ist ab zwei FLZ-Fachprodukten optional aktiv
+- Laufzeitbasis: `localbase` für die noch nicht migrierten Kalender-, Event-
+  und Navigationsverträge sowie `flz_organization` für Organisation und
+  Autorisierung; `orgsuite` ist ab zwei FLZ-Fachprodukten optional aktiv
 - App-ID und Installationsordner: `flzurlaub`
 
 ## Installation
 
-Für Staging und Auslieferung das Produktbundle `flz-product-flzurlaub-<release>.tar.gz` und dessen enthaltenes `install.sh` verwenden. Es prüft und installiert LocalBase automatisch; ab dem zweiten FLZ-Fachprodukt aktiviert es OrgSuite.
+Für Entwicklung und Staging müssen `localbase` und `flz_organization`
+aktiviert sein. Das Produktbundle `flz-product-flzurlaub-<release>.tar.gz` darf
+erst wieder als Auslieferungsnachweis gelten, wenn sein `install.sh` beide
+Laufzeitabhängigkeiten prüft und installiert; ab dem zweiten FLZ-Fachprodukt
+aktiviert es zusätzlich OrgSuite.
 
 Filzmann Urlaubsplanung funktioniert einzeln. Ohne Filzmann Kalender bleibt die Urlaubsplanung vollständig nutzbar; die automatische Prüfung genehmigter Urlaube gegen Dienste und Termine entfällt und wird sichtbar erklärt.
 
@@ -25,9 +31,10 @@ Organigramm-Mitglieder können zwischen Geschäftsführung/Stab, Pflege sowie
 BO- und EB-Ansichten je Büro wechseln. AS und zuständige EB sehen ihr
 gemeinsames ASN-Team. Kolleg*innen-Bearbeitung und Kolleg*innen-Genehmigung
 sind getrennte, standardmäßig deaktivierte Berechtigungen. Die Urlaubs-App
-liest diese Freigaben und die EB-Büroansichten ausschließlich über den
-öffentlichen LocalBase-V1-Vertrag und verweigert sie bei jedem ungültigen
-Providerzustand.
+liest Definition, Hierarchie, Freigaben und EB-Büroansichten ausschließlich
+über den öffentlichen V1-Vertrag von `flz_organization`. Ein fehlender,
+deaktivierter, inkompatibler, ungültiger oder nicht verfügbarer Provider
+liefert fail-closed keine Organisationssicht und keine fachliche Freigabe.
 
 ## Datenschutz
 

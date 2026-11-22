@@ -4,7 +4,7 @@
     const history=document.getElementById('flz-vacation-full-access-history');
     const status=document.getElementById('flz-vacation-full-access-status');
     if(!form||!history||!status)return;
-    const client=new window.LocalBase.api.ApiClient({appId:'flzurlaub'});
+    const client=new window.OCA.FlzUrlaub.Shared.api.ApiClient({appId:'flzurlaub'});
     const showStatus=(message,error=false)=>{status.textContent=message;status.className=error?'is-error':'is-success';status.setAttribute('role',error?'alert':'status');};
     const formatDate=value=>value?new Intl.DateTimeFormat('de-DE',{dateStyle:'short',timeStyle:'short'}).format(new Date(value)):'—';
     const renderGrant=grant=>{const row=document.createElement('tr');const now=Date.now();const active=!grant.revokedAt&&new Date(grant.startsAt).getTime()<=now&&new Date(grant.endsAt).getTime()>now;[grant.targetUid,grant.grantedBy,formatDate(grant.startsAt),formatDate(grant.endsAt),grant.revokedAt?formatDate(grant.revokedAt):(active?'Aktiv':'Planmäßig beendet')].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});const action=document.createElement('td');if(active){const button=document.createElement('button');button.type='button';button.textContent='Widerrufen';button.dataset.revokeUid=grant.targetUid;action.append(button);}row.append(action);return row;};

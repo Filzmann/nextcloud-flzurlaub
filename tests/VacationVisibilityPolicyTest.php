@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 
 use OCA\FlzUrlaub\Service\VacationVisibilityPolicy;
-use OCA\LocalBase\Organization\FlzOrganizationHierarchy;
-use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
+use OCA\FlzUrlaub\Tests\Support\FixedOrganizationGateway;
 
-$policy = new VacationVisibilityPolicy(new FlzOrganizationPermissionPolicy(new FlzOrganizationHierarchy()));
+$policy = new VacationVisibilityPolicy(FixedOrganizationGateway::defaults());
 $canView = static fn(string $actor, bool $admin, array $actorGroups, string $target, array $targetGroups): bool => $policy->canView($actor, $admin, $actorGroups, $target, $targetGroups);
 
 if (!$canView('admin', true, [], 'west', ['Buero', 'Bereich-West'])) throw new RuntimeException('Admin-Gesamtsicht fehlt.');

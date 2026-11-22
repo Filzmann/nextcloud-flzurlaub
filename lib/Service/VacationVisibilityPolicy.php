@@ -4,27 +4,21 @@ declare(strict_types=1);
 
 namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
-
 /**
  * Zweck: Begrenzt lesbare Urlaubspersonen auf das Organigramm sowie gemeinsame Assistenzteams.
  * Zusammenspiel: VacationAccessService liefert Gruppenprofile; VacationTeamService und API-Endpunkte erhalten nur den erlaubten Ausschnitt.
  * Vertrag: Organigramm-Mitglieder sehen die umschaltbaren Organigrammansichten; AS und EB sehen gemeinsame ASN-Teams. Ohne relevante Mitgliedschaft entsteht keine Selbstsicht.
  */
 final class VacationVisibilityPolicy {
-    public function __construct(
-        private FlzOrganizationPermissionPolicy $management,
-        private ?FlzOrganizationSettingsService $organization = null,
-    ) {}
+    public function __construct(private OrganizationDefinitionGateway $organization) {}
 
     public function canView(string $actorUid, bool $isAdmin, array $actorGroups, string $targetUid, array $targetGroups): bool {
         if ($isAdmin) return true;
-        if (!$this->hasRelevantMembership($actorGroups)) return false;
+        if ($this->definition() === null || !$this->hasRelevantMembership($actorGroups)) return false;
         if ($actorUid === $targetUid) return true;
         if ($this->hasOrganizationRole($actorGroups) && $this->hasOrganizationRole($targetGroups)) return true;
-        if ($this->management->canManage($actorUid, false, $actorGroups, $targetUid, $targetGroups, [], false)) return true;
+        if ($this->organization->canManage($actorUid, $actorGroups, $targetUid, $targetGroups, 'vacation.edit', false)) return true;
+        if ($this->definition() === null) return false;
         if (array_intersect($this->asnTeamCodes($actorGroups), $this->asnTeamCodes($targetGroups)) !== []) return true;
         foreach ($this->definition()->organizationTeams() as $team) {
             if ($this->belongsToOrganizationTeam($actorGroups, $team) && $this->belongsToOrganizationTeam($targetGroups, $team)) return true;
@@ -65,7 +59,7 @@ final class VacationVisibilityPolicy {
         return $areas === [] || array_intersect($areas, $groups) !== [];
     }
 
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
+    private function definition(): ?VacationOrganizationDefinition {
+        return $this->organization->definition();
     }
 }

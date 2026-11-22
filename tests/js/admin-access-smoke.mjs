@@ -8,7 +8,7 @@ const form=element();const history=element();const status=element();const reques
 const context={
     FormData:class{get(name){return {enabled:'on',targetUid:' admin-target ',durationMinutes:'60'}[name]??null;}},
     document:{getElementById(id){return {'flz-vacation-full-access-form':form,'flz-vacation-full-access-history':history,'flz-vacation-full-access-status':status}[id]||null;},createElement(){return element();}},
-    window:{LocalBase:{api:{ApiClient:class{async request(path,options={}){requests.push({path,options});return path==='/api/admin/full-access'&&!options.method?{history:[]}:{};}}}}},Intl,Date,encodeURIComponent,JSON,Promise,console,
+    window:{OCA:{FlzUrlaub:{Shared:{api:{ApiClient:class{async request(path,options={}){requests.push({path,options});return path==='/api/admin/full-access'&&!options.method?{history:[]}:{};}}}}}}},Intl,Date,encodeURIComponent,JSON,Promise,console,
 };
 runInNewContext(source,context,{filename:fileURLToPath(new URL('../../js/admin-access.js',import.meta.url))});
 for(let index=0;index<8;index++)await Promise.resolve();

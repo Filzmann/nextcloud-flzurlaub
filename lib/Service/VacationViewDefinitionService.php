@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
-
 /**
  * Projiziert die kanonischen Organigrammfilter für die Urlaubsansicht.
- * EB-Bürofilter stammen ausschließlich aus dem öffentlichen LocalBase-V1-Snapshot.
+ * EB-Bürofilter stammen ausschließlich aus dem öffentlichen flz_organization-V1-Snapshot.
  */
 final class VacationViewDefinitionService {
     public function __construct(
         private VacationSettingsService $settings,
-        private ?FlzOrganizationSettingsService $organization = null,
+        private OrganizationDefinitionGateway $organization,
     ) {}
 
     /** @return list<array{id:string,code:string,displayName:string,category:string,sortOrder:int,areas:list<string>,roles:list<string>}> */
     public function all(): array {
-        $definition = $this->definition();
+        $definition = $this->organization->definition();
+        if ($definition === null) return [];
         $result = [];
         foreach ($definition->organizationTeams() as $team) {
             if ($team['id'] === 'eb') continue;
@@ -47,9 +45,5 @@ final class VacationViewDefinitionService {
         }
 
         return $result;
-    }
-
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
     }
 }

@@ -28,6 +28,19 @@ Ergebniskennzeichnung: `[ ] erfolgreich` / `[ ] nicht erfolgreich` /
 `[ ] nicht geprüft`. Bei „nicht erfolgreich“ oder „nicht geprüft“ ist eine
 Begründung verpflichtend.
 
+## Dokumentierter Integrationsnachweis
+
+Die Urlaubsberechtigung wurde mit dem echten öffentlichen
+`flz_organization`-Provider geprüft. Der Test war zunächst rot, weil eine
+positive Providerentscheidung auch indirekte Führung erlaubte. Nach der
+Korrektur ist direkte Führung im selben Bereich erlaubt; indirekte und
+bereichsfremde Führung werden verweigert. Die ursprüngliche zeitliche
+Reihenfolge der früheren Organisationsintegration ist nicht belegt. Die
+getrennten Tests für Selbstgenehmigung und Peerrechte bleiben bestehen.
+Providerfehler führen zu einem verweigerten, nicht verfügbaren Zustand und
+verwerfen zwischengespeicherte Rechte; ein lokaler Ersatzpfad erteilt keine
+Freigabe.
+
 
 ## A. Einstieg, Ansichten und Jahresmatrix
 

@@ -1,7 +1,7 @@
 <?php
-\OCP\Util::addScript('localbase', 'api/api-client');
+\OCP\Util::addScript('flzurlaub', 'shared/api-client');
+\OCP\Util::addScript('flzurlaub', 'shared/ui');
 \OCP\Util::addScript('flzurlaub', 'admin-access');
-\OCP\Util::addScript('localbase', 'ui/ui');
 \OCP\Util::addScript('flzurlaub', 'models/holiday-calendar');
 \OCP\Util::addScript('flzurlaub', 'components/vacation-plan');
 \OCP\Util::addScript('flzurlaub', 'modules/vacation-app');

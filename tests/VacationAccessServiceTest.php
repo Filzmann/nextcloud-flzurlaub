@@ -42,8 +42,7 @@ namespace {
     use OCA\FlzUrlaub\Service\VacationSettingsService;
     use OCA\FlzUrlaub\Service\VacationVisibilityPolicy;
     use OCA\FlzUrlaub\Service\TemporaryAdminAccessChecker;
-    use OCA\LocalBase\Organization\FlzOrganizationHierarchy;
-    use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
+    use OCA\FlzUrlaub\Tests\Support\FixedOrganizationGateway;
     use OCP\IGroupManager;
     use OCP\IUserManager;
     use OCP\IUserSession;
@@ -65,12 +64,12 @@ namespace {
         public function get($uid): ?object { return $this->users[$uid] ?? null; }
     };
 
-    $policy = new FlzOrganizationPermissionPolicy(new FlzOrganizationHierarchy());
-    $visibility = new VacationVisibilityPolicy($policy);
-    $authorization = new VacationAuthorizationPolicy();
+    $organization = FixedOrganizationGateway::defaults();
+    $visibility = new VacationVisibilityPolicy($organization);
+    $authorization = new VacationAuthorizationPolicy($organization);
     $settings = new VacationSettingsService();
     $adminAccess = new TemporaryAdminAccessChecker();
-    $access = new VacationAccessService($groups, $session, $users, $visibility, $authorization, $settings, $adminAccess);
+    $access = new VacationAccessService($groups, $session, $users, $visibility, $authorization, $settings, $adminAccess, $organization);
 
     $assert = static function (bool $condition, string $message): void {
         if (!$condition) throw new RuntimeException($message);

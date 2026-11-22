@@ -1,5 +1,5 @@
 <?php
-\OCP\Util::addScript('localbase', 'api/api-client');
+\OCP\Util::addScript('flzurlaub', 'shared/api-client');
 \OCP\Util::addScript('flzurlaub', 'admin');
 \OCP\Util::addStyle('flzurlaub', 'admin');
 ?>
