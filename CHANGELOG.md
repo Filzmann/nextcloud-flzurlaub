@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+- L10N-Migration (ZM-06): sichtbare Texte über Nextcloud-l10n (deutsche Quelltexte, Kataloge `l10n/en.*` + `l10n/en_GB.*`), inkl. `tests/Ui/L10nCatalogContractTest.php` und `docs/l10n-inventory.md`.
+
+- Organisations-Testfixtures stammen aus dem gepinnten `flz_organization`-
+  Provider statt aus wechselnden LocalBase-Standardwerten; dadurch prüfen
+  lokaler Lauf und CI denselben Organisationsvertrag.
+- Selbstgenehmigung bleibt auch bei aktivierten Kolleg*innenrechten gesperrt;
+  Fehler des Organisations- oder Peerproviders verweigern den Zugriff
+  geschlossen und verwerfen zwischengespeicherte Rechte.
+- Die Urlaubsberechtigung prüft trotz positiver V1-Autorisierung zusätzlich
+  direkte Führung und Bereich: direkte bereichsgleiche Führung ist erlaubt,
+  indirekte und bereichsfremde Führung wird verweigert. Ein Test mit dem echten
+  `flz_organization`-Provider war wegen indirekter Führung zunächst rot und ist
+  nach der Korrektur grün. Der ursprüngliche zeitliche Ablauf der früheren
+  Organisationsintegration ist nicht belegt und wird nicht als vollständiger
+  Red–Green-Nachweis behauptet.
+- Ausführbare JavaScript-Charakterisierungstests sichern Demo-Pack-Bestätigung,
+  Erfolgs- und Fehlerzustände sowie den App-Bootstrap einschließlich
+  Fehlernachrichten ab; beide Einstiege besitzen einen messbaren Laufzeitnachweis.
+- Der isolierte Category-A-Browser-Smoke verwendet absolute Quellpfade, damit
+  ausgeführte Bundle-Dateien der JavaScript-Coverage zugeordnet werden.
+- Zustandslose Kategorie-A-Bausteine (`ModelApiTrait`, `ApiClient` und
+  `Notice`) als app-lokal gebündelte, versionsgesperrte und namespace-isolierte
+  Abhängigkeit eingebunden; das eigenständige Browserartefakt besitzt einen
+  eigenen Lock und erzeugt ausschließlich `window.OCA.FlzUrlaub.Shared`. Die
+  verbleibenden LocalBase-Nutzungen gehören weiterhin zu den getrennt zu
+  migrierenden Kategorie-B-Verträgen.
+- Organigrammansichten für alle Organigramm-Mitglieder geöffnet, EB-Ansichten
+  je Büro und getrennte Peer-Bearbeitungs-/Genehmigungsrechte auf den
+  fail-closed öffentlichen V1-Vertrag von `flz_organization` ohne
+  LocalBase-Fallback umgestellt sowie das
+  ausschließlich synthetische Demo-Pack als technische Adminausnahme ohne
+  fachlichen Vollzugriff abgesichert.
 - Nextcloud 35.0.1 durch Fresh Install, Upgrade 34→35 sowie Provider-,
   Berechtigungs-, Runtime-, UI-/API- und Asset-Smokes nachgewiesen und den
   unterstützten Bereich auf die lückenlosen Hauptversionen 33 bis 35

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OCA\FlzUrlaub\Model;
 
 use InvalidArgumentException;
-use OCA\LocalBase\Model\ModelApiTrait;
+use OCA\FlzUrlaub\Vendor\Filzmann\Shared\Model\ModelApiTrait;
 
 /** Zweck: Beschreibt eine dynamische Urlaubssicht aus ASN- oder Organisationsgruppen. */
 final class VacationTeam {

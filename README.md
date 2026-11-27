@@ -10,16 +10,31 @@ Der Zugriff verwendet ausschließlich die fest hinterlegte HTTPS-Adresse der Ope
 
 - Nextcloud 33 bis 35
 - PHP 8.3 oder neuer innerhalb des von Nextcloud 33 bis 35 unterstützten Bereichs
-- Laufzeitbasis: `localbase`; `orgsuite` ist ab zwei FLZ-Fachprodukten optional aktiv
+- Laufzeitbasis: `localbase` für die noch nicht migrierten Kalender-, Event-
+  und Navigationsverträge sowie `flz_organization` für Organisation und
+  Autorisierung; `orgsuite` ist ab zwei FLZ-Fachprodukten optional aktiv
 - App-ID und Installationsordner: `flzurlaub`
 
 ## Installation
 
-Für Staging und Auslieferung das Produktbundle `flz-product-flzurlaub-<release>.tar.gz` und dessen enthaltenes `install.sh` verwenden. Es prüft und installiert LocalBase automatisch; ab dem zweiten FLZ-Fachprodukt aktiviert es OrgSuite.
+Für Entwicklung und Staging müssen `localbase` und `flz_organization`
+aktiviert sein. Das Produktbundle `flz-product-flzurlaub-<release>.tar.gz` darf
+erst wieder als Auslieferungsnachweis gelten, wenn sein `install.sh` beide
+Laufzeitabhängigkeiten prüft und installiert; ab dem zweiten FLZ-Fachprodukt
+aktiviert es zusätzlich OrgSuite.
 
 Filzmann Urlaubsplanung funktioniert einzeln. Ohne Filzmann Kalender bleibt die Urlaubsplanung vollständig nutzbar; die automatische Prüfung genehmigter Urlaube gegen Dienste und Termine entfällt und wird sichtbar erklärt.
 
 Der Befehl `flzurlaub:demo:seed` erzeugt synthetische Testdaten und wird nicht automatisch ausgeführt.
+
+Organigramm-Mitglieder können zwischen Geschäftsführung/Stab, Pflege sowie
+BO- und EB-Ansichten je Büro wechseln. AS und zuständige EB sehen ihr
+gemeinsames ASN-Team. Kolleg*innen-Bearbeitung und Kolleg*innen-Genehmigung
+sind getrennte, standardmäßig deaktivierte Berechtigungen. Die Urlaubs-App
+liest Definition, Hierarchie, Freigaben und EB-Büroansichten ausschließlich
+über den öffentlichen V1-Vertrag von `flz_organization`. Ein fehlender,
+deaktivierter, inkompatibler, ungültiger oder nicht verfügbarer Provider
+liefert fail-closed keine Organisationssicht und keine fachliche Freigabe.
 
 ## Datenschutz
 
@@ -38,6 +53,11 @@ Datenschutz-Center bleibt Filzmann Urlaubsplanung eigenständig nutzbar.
 
 Ein Nextcloud-Administrationskonto erhält nicht automatisch Zugriff auf alle Urlaubsdaten. Ausschließlich Mitglieder der Nextcloud-Gruppe `Datenschutzbeauftragte` verwalten die app-lokale Freigabe im Hauptbereich von Filzmann Urlaubsplanung für ein aktives Administrationskonto; der Datenschutzrolle muss selbst kein nativer Adminstatus zugewiesen sein. Die Freigabe gilt für 1, 4, 8 oder höchstens 24 Stunden und kann vorzeitig widerrufen werden. Native Administration allein genügt weder für die Freigabesteuerung noch für den fachlichen Zugriff. Beginn, geplantes Ende, Freigabe und Widerruf werden app-lokal protokolliert und in Datenschutz- sowie Berechtigungsprovider einbezogen.
 
+Davon ausgenommen ist ausschließlich die manuell bestätigte Installation des
+synthetischen Demo-Packs im technischen Adminbereich. Sie verlangt aktuellen
+nativen Adminstatus, aber keine fachliche Vollzugriffsfreigabe, und eröffnet
+keinen Zugriff auf reale Urlaubsdaten.
+
 ## Roadmap
 
 Geplante Erweiterungen und offene Produktentscheidungen stehen in der [Roadmap](ROADMAP.md).
@@ -51,6 +71,7 @@ Installations-, Betriebs- und Abnahmeunterlagen stehen im öffentlichen [Filzman
 ## Dokumentation
 
 - [Architektur](docs/architecture.md)
+- [Lokalisierungsinventar](docs/l10n-inventory.md)
 - [Manuelle Abnahme](docs/manual-acceptance.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)

@@ -4,10 +4,9 @@ set -euo pipefail
 base_url="${FLZU_BASE_URL:-https://nextcloud-dev.ddev.site}"
 ddev_project="${FLZU_DDEV_PROJECT:-$(cd "$(dirname "$0")/../../nextcloud-dev" && pwd)}"
 suffix="$(date +%s)-$$"
-# Nur im Arbeitsspeicher vorhandenes Einmalpasswort für alle temporären Matrix-Konten.
-password="$(php -r 'echo bin2hex(random_bytes(24));')"
+# Lokaler Testvertrag: synthetische Konten verwenden ihre UID auch als Passwort.
 team_code="Smoke$$"
-team_group="flz-ASN-$team_code"
+team_group="ASN-$team_code"
 created_users=()
 
 occ() {
@@ -26,7 +25,7 @@ trap cleanup EXIT
 create_user() {
     local uid="$1"
     shift
-    (cd "$ddev_project" && ddev exec -d /var/www/html/html env OC_PASS="$password" php occ user:add --password-from-env "$uid") >/dev/null
+    (cd "$ddev_project" && ddev exec -d /var/www/html/html env OC_PASS="$uid" php occ user:add --password-from-env "$uid") >/dev/null
     created_users+=("$uid")
     local group
     for group in "$@"; do
@@ -37,7 +36,7 @@ create_user() {
 assert_access() {
     local uid="$1"
     local expected="$2"
-    FLZU_BASE_URL="$base_url" FLZU_USER="$uid" FLZU_PASSWORD="$password" FLZU_EXPECTED="$expected" \
+    FLZU_BASE_URL="$base_url" FLZU_USER="$uid" FLZU_PASSWORD="$uid" FLZU_EXPECTED="$expected" \
         "$(dirname "$0")/access-http-smoke.sh"
 }
 
@@ -58,25 +57,28 @@ bo_peer="${prefix}-bo-peer"
 pdl_target="${prefix}-pdl-target"
 bl_target="${prefix}-bl-target"
 
-create_user "$pdl" flz-PDL
-create_user "$bl_now" flz-BL flz-Bereich-Nordost flz-Bereich-West
-create_user "$bo_actor" flz-Buero flz-Bereich-Nordost
-create_user "$pfk_actor" flz-PFK
-create_user "$eb_actor" flz-EB flz-Bereich-West "$team_group"
+create_user "$pdl" PDL
+create_user "$bl_now" BL Bereich-Nordost Bereich-West
+create_user "$bo_actor" Buero Bereich-Nordost
+create_user "$pfk_actor" PFK
+create_user "$eb_actor" EB Bereich-West "$team_group"
 create_user "$assistant_actor" "$team_group"
-create_user "$pfk_target" flz-PFK
-create_user "$bo_no" flz-Buero flz-Bereich-Nordost
-create_user "$bo_west" flz-Buero flz-Bereich-West
-create_user "$bo_south" flz-Buero flz-Bereich-Sued
-create_user "$bo_peer" flz-Buero flz-Bereich-Nordost
-create_user "$pdl_target" flz-PDL
-create_user "$bl_target" flz-BL flz-Bereich-Nordost flz-Bereich-West
+create_user "$pfk_target" PFK
+create_user "$bo_no" Buero Bereich-Nordost
+create_user "$bo_west" Buero Bereich-West
+create_user "$bo_south" Buero Bereich-Sued
+create_user "$bo_peer" Buero Bereich-Nordost
+create_user "$pdl_target" PDL
+create_user "$bl_target" BL Bereich-Nordost Bereich-West
 
-assert_access "$pdl" "$pdl=true:true:false,$pfk_target=true:true:true,$bo_no=false:*:*"
-assert_access "$bl_now" "$bl_now=true:true:false,$bo_no=true:true:true,$bo_west=true:true:true,$bo_south=false:*:*,$pfk_target=false:*:*"
-assert_access "$bo_actor" "$bo_actor=true:true:false,$bo_peer=true:*:*,$bo_west=false:*:*,$bl_target=true:false:false"
-assert_access "$pfk_actor" "$pfk_actor=true:true:false,$pfk_target=true:*:*,$pdl_target=false:*:*"
-assert_access "$eb_actor" "$eb_actor=true:true:false,$assistant_actor=true:true:true,$bo_west=false:*:*"
+# Sichtbarkeit: Mitglieder mit Organisationsrolle sehen einander (kanonischer
+# Vertrag lt. VacationVisibilityPolicyTest); Schreibrechte folgen der direkten
+# Hierarchie und bleiben davon unberuehrt.
+assert_access "$pdl" "$pdl=true:true:false,$pfk_target=true:true:true,$bo_no=true:false:false"
+assert_access "$bl_now" "$bl_now=true:true:false,$bo_no=true:true:true,$bo_west=true:true:true,$bo_south=true:false:false,$pfk_target=true:false:false"
+assert_access "$bo_actor" "$bo_actor=true:true:false,$bo_peer=true:*:*,$bo_west=true:false:false,$bl_target=true:false:false"
+assert_access "$pfk_actor" "$pfk_actor=true:true:false,$pfk_target=true:*:*,$pdl_target=true:false:false"
+assert_access "$eb_actor" "$eb_actor=true:true:false,$assistant_actor=true:true:true,$bo_west=true:false:false"
 assert_access "$assistant_actor" "$assistant_actor=true:true:false,$eb_actor=true:*:*,$pfk_target=false:*:*"
 
 echo "Filzmann Urlaubsplanung DDEV access matrix smoke: OK"

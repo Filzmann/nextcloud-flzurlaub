@@ -1,5 +1,7 @@
 .DS_Store
-/vendor/
+/vendor/*
+!/vendor/flz-shared/
+!/vendor/flz-shared/**
 /node_modules/
 /build/
 /dist/

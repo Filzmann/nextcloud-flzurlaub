@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
 
     /**
      * Zweck: Orchestriert Urlaubs-API, Seitenzustand und Benutzerinteraktionen.
@@ -48,7 +50,7 @@
             status.hidden = automaticCheck;
             status.textContent = automaticCheck
                 ? ''
-                : 'Filzmann Kalender ist nicht aktiv. Dienstkonflikte werden nicht automatisch geprüft.';
+                : translate('flzurlaub', 'Filzmann Kalender ist nicht aktiv. Dienstkonflikte werden nicht automatisch geprüft.');
         }
 
         async loadYear() {
@@ -95,7 +97,7 @@
                     body: JSON.stringify({ employeeUid: employee.uid, date: button.closest('td').dataset.day, status: button.dataset.status }),
                 });
                 await this.loadYear();
-                this.notice.success('Urlaubsstatus gespeichert.');
+                this.notice.success(translate('flzurlaub', 'Urlaubsstatus gespeichert.'));
             } catch (error) {
                 this.plan.showConflicts(error);
                 this.notice.error(error);
@@ -119,7 +121,7 @@
                 });
                 formElement.reset();
                 await this.loadYear();
-                this.notice.success('Urlaub eingetragen.');
+                this.notice.success(translate('flzurlaub', 'Urlaub eingetragen.'));
             } catch (error) {
                 this.notice.error(error);
             }
@@ -131,7 +133,7 @@
             try {
                 await this.client.request(`/api/vacations/${this.client.encode(button.dataset.id)}`, { method: 'DELETE', body: '{}' });
                 await this.loadYear();
-                this.notice.success('Urlaub gelöscht.');
+                this.notice.success(translate('flzurlaub', 'Urlaub gelöscht.'));
             } catch (error) {
                 this.notice.error(error);
             }

@@ -19,6 +19,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
+use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -35,9 +36,16 @@ final class ApiController extends Controller {
         private IntegrationStatusService $integrations,
         private HolidayCalendarService $holidays,
         private LoggerInterface $logger,
+        private ?IL10N $l10n = null,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
+    /** Lokalisierung fachlicher Texte; im Test ohne IL10N identity. */
+    private function t(string $text): string
+    {
+        return $this->l10n?->t($text) ?? $text;
+    }
+
 
     #[NoAdminRequired, NoCSRFRequired]
     public function week(string $start): JSONResponse {
@@ -54,7 +62,7 @@ final class ApiController extends Controller {
             return new JSONResponse($data);
         } catch (\Throwable $error) {
             $this->logger->error('Urlaubswoche konnte nicht geladen werden.', ['exception' => $error]);
-            return new JSONResponse(['error' => 'Die Urlaubswoche konnte nicht geladen werden.'], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['error' => $this->t('Die Urlaubswoche konnte nicht geladen werden.')], Http::STATUS_BAD_REQUEST);
         }
     }
 
@@ -76,7 +84,7 @@ final class ApiController extends Controller {
         if (!$this->access->canView()) return $this->denied();
 
         $team = $this->teams->get($teamId);
-        if ($team === null) return new JSONResponse(['error' => 'Team nicht gefunden.'], Http::STATUS_NOT_FOUND);
+        if ($team === null) return new JSONResponse(['error' => $this->t('Team nicht gefunden.')], Http::STATUS_NOT_FOUND);
 
         try {
             $data = $this->vacations->year($team, $year, $this->access);
@@ -84,7 +92,7 @@ final class ApiController extends Controller {
             return new JSONResponse($data);
         } catch (\Throwable $error) {
             $this->logger->error('Urlaubsjahr konnte nicht geladen werden.', ['exception' => $error]);
-            return new JSONResponse(['error' => 'Das Urlaubsjahr konnte nicht geladen werden.'], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['error' => $this->t('Das Urlaubsjahr konnte nicht geladen werden.')], Http::STATUS_BAD_REQUEST);
         }
     }
 
@@ -98,7 +106,7 @@ final class ApiController extends Controller {
         try {
             $existing = $this->vacations->existing($id);
         } catch (\Throwable) {
-            return new JSONResponse(['error' => 'Nicht gefunden.'], Http::STATUS_NOT_FOUND);
+            return new JSONResponse(['error' => $this->t('Nicht gefunden.')], Http::STATUS_NOT_FOUND);
         }
         if (
             !$this->access->isVisibleEmployee($existing->employeeUid())
@@ -124,7 +132,7 @@ final class ApiController extends Controller {
             $this->vacations->delete($id);
             return new JSONResponse(['deleted' => true]);
         } catch (\Throwable) {
-            return new JSONResponse(['error' => 'Der Urlaub konnte nicht gelöscht werden.'], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['error' => $this->t('Der Urlaub konnte nicht gelöscht werden.')], Http::STATUS_BAD_REQUEST);
         }
     }
 
@@ -153,11 +161,11 @@ final class ApiController extends Controller {
                 ),
             ]);
         } catch (VacationConflictException $error) {
-            return new JSONResponse(['error' => $error->getMessage(), 'conflicts' => $error->conflicts()], Http::STATUS_CONFLICT);
+            return new JSONResponse(['error' => $this->t($error->getMessage()), 'conflicts' => $error->conflicts()], Http::STATUS_CONFLICT);
         } catch (VacationOverlapException $error) {
-            return new JSONResponse(['error' => $error->getMessage()], Http::STATUS_CONFLICT);
+            return new JSONResponse(['error' => $this->t($error->getMessage())], Http::STATUS_CONFLICT);
         } catch (\Throwable) {
-            return new JSONResponse(['error' => 'Der Urlaubsstatus konnte nicht gespeichert werden.'], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['error' => $this->t('Der Urlaubsstatus konnte nicht gespeichert werden.')], Http::STATUS_BAD_REQUEST);
         }
     }
 
@@ -174,15 +182,15 @@ final class ApiController extends Controller {
                 'id' => $this->vacations->save($payload, $id, $this->access->currentUser()?->getUID() ?? ''),
             ]);
         } catch (VacationConflictException $error) {
-            return new JSONResponse(['error' => $error->getMessage(), 'conflicts' => $error->conflicts()], Http::STATUS_CONFLICT);
+            return new JSONResponse(['error' => $this->t($error->getMessage()), 'conflicts' => $error->conflicts()], Http::STATUS_CONFLICT);
         } catch (VacationOverlapException $error) {
-            return new JSONResponse(['error' => $error->getMessage()], Http::STATUS_CONFLICT);
+            return new JSONResponse(['error' => $this->t($error->getMessage())], Http::STATUS_CONFLICT);
         } catch (\Throwable) {
-            return new JSONResponse(['error' => 'Der Urlaub ist ungültig.'], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['error' => $this->t('Der Urlaub ist ungültig.')], Http::STATUS_BAD_REQUEST);
         }
     }
 
     private function denied(): JSONResponse {
-        return new JSONResponse(['error' => 'Keine Berechtigung.'], Http::STATUS_FORBIDDEN);
+        return new JSONResponse(['error' => $this->t('Keine Berechtigung.')], Http::STATUS_FORBIDDEN);
     }
 }

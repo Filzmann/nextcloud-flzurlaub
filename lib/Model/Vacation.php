@@ -6,7 +6,7 @@ namespace OCA\FlzUrlaub\Model;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
-use OCA\LocalBase\Model\ModelApiTrait;
+use OCA\FlzUrlaub\Vendor\Filzmann\Shared\Model\ModelApiTrait;
 
 /** Zweck: Validiertes persistentes Urlaubsobjekt mit inklusivem Enddatum. */
 final class Vacation {

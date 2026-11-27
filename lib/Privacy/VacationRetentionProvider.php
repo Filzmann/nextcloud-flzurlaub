@@ -43,7 +43,7 @@ final class VacationRetentionProvider implements RetentionProvider {
     }
     private function offset(?string $cursor):int{
         if($cursor===null)return 0;
-        if(!preg_match('/^(?:0|[1-9][0-9]{0,8})$/',$cursor))throw new InvalidArgumentException('Invalid vacation retention cursor.');
+        if(!preg_match('/^(?:0|[1-9][0-9]{0,8})$/',$cursor))throw new InvalidArgumentException('Ungültiger Urlaubs-Retention-Cursor.');
         return (int)$cursor;
     }
 }

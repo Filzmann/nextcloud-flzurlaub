@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace OCA\FlzUrlaub\Service;
 
 use OCA\FlzUrlaub\Model\VacationTeam;
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 
 /**
@@ -18,14 +16,15 @@ final class VacationTeamService {
     public function __construct(
         private IGroupManager $groups,
         private VacationAccessService $access,
-        private ?FlzOrganizationSettingsService $organization = null,
+        private VacationViewDefinitionService $views,
+        private OrganizationDefinitionGateway $organization,
     ) {}
 
     /** @return list<VacationTeam> */
     public function all(): array {
         $employees = $this->access->visibleEmployees();
         $teams = $this->asnTeams($employees);
-        foreach ($this->organizationDefinitions() as $definition) {
+        foreach ($this->views->all() as $definition) {
             $members = array_values(array_filter(
                 $employees,
                 fn(array $employee): bool => $this->matchesOrganizationTeam($employee, $definition),
@@ -56,7 +55,8 @@ final class VacationTeamService {
     private function asnTeams(array $employees): array {
         $employeeMap = array_column($employees, null, 'uid');
         $result = [];
-        $definition = $this->definition();
+        $definition = $this->organization->definition();
+        if ($definition === null) return [];
         $prefix = $definition->teamGroupPrefix();
         foreach ($this->groups->search($prefix) as $group) {
             $groupId = (string)$group->getGID();
@@ -87,32 +87,12 @@ final class VacationTeamService {
         return $result;
     }
 
-    private function organizationDefinitions(): array {
-        $definition = $this->definition();
-        $result = [];
-        foreach ($definition->organizationTeams() as $team) {
-            $roles = array_values(array_filter(array_map($definition->roleGroupId(...), $team['roles'])));
-            $areas = array_values(array_filter(array_map($definition->areaGroupId(...), $team['areas'])));
-            $result[] = [
-                'id' => $team['id'],
-                'code' => $team['id'],
-                'displayName' => $team['label'],
-                'category' => 'organization',
-                'sortOrder' => $team['sortOrder'],
-                'areas' => $areas,
-                'roles' => $roles,
-            ];
-        }
-
-        return $result;
-    }
-
     private function matchesOrganizationTeam(array $employee, array $definition): bool {
         if (array_intersect($employee['roles'], $definition['roles']) === []) return false;
         return $definition['areas'] === [] || array_intersect($employee['areas'], $definition['areas']) !== [];
     }
 
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
+    private function definition() {
+        return $this->organization->definition();
     }
 }

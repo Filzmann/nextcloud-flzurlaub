@@ -1,6 +1,8 @@
 (function() {
     'use strict';
-    const client = new window.LocalBase.api.ApiClient({ appId: 'flzurlaub' });
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
+    const client = new window.OCA.FlzUrlaub.Shared.api.ApiClient({ appId: 'flzurlaub' });
     const confirmation = document.getElementById('flz-vacation-demo-confirm');
     const button = document.getElementById('flz-vacation-demo-install');
     const notice = document.getElementById('flz-vacation-demo-notice');
@@ -11,7 +13,7 @@
         button.disabled = true;
         notice.hidden = false;
         notice.className = 'flz-vacation-admin-notice';
-        notice.textContent = 'Demo-Pack wird geprüft und installiert …';
+        notice.textContent = translate('flzurlaub', 'Demo-Pack wird geprüft und installiert …');
         try {
             const response = await client.request('/api/admin/demo-pack/install', { method: 'POST', body: '{}' });
             notice.classList.add('is-success');
@@ -19,7 +21,7 @@
             confirmation.checked = false;
         } catch (error) {
             notice.classList.add('is-error');
-            notice.textContent = error.message || 'Das Demo-Pack konnte nicht installiert werden.';
+            notice.textContent = error.message || translate('flzurlaub', 'Das Demo-Pack konnte nicht installiert werden.');
             button.disabled = false;
         }
     });

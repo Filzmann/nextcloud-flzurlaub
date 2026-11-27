@@ -15,7 +15,8 @@ foreach (['FlzDemoFixtureCatalog', 'DemoAccountProvisioningService', "->provisio
 foreach (['IGroupManager', '->getUsers()', 'array_values('] as $unsafe) if (str_contains($command, $unsafe)) throw new RuntimeException("Urlaubs-Demo verwendet reale Gruppenmitglieder: {$unsafe}");
 foreach (['/api/admin/demo-pack/install', "'verb' => 'POST'"] as $contract) if (!str_contains($routes, $contract)) throw new RuntimeException("Demo-Route fehlt: {$contract}");
 foreach (['<admin>OCA\\FlzUrlaub\\Settings\\Admin</admin>', '<admin-section>OCA\\FlzUrlaub\\Settings\\AdminSection</admin-section>'] as $contract) if (!str_contains($info, $contract)) throw new RuntimeException("Adminregistrierung fehlt: {$contract}");
-foreach (['TemporaryAdminAccessChecker', 'private function isAdmin()', '$this->groups->isAdmin(', 'hasActiveGrant(', 'Http::STATUS_FORBIDDEN'] as $contract) if (!str_contains($controller, $contract)) throw new RuntimeException("Adminschutz fehlt: {$contract}");
+foreach (['private function isAdmin()', '$this->groups->isAdmin(', 'Http::STATUS_FORBIDDEN'] as $contract) if (!str_contains($controller, $contract)) throw new RuntimeException("Adminschutz fehlt: {$contract}");
+foreach (['TemporaryAdminAccessChecker', 'hasActiveGrant('] as $forbidden) if (str_contains($controller, $forbidden)) throw new RuntimeException("Technische Demo-Installation verlangt noch fachliche Vollzugriffsfreigabe: {$forbidden}");
 if (str_contains($controller, 'NoCSRFRequired')) throw new RuntimeException('Demo-Installation umgeht CSRF.');
 foreach (['id="flz-vacation-demo-confirm"', 'id="flz-vacation-demo-install"', 'nicht automatisch'] as $contract) if (!str_contains($template, $contract)) throw new RuntimeException("Demo-Adminoberfläche fehlt: {$contract}");
 

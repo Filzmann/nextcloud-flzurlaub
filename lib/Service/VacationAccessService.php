@@ -4,29 +4,26 @@ declare(strict_types=1);
 
 namespace OCA\FlzUrlaub\Service;
 
-use OCA\LocalBase\Organization\FlzOrganizationDefinition;
-use OCA\LocalBase\Organization\FlzOrganizationPermissionPolicy;
-use OCA\LocalBase\Organization\FlzOrganizationSettingsService;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 
 /**
- * Zweck: Erzwingt Mitgliedschafts-/Hierarchiesicht sowie eigene, Leitungs- und freigeschaltete Peer-Schreibrechte.
- * Zusammenspiel: API -> VacationAccessService -> zentrale Organisationspolicy, Sichtbarkeitspolicy und persönliche Freigaben.
- * Vertrag: Deny by default; Selbst-, Peer-, Team- und Leitungsrechte werden ausschließlich aus dem aktuellen Konto abgeleitet.
+ * Zweck: Erzwingt Sichtbarkeit sowie getrennte eigene, direkte Leitungs- und Peer-Aktionsrechte.
+ * Zusammenspiel: API -> VacationAccessService -> Sichtbarkeits- und Aktionspolicy sowie persönliche Adminfreigaben.
+ * Vertrag: Deny by default; Organigrammzugehörigkeit allein erteilt kein Schreib- oder Genehmigungsrecht.
  */
 final class VacationAccessService {
     public function __construct(
         private IGroupManager $groups,
         private IUserSession $session,
         private IUserManager $users,
-        private FlzOrganizationPermissionPolicy $policy,
         private VacationVisibilityPolicy $visibility,
+        private VacationAuthorizationPolicy $authorization,
         private VacationSettingsService $settings,
         private TemporaryAdminAccessChecker $temporaryAdminAccess,
-        private ?FlzOrganizationSettingsService $organization = null,
+        private OrganizationDefinitionGateway $organization,
     ) {}
 
     public function currentUser(): ?IUser {
@@ -38,11 +35,11 @@ final class VacationAccessService {
     }
 
     public function canManage(string $employeeUid): bool {
-        return $this->decide($employeeUid, true);
+        return $this->decide($employeeUid, false);
     }
 
     public function canApprove(string $employeeUid): bool {
-        return $this->decide($employeeUid, false);
+        return $this->decide($employeeUid, true);
     }
 
     public function canManageStatus(string $employeeUid, string $status): bool {
@@ -72,7 +69,8 @@ final class VacationAccessService {
         $actorGroups = $this->groupIds($actor);
         $isAdmin = $this->hasFullAdminAccess($actor->getUID());
         $users = [];
-        $definition = $this->definition();
+        $definition = $this->organization->definition();
+        if ($definition === null) return [];
         $roleGroups = $definition->roleGroupIds();
         foreach ($roleGroups as $role) {
             foreach ($this->groups->get($role)?->getUsers() ?? [] as $user) {
@@ -116,31 +114,32 @@ final class VacationAccessService {
         return $result;
     }
 
-    private function decide(string $employeeUid, bool $allowSelf): bool {
+    private function decide(string $employeeUid, bool $approval): bool {
         $actor = $this->currentUser();
         $target = $this->users->get($employeeUid);
         if ($actor === null || $target === null) return false;
 
         $actorGroups = $this->groupIds($actor);
         $targetGroups = $this->groupIds($target);
-        if ($this->policy->canManage(
+        if ($this->hasFullAdminAccess($actor->getUID())) return true;
+
+        if ($approval) {
+            return $this->authorization->canApprove(
+                $actor->getUID(),
+                $actorGroups,
+                $employeeUid,
+                $targetGroups,
+                $this->settings->enabledPeerApprovalGroups(),
+            );
+        }
+
+        return $this->authorization->canManagePlanned(
             $actor->getUID(),
-            $this->hasFullAdminAccess($actor->getUID()),
             $actorGroups,
             $employeeUid,
             $targetGroups,
-            $this->settings->enabledPeerGroups(),
-            $allowSelf,
-        )) {
-            return true;
-        }
-        if ($actor->getUID() === $employeeUid) return false;
-
-        $sharedAsnTeams = array_intersect($this->asnTeamCodes($actorGroups), $this->asnTeamCodes($targetGroups));
-        if ($sharedAsnTeams === []) return false;
-        if (in_array($this->definition()->roleGroupId('eb'), $actorGroups, true)) return true;
-
-        return in_array($this->settings->asnPeerGroup(), $this->settings->enabledPeerGroups(), true);
+            $this->settings->enabledPeerEditGroups(),
+        );
     }
 
     private function groupIds(IUser $user): array {
@@ -151,22 +150,7 @@ final class VacationAccessService {
         return $this->groups->isAdmin($uid) && $this->temporaryAdminAccess->hasActiveGrant($uid);
     }
 
-    private function asnTeamCodes(array $groupIds): array {
-        $codes = [];
-        $definition = $this->definition();
-        $prefix = $definition->teamGroupPrefix();
-        foreach ($groupIds as $groupId) {
-            if (!str_starts_with($groupId, $prefix) || $groupId === $prefix) continue;
-            try {
-                $codes[] = $definition->normalizeTeamCode(substr($groupId, strlen($prefix)));
-            } catch (\InvalidArgumentException) {
-            }
-        }
-
-        return array_values(array_unique($codes));
-    }
-
-    private function definition(): FlzOrganizationDefinition {
-        return $this->organization?->definition() ?? FlzOrganizationDefinition::defaults();
+    private function definition() {
+        return $this->organization->definition();
     }
 }

@@ -23,7 +23,7 @@ final class VacationPersonalDataProvider implements PersonalDataProvider {
     }
     public function collect(PersonalDataRequest $request):PersonalDataPage{
         if($request->subject()->subjectType()!=='nextcloud-user')return new PersonalDataPage('not_applicable');
-        if($request->cursor()!==null)throw new InvalidArgumentException('Filzmann Urlaubsplanung does not support cursor paging.');
+        if($request->cursor()!==null)throw new InvalidArgumentException('Filzmann Urlaubsplanung unterstützt kein Cursor-Paging.');
         $policy=$this->retention->policy();
         $vacations=$this->vacations->findByEmployeeUid($request->subject()->subjectId(),$request->pageLimit()+1);
         $adminHistory=$this->adminAccess->historyForUid($request->subject()->subjectId(),$request->pageLimit()+1);

@@ -2,6 +2,9 @@
 
 ## Projekt
 
+- Lokalisierung (ZM-06): Sichtbare Texte ausschließlich über Nextcloud-l10n — deutsche Quelltexte via `IL10N::t()`/`window.t('flzurlaub', …)`, Kataloge `l10n/en.*` und `l10n/en_GB.*` (Englisch); technische IDs bleiben unübersetzt. `tests/Ui/L10nCatalogContractTest.php` erzwingt das Rohtext-Gate (siehe `docs/l10n-inventory.md`).
+
+
 Nextcloud-App `flzurlaub` fuer geplante und genehmigte Urlaubszeitraeume aller FLZ-Fachgruppen.
 
 Lokale App-URL:
@@ -18,19 +21,30 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Urlaubszeiträume derselben Person dürfen sich unabhängig vom Status nicht überschneiden. Bei Änderungen wird der bearbeitete Datensatz selbst von der Prüfung ausgenommen; angrenzende Zeiträume bleiben erlaubt.
 - `planned` wird als `U?` angezeigt und ist ein Hinweis ohne Schreib- oder Verfügbarkeitsblockade.
 - `approved` wird als `U` angezeigt und blockiert Dienste, Termine, Standarddienste und Meetingverfügbarkeit im Filzmann Kalender.
-- Normale Nutzer*innen lesen nur Urlaubsansichten, in denen sie selbst Mitglied sind, gemeinsame Assistenzteams sowie Ansichten mit direkt oder indirekt unterstellten Personen. Bereichsgrenzen bleiben wirksam; Nextcloud-Admins sehen alle Ansichten.
-- Nutzer*innen planen eigene Urlaube. Genehmigungen und die Bearbeitung genehmigter Urlaube folgen derselben Vorgesetztenhierarchie wie Filzmann Kalender; Nextcloud-Admins dürfen alle verwalten. Direkte Kolleg*innen dürfen nach administrativer Freischaltung innerhalb derselben Fachgruppe genehmigen, bei BO/EB nur im selben Bürobereich. Eigene Genehmigung bleibt außer für Nextcloud-Admins gesperrt.
+- Organigramm-Mitglieder lesen alle Organigramm-Mitarbeitenden in umschaltbaren Ansichten für Geschäftsführung/Stab, Pflege, BO je Büro und EB je Büro. AS und die zuständige EB lesen das gemeinsame ASN-Team. Bereichsgrenzen begrenzen Schreib- und Genehmigungsrechte, nicht diese ausdrücklich beschlossene Organigrammsicht. Native Nextcloud-Admins sehen alle Ansichten nur mit aktiver app-lokaler Vollzugriffsfreigabe.
+- Nutzer*innen planen eigene Urlaube. Direkte Vorgesetzte dürfen geplante Urlaube bearbeiten und Urlaube genehmigen; zuständige EB gelten für AS desselben ASN-Teams als direkte Vorgesetzte. Ein Genehmigungsvorgang durch eine zuständige Führungskraft genügt vorerst. Kolleg*innen-Bearbeitung und Kolleg*innen-Genehmigung sind getrennte, standardmäßig deaktivierte Berechtigungen; BO/EB bleiben auf denselben Bürobereich begrenzt. Eigene Genehmigung bleibt außer bei aktivem app-lokalem Admin-Vollzugriff gesperrt.
 - Genehmigungen mit überschneidenden Diensten oder Terminen werden mit einer read-only Konfliktliste abgelehnt; es erfolgt keine automatische Löschung.
-- Gruppen stammen aus derselben konfigurierbaren `FlzOrganizationDefinition` wie Filzmann Kalender und FlzPlaner. Fachrollen, Bereiche, Assistenzteam-Präfix und Organisationssichten werden nicht zusätzlich in Filzmann Urlaubsplanung festverdrahtet.
+- Gruppen, Rollen, Bereiche, Hierarchie, Assistenzteam-Präfix und
+  Organisationssichten stammen ausschließlich aus dem aktivierten,
+  kompatiblen und gültigen öffentlichen V1-Vertrag von `flz_organization`.
+  Filzmann Urlaubsplanung führt dafür keine zweite Konfiguration und keinen
+  LocalBase-Fallback.
 - Filzmann Urlaubsplanung ist die kanonische schreibende Urlaubsquelle. Die Jahresmatrix fasst dynamische Assistenzteams und die konfigurierten Organisationssichten zusammen.
 - Die Jahresmatrix zeigt Schulferien und gesetzliche Feiertage der organisationsweit konfigurierten Kalenderregion stets als read-only Hintergrundebenen. Fixierte Bänder im Tabellenkopf tragen über jedem zusammenhängenden Zeitraum den Namen, ohne einzelne Tagesspalten zu verbreitern; zu lange Namen werden gekürzt und bleiben vollständig als Tooltip und zugängliche Beschriftung verfügbar. Samstage sind leicht grau, Sonntage dunkler grau; gesetzliche Feiertage markieren ihre vollständige Spalte mit derselben Grauebene wie Sonntage. Heiligabend und Silvester erhalten unabhängig davon eine eigene, vom gesetzlichen Feiertag unterscheidbare Spaltenmarkierung. Die zugängliche Tagesbeschriftung nennt Wochenendart, Jahresendtag, Ferien und Feiertage zusätzlich in Textform. Filzmann Urlaubsplanung liest den validierten, dynamischen OpenHolidays-Jahresstand ausschließlich über den gemeinsamen read-only LocalBase-Vertrag; `DE`, `DE-BE` und `Europe/Berlin` bleiben Bestandsdefaults. Der gemeinsame Cache wird täglich sowie bedarfsgesteuert aktualisiert; bei einem Dienstausfall bleibt der letzte gültige Stand mit sichtbarem Veraltet-Hinweis verfügbar. Ferien und Feiertage verändern weder Konflikte, Verfügbarkeit, Genehmigungen noch Rechte.
-- Büro Nordost, Büro West und Büro Süd sind eigenständig auswählbare Organisationssichten. Bereichsübergreifende Leitungen erscheinen durch ihre Bereichsmitgliedschaften in jeder passenden Sicht, ohne die Büros zusammenzufassen.
+- Büro Nordost, Büro West und Büro Süd sind eigenständig auswählbare
+  BO-Organisationssichten. Bereichsübergreifende Leitungen erscheinen durch
+  ihre Bereichsmitgliedschaften in jeder passenden Sicht, ohne die Büros
+  zusammenzufassen. EB-Ansichten je Büro und getrennte Peerrechte werden aus
+  dem öffentlichen Organisations- und Autorisierungsvertrag V1 von
+  `flz_organization` abgeleitet; fehlende, deaktivierte, inkompatible,
+  ungültige oder nicht verfügbare Provider liefern keine Organisationssicht
+  und keine fachliche Freigabe.
 - Die Pflegeansicht enthält Stv. PDL, Büroorganisation Pflege und PFK in dieser Reihenfolge. Stv. PDL darf Büroorganisation Pflege und PFK führen; PDL bleibt beiden übergeordnet. Fahrzeugverwaltung und Empfang bilden eigene globale Ansichten und folgen der gemeinsamen GF-Digi-/Sekretariats-Hierarchie.
 - Assistenzteams verwenden dieselbe Nextcloud-Gruppe wie FlzPlaner. Separate Gruppen mit einem Suffix wie `-Urlaub` sind keine unterstützte Datenquelle.
 - Eigene Urlaubszeiträume werden kompakt über Von/Bis/Notiz eingetragen. Berechtigte Koordinator*innen wechseln den Tagesstatus direkt in der Jahresmatrix; Konflikte werden inline angezeigt.
 - FlzPlaner bindet seine Urlaubssicht ausschließlich an diese Quelle an und besitzt keine parallele Urlaubspersistenz.
 - Die read-only Cross-App-Verträge sind die bounded UID-Abfrage `OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent` sowie `AbsenceQueryEvent` mit `AbsenceInterval`. Die Discovery liefert nur Konten mit geplanten oder genehmigten Urlauben im angefragten halboffenen Zeitraum; Urlaubsnotizen bleiben ausgeschlossen. Filzmann Urlaubsplanung greift niemals direkt auf Tabellen anderer Apps zu.
-- Der app-eigene Adminabschnitt bietet einen ausschließlich manuell bestätigten Demo-Pack. Er verwendet die gemeinsamen synthetischen Suite-Demokonten, niemals zufällig ausgewählte reale Gruppenmitglieder.
+- Der app-eigene Adminabschnitt bietet einen ausschließlich manuell bestätigten Demo-Pack. Er verwendet die gemeinsamen synthetischen Suite-Demokonten, niemals zufällig ausgewählte reale Gruppenmitglieder. Die Installation ist eine eng begrenzte technische Ausnahme für aktuell bestätigte native Nextcloud-Admins und verlangt keine fachliche Vollzugriffsfreigabe; sie erteilt keinen Zugriff auf reale Urlaubsdaten.
 - Fremde oder LDAP-verwaltete Konten werden nicht als Demokonto übernommen; read-only LDAP-Gruppen brechen die Demo-Installation im Preflight vor jeder Mutation ab.
 - WordPress-Bestandsdaten werden nicht importiert. Es existiert keine Legacy-Importstrecke.
 
@@ -61,7 +75,15 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - App-Root und Tabellenwrapper erfüllen den im lokalen Skill `work-in-nextcloud-app` vollständig beschriebenen Nextcloud-Scrollvertrag.
 - Modelle nutzen `get(...)`, `get_all([...])` und `toArray()`.
 - Im Frontend bleibt `main.js` ein schlanker Bootstrap. `VacationApp` orchestriert API, Zustand und Ereignisse; `VacationPlan` rendert Teamauswahl, Jahresmatrix, eigene Anträge und Konflikte ohne eigene API-Zugriffe.
-- Organisationsweite Gruppen- und Genehmigungsfreigaben liegen bei einer Einzelinstallation im Adminabschnitt von Filzmann Urlaubsplanung, ab zwei FLZ-Produkten im Adminabschnitt der OrgSuite. Filzmann Urlaubsplanung besitzt derzeit keine persönlichen Dauer-Einstellungen und deshalb keinen leeren Einstellungstab.
+- Der Frontend-Unterbau nutzt `ApiClient` und `Notice` aus dem app-lokal
+  gebündelten Kategorie-A-Paket `flz_shared` unter
+  `window.OCA.FlzUrlaub.Shared`. Zur Laufzeit werden weder private
+  LocalBase-Browserassets noch das benachbarte Paketrepository geladen.
+- Organisationsweite Gruppen-, Hierarchie- und Genehmigungsfreigaben gehören
+  zur eigenständigen Laufzeit-App `flz_organization`. Filzmann Urlaubsplanung
+  konsumiert deren öffentlichen V1-Vertrag ausschließlich read-only und
+  besitzt derzeit keine persönlichen Dauer-Einstellungen und deshalb keinen
+  leeren Einstellungstab.
 
 ## Gemeinsame Suite-Navigation
 
@@ -71,7 +93,7 @@ Datei hält die bei jeder Arbeit benötigten Grenzen und Prüfungen.
 - Urlaubs-, Team- und Genehmigungsrechte bleiben ausschliesslich serverseitig im Filzmann Urlaubsplanung; Menuesichtbarkeit ist keine Berechtigung.
 - Native Nextcloud-Administration erteilt keinen fachlichen Urlaubs-Vollzugriff. Er setzt pro Administrationskonto eine aktive, app-lokale Freigabe von höchstens 24 Stunden voraus; Beginn, geplantes Ende und Widerruf bleiben historisch protokolliert. Ausschließlich Mitglieder der Nextcloud-Gruppe `Datenschutzbeauftragte` verwalten Freigaben und Historie im Filzmann-Urlaubsplanung-Hauptbereich; native Administration allein genügt weder für die Steuerung noch für den fachlichen Zugriff.
 - Ein natives Administrationskonto ohne aktive Freigabe erhält im Hauptbereich eine sichere Hinweismeldung. Der Direktlink zur Freigabesteuerung erscheint nur, wenn dasselbe Konto zugleich Mitglied von `Datenschutzbeauftragte` ist.
-- Das Installieren fachlicher Demodaten benötigt dieselbe aktive Freigabe. Änderungen an Freigabehistorie oder Urlaubsrechten werden gleichzeitig im PersonalDataProvider und PermissionProvider nachgeführt.
+- Das Installieren des ausschließlich synthetischen Demo-Packs ist die im Parent-ADR 0004 dokumentierte technische Ausnahme und benötigt keine fachliche Vollzugriffsfreigabe. Alle fachlichen Urlaubsoperationen und realen Urlaubsdaten bleiben vom app-lokalen Freigabevertrag geschützt. Änderungen an Freigabehistorie oder Urlaubsrechten werden gleichzeitig im PersonalDataProvider und PermissionProvider nachgeführt.
 
 ## Git und Tests
 
