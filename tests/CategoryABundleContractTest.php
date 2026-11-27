@@ -14,6 +14,7 @@ foreach ([
     $bundleRoot . '/php/src/Model/ModelApiTrait.php',
     $browserBundleRoot . '/api-client.js',
     $browserBundleRoot . '/model.js',
+    $browserBundleRoot . '/overlay.js',
     $browserBundleRoot . '/repository.js',
     $browserBundleRoot . '/ui.js',
     $browserBundleRoot . '/LICENSE',
@@ -73,6 +74,7 @@ foreach ([$vacation, $team] as $modelSource) {
 foreach ([
     "\\OCP\\Util::addScript('flzurlaub', 'shared/api-client')",
     "\\OCP\\Util::addScript('flzurlaub', 'shared/ui')",
+    "\\OCP\\Util::addScript('flzurlaub', 'shared/overlay')",
 ] as $scriptRegistration) {
     if (!str_contains($templates, $scriptRegistration)) {
         throw new RuntimeException('App-lokale Kategorie-A-Skriptregistrierung fehlt: ' . $scriptRegistration);
