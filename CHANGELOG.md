@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- L10N-Migration (ZM-06): sichtbare Texte über Nextcloud-l10n (deutsche Quelltexte, Kataloge `l10n/en.*` + `l10n/en_GB.*`), inkl. `tests/Ui/L10nCatalogContractTest.php` und `docs/l10n-inventory.md`.
+
 - Organisations-Testfixtures stammen aus dem gepinnten `flz_organization`-
   Provider statt aus wechselnden LocalBase-Standardwerten; dadurch prüfen
   lokaler Lauf und CI denselben Organisationsvertrag.

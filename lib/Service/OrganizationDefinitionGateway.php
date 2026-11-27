@@ -195,7 +195,7 @@ class OrganizationDefinitionGateway
         $this->status = self::UNAVAILABLE;
         $this->definition = null;
         $this->authorization = null;
-        $this->logger->warning('Organization provider unavailable', [
+        $this->logger->warning('Organisations-Provider ist nicht verfügbar.', [
             'app' => 'flzurlaub',
             'provider' => self::FLZ_ORGANIZATION_APP_ID,
             'exceptionClass' => $error::class,

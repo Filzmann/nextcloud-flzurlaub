@@ -19,7 +19,7 @@ final class VacationOrganizationDefinition
         {
             if (!is_array($data[$key] ?? null))
             {
-                throw new InvalidArgumentException('Invalid organization definition.');
+                throw new InvalidArgumentException('Ungültige Organisationsdefinition.');
             }
         }
         if (!is_string($data['teamGroupPrefix'] ?? null)
@@ -27,7 +27,7 @@ final class VacationOrganizationDefinition
             || !is_int($data['teamCodeMaxLength'] ?? null)
             || $data['teamCodeMaxLength'] < 1)
         {
-            throw new InvalidArgumentException('Invalid organization team definition.');
+            throw new InvalidArgumentException('Ungültige Organisationsteam-Definition.');
         }
         return new self($data);
     }
@@ -77,7 +77,7 @@ final class VacationOrganizationDefinition
         $teamCode = trim($teamCode);
         if (!preg_match('/^[\\p{L}\\p{N}]{1,' . $this->teamCodeMaxLength() . '}$/u', $teamCode))
         {
-            throw new InvalidArgumentException('Invalid organization team code.');
+            throw new InvalidArgumentException('Ungültiger Organisationsteam-Code.');
         }
         return $teamCode;
     }

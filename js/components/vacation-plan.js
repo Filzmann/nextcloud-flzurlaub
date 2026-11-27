@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
 
     /**
      * Zweck: Rendert Teamauswahl, Jahresmatrix, eigene Anträge und Konfliktlisten ohne API-Zugriffe.
@@ -14,8 +16,8 @@
 
         renderChrome() {
             const categories = [
-                ['asn', 'Assistenzteams'],
-                ['organization', 'Büros und Fachgruppen'],
+                ['asn', translate('flzurlaub', 'Assistenzteams')],
+                ['organization', translate('flzurlaub', 'Büros und Fachgruppen')],
             ];
             this.elements.team.replaceChildren(...categories.map(([category, label]) => {
                 const group = document.createElement('optgroup');
@@ -30,7 +32,7 @@
             }).filter(group => group.children.length));
             this.elements.year.value = String(this.state.year);
             const team = this.selectedTeam();
-            this.elements['plan-title'].textContent = team ? `${team.displayName} – Urlaub ${this.state.year}` : `Urlaub ${this.state.year}`;
+            this.elements['plan-title'].textContent = team ? `${team.displayName} – ${translate('flzurlaub', 'Urlaub {year}', {year: this.state.year})}` : `${translate('flzurlaub', 'Urlaub {year}', {year: this.state.year})}`;
             this.holidays.replace(this.state.plan?.holidays || {});
             this.renderHolidayStatus();
         }
@@ -40,17 +42,17 @@
             if (!status) return;
             const calendar = this.holidays.toArray();
             if (!this.state.plan) {
-                status.textContent = 'Berliner Ferien- und Feiertagsdaten werden geladen.';
+                status.textContent = translate('flzurlaub', 'Berliner Ferien- und Feiertagsdaten werden geladen.');
                 return;
             }
             if (calendar.cacheStatus === 'unavailable') {
-                status.textContent = `Der Ferien- und Feiertagsdienst ist nicht erreichbar. Für ${this.state.year} liegen noch keine zwischengespeicherten Daten vor.`;
+                status.textContent = `${translate('flzurlaub', 'Der Ferien- und Feiertagsdienst ist nicht erreichbar. Für {year} liegen noch keine zwischengespeicherten Daten vor.', {year: this.state.year})}`;
                 return;
             }
             const fetchedAt = this.dateTime(calendar.fetchedAt);
             status.textContent = calendar.cacheStatus === 'stale'
-                ? `Berliner Ferien und Feiertage aus dem letzten erfolgreichen Abruf vom ${fetchedAt}. Die Aktualisierung ist derzeit nicht möglich.`
-                : `Berliner Ferien und Feiertage von ${calendar.source.name}, aktualisiert am ${fetchedAt}.`;
+                ? `${translate('flzurlaub', 'Berliner Ferien und Feiertage aus dem letzten erfolgreichen Abruf vom {date}. Die Aktualisierung ist derzeit nicht möglich.', {date: fetchedAt})}`
+                : `${translate('flzurlaub', 'Berliner Ferien und Feiertage von {source}, aktualisiert am {date}.', {source: calendar.source.name, date: fetchedAt})}`;
         }
 
         renderPlan() {
@@ -69,7 +71,7 @@
             this.elements['own-requests'].replaceChildren(...own.map(request => {
                 const badge = this.node(
                     'span',
-                    `${this.dateShort(request.startDate)}–${this.dateShort(request.endDate)} · ${request.status === 'approved' ? 'genehmigt' : 'geplant'}`,
+                    `${this.dateShort(request.startDate)}–${this.dateShort(request.endDate)} · ${request.status === 'approved' ? translate('flzurlaub', 'genehmigt') : translate('flzurlaub', 'geplant')}`,
                     `flz-vacation-request flz-vacation-request-${request.status}`,
                 );
                 if (request.status === 'planned') {
@@ -77,7 +79,7 @@
                     button.type = 'button';
                     button.dataset.action = 'delete-own';
                     button.dataset.id = String(request.id);
-                    button.title = 'Urlaubsantrag löschen';
+                    button.title = translate('flzurlaub', 'Urlaubsantrag löschen');
                     button.setAttribute('aria-label', 'Urlaubsantrag löschen');
                     badge.append(button);
                 }
@@ -94,10 +96,10 @@
             if (error.status !== 409 || !error.data?.conflicts) return;
             this.elements.conflicts.hidden = false;
             this.elements.conflicts.replaceChildren(
-                this.node('strong', 'Genehmigung nicht möglich:'),
+                this.node('strong', translate('flzurlaub', 'Genehmigung nicht möglich:')),
                 ...error.data.conflicts.map(conflict => this.node(
                     'div',
-                    `${conflict.type === 'shift' ? 'Dienst' : 'Termin'} ${new Date(conflict.start).toLocaleString('de-DE')}–${new Date(conflict.end).toLocaleString('de-DE')}${conflict.label ? ` · ${conflict.label}` : ''}`,
+                    `${conflict.type === 'shift' ? translate('flzurlaub', 'Dienst') : translate('flzurlaub', 'Termin')} ${new Date(conflict.start).toLocaleString('de-DE')}–${new Date(conflict.end).toLocaleString('de-DE')}${conflict.label ? ` · ${conflict.label}` : ''}`,
                 )),
             );
         }
@@ -109,7 +111,7 @@
         renderSchoolHolidayBand(days) {
             const row = document.createElement('tr');
             row.className = 'flz-vacation-school-holiday-row';
-            const label = this.node('th', 'Schulferien');
+            const label = this.node('th', translate('flzurlaub', 'Schulferien'));
             label.scope = 'col';
             row.append(label);
             for (let start = 0; start < days.length;) {
@@ -136,7 +138,7 @@
         renderPublicHolidayBand(days) {
             const row = document.createElement('tr');
             row.className = 'flz-vacation-public-holiday-row';
-            const label = this.node('th', 'Feiertage');
+            const label = this.node('th', translate('flzurlaub', 'Feiertage'));
             label.scope = 'col';
             row.append(label);
             for (let start = 0; start < days.length;) {
@@ -163,7 +165,7 @@
         renderDayHeader(days) {
             const head = document.createElement('tr');
             head.className = 'flz-vacation-day-row';
-            const name = this.node('th', 'Mitarbeiter*in');
+            const name = this.node('th', translate('flzurlaub', 'Mitarbeiter*in'));
             name.scope = 'col';
             head.append(name);
             for (const day of days) {
@@ -176,7 +178,7 @@
                 if (day.weekday === 7) th.classList.add('is-sunday');
                 if (publicHoliday) th.classList.add('is-public-holiday-column');
                 if (yearEndSpecial) th.classList.add('is-year-end-special');
-                const labels = [this.dateShort(day.date), this.weekdayName(day), yearEndSpecial, schoolHoliday && `Berliner Schulferien: ${schoolHoliday}`, publicHoliday && `Feiertag: ${publicHoliday}`].filter(Boolean);
+                const labels = [this.dateShort(day.date), this.weekdayName(day), yearEndSpecial, schoolHoliday && `${translate('flzurlaub', 'Berliner Schulferien: {name}', {name: schoolHoliday})}`, publicHoliday && `${translate('flzurlaub', 'Feiertag: {name}', {name: publicHoliday})}`].filter(Boolean);
                 if (labels.length > 1) th.setAttribute('aria-label', labels.join(' – '));
                 th.append(this.monthHeader(day));
                 head.append(th);
@@ -203,7 +205,7 @@
             const cell = document.createElement('td');
             cell.dataset.day = day.date;
             cell.className = ['flz-vacation-vac-cell', status && `flz-vacation-vac-${status}`, status && 'has-vacation', day.weekday === 6 && 'is-saturday', day.weekday === 7 && 'is-sunday', publicHoliday && 'is-public-holiday-column', yearEndSpecial && 'is-year-end-special'].filter(Boolean).join(' ');
-            const title = [employee.displayName, this.dateShort(day.date), this.weekdayName(day), yearEndSpecial, schoolHoliday ? `Berliner Schulferien: ${schoolHoliday}` : '', publicHoliday ? `Feiertag: ${publicHoliday}` : '', status === 'approved' ? 'genehmigt' : status === 'planned' ? 'geplant' : ''].filter(Boolean).join(' – ');
+            const title = [employee.displayName, this.dateShort(day.date), this.weekdayName(day), yearEndSpecial, schoolHoliday ? `${translate('flzurlaub', 'Berliner Schulferien: {name}', {name: schoolHoliday})}` : '', publicHoliday ? `${translate('flzurlaub', 'Feiertag: {name}', {name: publicHoliday})}` : '', status === 'approved' ? translate('flzurlaub', 'genehmigt') : status === 'planned' ? translate('flzurlaub', 'geplant') : ''].filter(Boolean).join(' – ');
             if (employee.canApprove) {
                 const button = this.node('button', status === 'approved' ? 'U' : status === 'planned' ? 'U?' : '');
                 button.type = 'button';
@@ -251,12 +253,12 @@
         }
 
         weekdayName(day) {
-            return day.weekday === 6 ? 'Samstag' : day.weekday === 7 ? 'Sonntag' : '';
+            return day.weekday === 6 ? translate('flzurlaub', 'Samstag') : day.weekday === 7 ? translate('flzurlaub', 'Sonntag') : '';
         }
 
         yearEndSpecialName(date) {
             const monthDay = String(date).slice(5);
-            return monthDay === '12-24' ? 'Heiligabend' : monthDay === '12-31' ? 'Silvester' : '';
+            return monthDay === '12-24' ? translate('flzurlaub', 'Heiligabend') : monthDay === '12-31' ? translate('flzurlaub', 'Silvester') : '';
         }
 
         node(tag, text, className) {
