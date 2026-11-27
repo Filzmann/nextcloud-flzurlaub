@@ -71,11 +71,14 @@ create_user "$bo_peer" Buero Bereich-Nordost
 create_user "$pdl_target" PDL
 create_user "$bl_target" BL Bereich-Nordost Bereich-West
 
-assert_access "$pdl" "$pdl=true:true:false,$pfk_target=true:true:true,$bo_no=false:*:*"
-assert_access "$bl_now" "$bl_now=true:true:false,$bo_no=true:true:true,$bo_west=true:true:true,$bo_south=false:*:*,$pfk_target=false:*:*"
-assert_access "$bo_actor" "$bo_actor=true:true:false,$bo_peer=true:*:*,$bo_west=false:*:*,$bl_target=true:false:false"
-assert_access "$pfk_actor" "$pfk_actor=true:true:false,$pfk_target=true:*:*,$pdl_target=false:*:*"
-assert_access "$eb_actor" "$eb_actor=true:true:false,$assistant_actor=true:true:true,$bo_west=false:*:*"
+# Sichtbarkeit: Mitglieder mit Organisationsrolle sehen einander (kanonischer
+# Vertrag lt. VacationVisibilityPolicyTest); Schreibrechte folgen der direkten
+# Hierarchie und bleiben davon unberuehrt.
+assert_access "$pdl" "$pdl=true:true:false,$pfk_target=true:true:true,$bo_no=true:false:false"
+assert_access "$bl_now" "$bl_now=true:true:false,$bo_no=true:true:true,$bo_west=true:true:true,$bo_south=true:false:false,$pfk_target=true:false:false"
+assert_access "$bo_actor" "$bo_actor=true:true:false,$bo_peer=true:*:*,$bo_west=true:false:false,$bl_target=true:false:false"
+assert_access "$pfk_actor" "$pfk_actor=true:true:false,$pfk_target=true:*:*,$pdl_target=true:false:false"
+assert_access "$eb_actor" "$eb_actor=true:true:false,$assistant_actor=true:true:true,$bo_west=true:false:false"
 assert_access "$assistant_actor" "$assistant_actor=true:true:false,$eb_actor=true:*:*,$pfk_target=false:*:*"
 
 echo "Filzmann Urlaubsplanung DDEV access matrix smoke: OK"
