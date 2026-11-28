@@ -12,7 +12,7 @@ use OCA\FlzUrlaub\Exception\VacationOverlapException;
 use OCA\FlzUrlaub\Model\Vacation;
 use OCA\FlzUrlaub\Model\VacationTeam;
 use OCA\FlzUrlaub\Repository\VacationRepository;
-use OCA\LocalBase\Calendar\ScheduleConflictQueryEvent;
+use OCA\FlzOrganization\PublicApi\V1\ScheduleConflictQueryEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 
 /**

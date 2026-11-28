@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OCA\FlzUrlaub\Listener;
 
 use OCA\FlzUrlaub\Repository\VacationRepository;
-use OCA\LocalBase\Calendar\AbsenceEmployeeDiscoveryEvent;
+use OCA\FlzOrganization\PublicApi\V1\AbsenceEmployeeDiscoveryEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

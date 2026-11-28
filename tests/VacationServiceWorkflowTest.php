@@ -55,8 +55,8 @@ namespace {
     use OCA\FlzUrlaub\Repository\VacationRepository;
     use OCA\FlzUrlaub\Service\VacationAccessService;
     use OCA\FlzUrlaub\Service\VacationService;
-    use OCA\LocalBase\Calendar\ScheduleConflict;
-    use OCA\LocalBase\Calendar\ScheduleConflictQueryEvent;
+    use OCA\FlzOrganization\PublicApi\V1\ScheduleConflict;
+    use OCA\FlzOrganization\PublicApi\V1\ScheduleConflictQueryEvent;
     use OCP\EventDispatcher\IEventDispatcher;
     use OCP\IUser;
 

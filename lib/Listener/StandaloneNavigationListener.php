@@ -4,24 +4,42 @@ declare(strict_types=1);
 
 namespace OCA\FlzUrlaub\Listener;
 
-use OCA\LocalBase\Service\StandaloneAppNavigationService;
+use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\IL10N;
+use OCP\IURLGenerator;
+use OCP\IUserSession;
 use OCP\Navigation\Events\LoadAdditionalEntriesEvent;
+use OCP\Navigation\INavigationManager;
 
 /** @template-implements IEventListener<LoadAdditionalEntriesEvent> */
 final class StandaloneNavigationListener implements IEventListener {
-    public function __construct(private StandaloneAppNavigationService $navigation, private ?IL10N $l10n = null) {
-    }
-    /** Lokalisierung fachlicher Texte; im Test ohne IL10N identity. */
-    private function t(string $text): string
-    {
-        return $this->l10n?->t($text) ?? $text;
-    }
+    private const SUITE_APP_ID = 'orgsuite';
 
+    public function __construct(
+        private IUserSession $userSession,
+        private IAppManager $appManager,
+        private INavigationManager $navigation,
+        private IURLGenerator $url,
+        private IL10N $l10n,
+    ) {
+    }
 
     public function handle(Event $event): void {
-        if (!$event instanceof LoadAdditionalEntriesEvent) return;
-        $this->navigation->addWhenStandalone('flzurlaub', $this->t('Urlaub'), 'flzurlaub.page.index', 'app.svg', 81);
+        if (!$event instanceof LoadAdditionalEntriesEvent) {
+            return;
+        }
+        $user = $this->userSession->getUser();
+        if ($user === null || $this->appManager->isEnabledForUser(self::SUITE_APP_ID, $user)) return;
+        $this->navigation->add(fn(): array => [
+            'id' => 'flzurlaub',
+            'type' => INavigationManager::TYPE_APPS,
+            'app' => 'flzurlaub',
+            'href' => $this->url->linkToRoute('flzurlaub.page.index'),
+            'icon' => $this->url->imagePath('flzurlaub', 'app.svg'),
+            'name' => $this->l10n->t('Urlaub'),
+            'order' => 82,
+        ]);
     }
 }

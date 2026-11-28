@@ -7,8 +7,8 @@ namespace OCA\FlzUrlaub\Listener;
 use DateTimeImmutable;
 use OCA\FlzUrlaub\Model\Vacation;
 use OCA\FlzUrlaub\Repository\VacationRepository;
-use OCA\LocalBase\Calendar\AbsenceInterval;
-use OCA\LocalBase\Calendar\AbsenceQueryEvent;
+use OCA\FlzOrganization\PublicApi\V1\AbsenceInterval;
+use OCA\FlzOrganization\PublicApi\V1\AbsenceQueryEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

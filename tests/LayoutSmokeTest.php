@@ -15,7 +15,7 @@ foreach (['.flz-vacation-table .is-saturday{background-image:linear-gradient(rgb
 foreach (['.flz-vacation-table .is-year-end-special{', 'rgba(196,128,0,.12)', 'inset 2px 0 #c48000'] as $contract) if (!str_contains($css, $contract)) throw new RuntimeException("Abgegrenzte Markierung für Heiligabend und Silvester fehlt: {$contract}");
 if (str_contains($css, 'top:84px') || str_contains($css, 'height:42px')) throw new RuntimeException('Ferien-/Feiertagszeilen verwenden noch die hohe Darstellung.');
 if (str_contains($info, 'OCA\\FlzUrlaub\\BackgroundJob\\RefreshHolidayCalendarJob')) throw new RuntimeException('Der gemeinsame LocalBase-Refreshjob wird durch Filzmann Urlaubsplanung dupliziert.');
-foreach (['OCA\\LocalBase\\Calendar\\HolidayCalendarService', '->toArray()'] as $contract) if (!str_contains($holidayService, $contract)) throw new RuntimeException("Gemeinsamer Ferien-/Feiertags-Consumervertrag fehlt: {$contract}");
+foreach (['OrganizationHolidayCalendarService'] as $contract) if (!str_contains($holidayService, $contract)) throw new RuntimeException("Gemeinsamer Ferien-/Feiertags-Consumervertrag fehlt: {$contract}");
 if (str_contains($template, '>F</span>') || str_contains($css, 'repeating-linear-gradient')) throw new RuntimeException('Veraltete F-/Schraffurkennzeichnung der Schulferien ist noch vorhanden.');
 if (str_contains($template, "addScript('orgsuite'") || str_contains($template, "addStyle('orgsuite'")) throw new RuntimeException('Direkte OrgSuite-Assetkopplung vorhanden.');
 if (preg_match('/^\\s*(?:script|style)\\s*\\(/m', $template) === 1) throw new RuntimeException('Veralteter globaler Templatehelfer gefunden.');

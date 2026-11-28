@@ -11,7 +11,7 @@ $info = file_get_contents($root . '/appinfo/info.xml');
 $template = file_get_contents($root . '/templates/admin.php');
 if (in_array(false, [$command, $service, $controller, $routes, $info, $template], true)) throw new RuntimeException('Urlaubs-Demo-Pack ist unvollständig.');
 foreach (['VacationDemoPackService', '->install()'] as $contract) if (!str_contains($command, $contract)) throw new RuntimeException("Demo-Command delegiert nicht: {$contract}");
-foreach (['FlzDemoFixtureCatalog', 'DemoAccountProvisioningService', "->provision('flz-full-suite-demo'", 'existsForEmployee'] as $contract) if (!str_contains($service, $contract)) throw new RuntimeException("Sicherer Urlaubs-Demo-Vertrag fehlt: {$contract}");
+foreach (['VacationDemoFixtureCatalog', 'DemoAccountProvisioningService', "->provision('flzurlaub-demo'", 'existsForEmployee'] as $contract) if (!str_contains($service, $contract)) throw new RuntimeException("Sicherer Urlaubs-Demo-Vertrag fehlt: {$contract}");
 foreach (['IGroupManager', '->getUsers()', 'array_values('] as $unsafe) if (str_contains($command, $unsafe)) throw new RuntimeException("Urlaubs-Demo verwendet reale Gruppenmitglieder: {$unsafe}");
 foreach (['/api/admin/demo-pack/install', "'verb' => 'POST'"] as $contract) if (!str_contains($routes, $contract)) throw new RuntimeException("Demo-Route fehlt: {$contract}");
 foreach (['<admin>OCA\\FlzUrlaub\\Settings\\Admin</admin>', '<admin-section>OCA\\FlzUrlaub\\Settings\\AdminSection</admin-section>'] as $contract) if (!str_contains($info, $contract)) throw new RuntimeException("Adminregistrierung fehlt: {$contract}");
