@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitFlzUrlaubFlzSharedbb3c0f5d1b22026f
+class ComposerStaticInitFlzUrlaubFlzSharedf85e3a1064379e19
 {
     public static $prefixLengthsPsr4 = array (
         'O' => 
@@ -25,14 +25,15 @@ class ComposerStaticInitFlzUrlaubFlzSharedbb3c0f5d1b22026f
         'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Controller\\ApiResponder' => __DIR__ . '/../..' . '/src/Controller/ApiResponder.php',
         'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Model\\ModelApiTrait' => __DIR__ . '/../..' . '/src/Model/ModelApiTrait.php',
         'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Service\\AppLogger' => __DIR__ . '/../..' . '/src/Service/AppLogger.php',
+        'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Service\\DemoAccountProvisioningService' => __DIR__ . '/../..' . '/src/Service/DemoAccountProvisioningService.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitFlzUrlaubFlzSharedbb3c0f5d1b22026f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitFlzUrlaubFlzSharedbb3c0f5d1b22026f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitFlzUrlaubFlzSharedbb3c0f5d1b22026f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitFlzUrlaubFlzSharedf85e3a1064379e19::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitFlzUrlaubFlzSharedf85e3a1064379e19::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitFlzUrlaubFlzSharedf85e3a1064379e19::$classMap;
 
         }, null, ClassLoader::class);
     }
