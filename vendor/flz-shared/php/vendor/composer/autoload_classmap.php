@@ -10,4 +10,5 @@ return array(
     'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Controller\\ApiResponder' => $baseDir . '/src/Controller/ApiResponder.php',
     'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Model\\ModelApiTrait' => $baseDir . '/src/Model/ModelApiTrait.php',
     'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Service\\AppLogger' => $baseDir . '/src/Service/AppLogger.php',
+    'OCA\\FlzUrlaub\\Vendor\\Filzmann\\Shared\\Service\\DemoAccountProvisioningService' => $baseDir . '/src/Service/DemoAccountProvisioningService.php',
 );
