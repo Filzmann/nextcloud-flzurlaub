@@ -7,8 +7,7 @@ namespace OCA\FlzUrlaub\Service;
 use DateTimeImmutable;
 use OCA\FlzUrlaub\Model\Vacation;
 use OCA\FlzUrlaub\Repository\VacationRepository;
-use OCA\LocalBase\Service\FlzDemoFixtureCatalog;
-use OCA\LocalBase\Service\DemoAccountProvisioningService;
+use OCA\FlzUrlaub\Vendor\Filzmann\Shared\Service\DemoAccountProvisioningService;
 
 /**
  * Zweck: Installiert synthetische Urlaubsfälle für jede konfigurierte FLZ-Fachgruppe.
@@ -17,14 +16,14 @@ use OCA\LocalBase\Service\DemoAccountProvisioningService;
 final class VacationDemoPackService {
     public function __construct(
         private DemoAccountProvisioningService $accounts,
-        private FlzDemoFixtureCatalog $fixtures,
+        private VacationDemoFixtureCatalog $fixtures,
         private VacationRepository $vacations,
     ) {}
 
     /** @return array{accounts:array,coveredGroups:int,createdVacations:int,skippedVacations:int} */
     public function install(): array {
         $fixtures = $this->fixtures->all();
-        $accounts = $this->accounts->provision('flz-full-suite-demo', $fixtures);
+        $accounts = $this->accounts->provision('flzurlaub-demo', $fixtures);
         $monday = new DateTimeImmutable('monday next week');
         $coveredGroups = count(array_unique(array_merge(...array_column($fixtures, 'groups'))));
         $createdVacations = 0;

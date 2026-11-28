@@ -12,7 +12,7 @@ foreach (['IJobList', 'postSchemaChange', 'RefreshHolidayCalendarJob::class', '-
     if (!str_contains($migration, $contract)) throw new RuntimeException("Migration des früheren Urlaubsjobs fehlt: {$contract}");
 }
 if (str_contains($info, 'OCA\\FlzUrlaub\\BackgroundJob\\RefreshHolidayCalendarJob')) throw new RuntimeException('Der doppelte Urlaubs-Refreshjob wird weiterhin registriert.');
-foreach (['OCA\\LocalBase\\Calendar\\HolidayCalendarService', '->forYear(', '->toArray()'] as $contract) {
+foreach (['OrganizationHolidayCalendarService', '->forYear('] as $contract) {
     if (!str_contains($adapter, $contract)) throw new RuntimeException("Filzmann-Urlaubsplanung-Consumervertrag fehlt: {$contract}");
 }
 echo "SharedHolidayCalendarMigrationSmokeTest: OK\n";

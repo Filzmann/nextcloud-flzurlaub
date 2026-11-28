@@ -10,9 +10,9 @@ namespace OCP\EventDispatcher {
 namespace {
 
     use OCA\FlzUrlaub\Service\IntegrationStatusService;
-    use OCA\LocalBase\Integration\FlzIntegrationCapabilities;
-    use OCA\LocalBase\Integration\IntegrationCapabilityQueryEvent;
-    use OCA\LocalBase\Service\IntegrationCapabilityService;
+    use OCA\FlzOrganization\PublicApi\V1\IntegrationCapabilities;
+    use OCA\FlzOrganization\PublicApi\V1\IntegrationCapabilityQueryEvent;
+    use OCA\FlzUrlaub\Service\IntegrationCapabilityGateway;
     use OCP\EventDispatcher\IEventDispatcher;
 
     $dispatcher = new class implements IEventDispatcher {
@@ -20,12 +20,12 @@ namespace {
 
         public function dispatchTyped(object $event): object {
             if ($this->available && $event instanceof IntegrationCapabilityQueryEvent) {
-                $event->provide('flzcalendar', [FlzIntegrationCapabilities::SCHEDULE_CONFLICT_READ]);
+                $event->provide('flzcalendar', [IntegrationCapabilities::SCHEDULE_CONFLICT_READ]);
             }
             return $event;
         }
     };
-    $status = new IntegrationStatusService(new IntegrationCapabilityService($dispatcher));
+    $status = new IntegrationStatusService(new IntegrationCapabilityGateway($dispatcher));
 
     if ($status->calendarConflictCheck() !== [
         'available' => false,
